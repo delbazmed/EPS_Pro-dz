@@ -1,0 +1,1275 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="theme-color" content="#1B5E20">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>EPS Pro</title>
+<link rel="manifest" href="/manifest.json">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+<style>
+:root{--gd:#1B5E20;--gm:#2E7D32;--gl:#4CAF50;--gp:#C8E6C9;--gb:#E8F5E9;
+  --go:#F9A825;--red:#C62828;--rl:#FFEBEE;--gr:#F5F5F5;--tx:#1A1A1A;
+  --sh:0 4px 20px rgba(0,0,0,.12);--r:16px}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{font-family:Cairo,sans-serif;background:#f0f2f5;color:var(--tx);min-height:100vh;overflow-x:hidden}
+body.dark{background:#111!important;color:#e0e0e0!important}
+body.dark .card,.dark .si,.dark .modal-c,.dark .set-section{background:#1e1e1e!important;color:#e0e0e0!important}
+body.dark .page-inner{background:#111!important}
+body.dark input,body.dark select,body.dark textarea{background:#2a2a2a!important;color:#e0e0e0!important;border-color:#444!important}
+body.dark .srch{background:#2a2a2a!important}
+body.dark .ctab{background:#2a2a2a!important;color:#999!important}
+body.dark .ctab.active{background:var(--gd)!important;color:#fff!important}
+
+/* Layout */
+.app{display:flex;flex-direction:column;min-height:100vh}
+.page{display:none;flex:1;flex-direction:column}
+.page.active{display:flex}
+.page-inner{flex:1;overflow-y:auto;padding:12px 12px 80px}
+
+/* Topbar */
+.topbar{background:linear-gradient(135deg,var(--gd),var(--gm));padding:12px 16px 8px;color:#fff;position:sticky;top:0;z-index:100}
+.topbar-f1{background:linear-gradient(135deg,#1B5E20,#2E7D32)}
+.topbar-f2{background:linear-gradient(135deg,#1565C0,#1976D2)}
+.topbar-f3{background:linear-gradient(135deg,#6A1B9A,#7B1FA2)}
+.topbar-ann{background:linear-gradient(135deg,#E65100,#F57C00)}
+.ts{font-size:16px;font-weight:900;text-align:center}
+.ts2{font-size:11px;opacity:.85;text-align:center;margin-top:2px}
+.termbrow{display:flex;gap:6px;margin-top:8px;overflow-x:auto;padding-bottom:2px}
+.termbrow::-webkit-scrollbar{display:none}
+.termb{flex-shrink:0;background:rgba(255,255,255,.2);border:none;color:#fff;border-radius:20px;padding:5px 14px;font-family:Cairo,sans-serif;font-size:12px;font-weight:700;cursor:pointer;transition:.2s}
+.termb.active{background:#fff;color:var(--gd)}
+
+/* Navbar */
+.navbar{position:fixed;bottom:0;left:0;right:0;background:#fff;display:flex;border-top:1px solid #e0e0e0;z-index:100;padding-bottom:env(safe-area-inset-bottom)}
+body.dark .navbar{background:#1e1e1e;border-color:#333}
+.nb{flex:1;display:flex;flex-direction:column;align-items:center;padding:6px 2px;border:none;background:none;cursor:pointer;color:#999;font-family:Cairo,sans-serif;font-size:9px;gap:2px;transition:.2s}
+.nb.active{color:var(--gd)}
+.nb-ic{font-size:20px}
+
+/* Cards */
+.card{background:#fff;border-radius:var(--r);padding:14px;margin-bottom:10px;box-shadow:var(--sh)}
+.ct{font-size:14px;font-weight:900;color:var(--gd);margin-bottom:10px}
+
+/* Buttons */
+.btn{border:none;border-radius:10px;padding:10px 14px;font-family:Cairo,sans-serif;font-size:12px;font-weight:700;cursor:pointer;transition:.2s;flex-shrink:0}
+.bp{background:linear-gradient(135deg,var(--gd),var(--gm));color:#fff}
+.bb{background:linear-gradient(135deg,#1565C0,#1976D2);color:#fff}
+.by{background:linear-gradient(135deg,#F57F17,#F9A825);color:#fff}
+.bc{background:linear-gradient(135deg,#00838F,#00BCD4);color:#fff}
+.brow{display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap}
+
+/* Student list */
+.srch{display:flex;align-items:center;gap:8px;background:var(--gr);border-radius:12px;padding:9px 13px;margin-bottom:8px;border:1.5px solid transparent;transition:.2s}
+.srch:focus-within{border-color:var(--gp)}
+.srch input{border:none;background:transparent;outline:none;flex:1;font-family:Cairo,sans-serif;font-size:13px;color:var(--tx)}
+.si{background:#fff;border-radius:12px;padding:10px 12px;margin-bottom:7px;display:flex;align-items:center;gap:8px;box-shadow:0 2px 8px rgba(0,0,0,.07);transition:.2s}
+.si.bulk-sel{background:#fff3f3!important;border:1.5px solid var(--red)}
+.drag-handle{color:#ccc;font-size:18px;cursor:grab;padding:2px}
+.sn{font-size:13px;font-weight:700}
+.sa{font-size:15px;font-weight:900;border-radius:8px;padding:4px 10px;min-width:52px;text-align:center}
+.sa-high{background:#C8E6C9;color:#1B5E20}
+.sa-mid{background:#FFF9C4;color:#F57F17}
+.sa-low{background:#FFEBEE;color:#C62828}
+.sa-ex{background:#FFE0B2;color:#E65100;font-size:11px}
+.sdel{background:none;border:none;font-size:16px;cursor:pointer;padding:2px;opacity:.5}
+.sdel:hover{opacity:1}
+.sms-btn{background:none;border:none;font-size:16px;cursor:pointer;padding:2px}
+
+/* Bulk bar */
+.bulk-bar{display:none;background:var(--red);border-radius:12px;padding:8px 12px;margin-bottom:8px;align-items:center;gap:8px;font-size:12px;color:#fff}
+/* Undo bar */
+.undo-bar{display:none;background:linear-gradient(135deg,#37474F,#263238);border-radius:12px;padding:8px 12px;margin-bottom:8px;align-items:center;gap:8px;font-size:12px;color:#fff}
+
+/* Modal */
+.mo{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;align-items:flex-end;justify-content:center}
+.mo.open{display:flex}
+.modal-c{background:#fff;border-radius:20px 20px 0 0;padding:20px;width:100%;max-width:480px;max-height:88vh;overflow-y:auto}
+.mh{width:40px;height:4px;background:#ddd;border-radius:2px;margin:0 auto 16px}
+
+/* Form */
+.fg{display:flex;flex-direction:column;gap:4px;margin-bottom:10px}
+.fl{font-size:11px;font-weight:700;color:#666}
+.fi{border:1.5px solid #e0e0e0;border-radius:10px;padding:9px 12px;font-family:Cairo,sans-serif;font-size:13px;outline:none;width:100%;transition:.2s;background:#fff;color:var(--tx)}
+.fi:focus{border-color:var(--gd)}
+.fr{display:flex;gap:8px}
+.fr .fg{flex:1}
+
+/* Tabs */
+.ctabs{display:flex;gap:6px;overflow-x:auto;margin-bottom:10px;padding-bottom:2px}
+.ctabs::-webkit-scrollbar{display:none}
+.ctab{flex-shrink:0;background:#eee;border:none;border-radius:20px;padding:5px 14px;font-family:Cairo,sans-serif;font-size:12px;font-weight:700;cursor:pointer;transition:.2s;color:#666}
+.ctab.active{background:var(--gd);color:#fff}
+
+/* Stats */
+.stat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:10px}
+.stat-box{background:#fff;border-radius:12px;padding:10px;text-align:center;box-shadow:var(--sh)}
+.stat-val{font-size:22px;font-weight:900;color:var(--gd)}
+.stat-lbl{font-size:10px;color:#888;margin-top:2px}
+
+/* Toast */
+#toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%);background:#333;color:#fff;padding:8px 18px;border-radius:20px;font-size:13px;z-index:999;opacity:0;transition:.3s;pointer-events:none;white-space:nowrap}
+#toast.show{opacity:1}
+
+/* Settings */
+.set-section{background:#fff;border-radius:12px;padding:14px;margin-bottom:10px;box-shadow:var(--sh)}
+.set-label{font-size:12px;font-weight:700;color:#888;margin-bottom:8px}
+
+/* Home */
+.home-header{background:linear-gradient(135deg,var(--gd),var(--gm));border-radius:16px;padding:20px;color:#fff;margin-bottom:12px;text-align:center}
+.home-title{font-size:18px;font-weight:900;margin-bottom:4px}
+.home-sub{font-size:12px;opacity:.85}
+.quick-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}
+.qs{background:#fff;border-radius:12px;padding:12px 8px;text-align:center;box-shadow:var(--sh)}
+.qs-val{font-size:20px;font-weight:900;color:var(--gd)}
+.qs-lbl{font-size:10px;color:#888}
+
+/* Compare */
+.comp-row{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid #f0f0f0}
+.comp-name{flex:1;font-size:12px;font-weight:700}
+.comp-bar-wrap{flex:2;background:#eee;border-radius:6px;height:10px;overflow:hidden}
+.comp-bar{height:100%;background:var(--gd);border-radius:6px;transition:.5s}
+.comp-val{font-size:12px;font-weight:900;color:var(--gd);min-width:36px;text-align:left}
+
+/* Annual */
+.ann-row{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid #f5f5f5;font-size:12px}
+.ann-rank{width:24px;font-weight:900;color:#888;text-align:center}
+
+/* Notif */
+.notif{background:#FFF9C4;border:1px solid #F9A825;border-radius:10px;padding:8px 12px;margin-bottom:6px;font-size:12px;color:#795548}
+
+/* Guide */
+.guide-section{border-radius:10px;padding:12px;margin-bottom:10px}
+</style>
+</head>
+<body>
+
+<div id="toast"></div>
+
+<!-- ===== TOPBAR ===== -->
+<div class="topbar" id="topbar">
+  <div class="ts" id="ts-title">🏅 برنامج التقييم الفصلي</div>
+  <div class="ts2" id="ts-sub">ثانوية سماحي بوعمامة بن أحمد · دلباز محمد</div>
+  <div class="termbrow">
+    <button class="termb" onclick="setTerm('f1')">📘 الفصل 1</button>
+    <button class="termb" onclick="setTerm('f2')">📗 الفصل 2</button>
+    <button class="termb active" onclick="setTerm('f3')">📕 الفصل 3</button>
+    <button class="termb" onclick="setTerm('ann')">🏆 السنوي</button>
+    <button class="termb" onclick="openMo('mGuide')" style="background:rgba(255,255,255,.3)">❓</button>
+  </div>
+</div>
+
+<!-- ===== PAGES ===== -->
+
+<!-- HOME -->
+<div class="page active" id="page-home">
+  <div class="page-inner">
+    <div class="home-header">
+      <div class="home-title">🏅 برنامج التقييم الفصلي</div>
+      <div class="home-sub" id="h-school">ثانوية سماحي بوعمامة بن أحمد</div>
+      <div class="home-sub" id="h-info"></div>
+    </div>
+    <div class="quick-stats" id="h-stats"></div>
+    <div class="card" id="h-notif-card" style="display:none">
+      <div class="ct">🔔 تنبيهات</div>
+      <div id="h-notifs"></div>
+    </div>
+    <div class="card">
+      <div class="ct">📊 ملخص الأقسام</div>
+      <div id="h-list"></div>
+    </div>
+  </div>
+</div>
+
+<!-- STUDENTS -->
+<div class="page" id="page-students">
+  <div class="page-inner">
+    <div class="ctabs" id="cls-tabs"></div>
+    <div class="brow">
+      <button class="btn bp" style="flex:1.5" onclick="openStuMo()">➕ إضافة تلميذ</button>
+      <button class="btn bb" style="flex:1" onclick="openMo('mImp')">📥 استيراد</button>
+      <button class="btn by" style="flex:1" onclick="openMo('mExp')">📤 تصدير</button>
+      <button class="btn bc" style="flex:1" onclick="directPrint()">🖨️ طباعة</button>
+      <button class="btn" style="flex:1;background:linear-gradient(135deg,#C62828,#B71C1C);color:#fff;font-size:11px;font-weight:700" onclick="toggleBulkMode()">🗑️ حذف</button>
+    </div>
+
+    <!-- Bulk bar -->
+    <div class="bulk-bar" id="bulk-bar">
+      <button onclick="selectAllBulk()" style="background:rgba(255,255,255,.25);border:1.5px solid rgba(255,255,255,.5);border-radius:8px;color:#fff;padding:4px 10px;font-family:Cairo,sans-serif;font-size:11px;cursor:pointer">☑️ تحديد الكل</button>
+      <span id="bulk-count" style="flex:1">محدد: 0</span>
+      <button onclick="bulkDelete()" style="background:#fff;border:none;border-radius:8px;color:var(--red);padding:4px 12px;font-family:Cairo,sans-serif;font-size:12px;font-weight:900;cursor:pointer">🗑️ حذف</button>
+      <button onclick="toggleBulkMode()" style="background:none;border:none;color:rgba(255,255,255,.8);font-size:18px;cursor:pointer">✕</button>
+    </div>
+
+    <!-- Undo bar -->
+    <div class="undo-bar" id="undo-bar">
+      <span id="undo-label" style="flex:1"></span>
+      <button onclick="undoAct()" style="background:rgba(255,255,255,.2);border:1.5px solid rgba(255,255,255,.4);border-radius:8px;color:#fff;padding:4px 12px;font-family:Cairo,sans-serif;font-size:12px;font-weight:900;cursor:pointer">↩️ تراجع</button>
+      <button onclick="hideUndo()" style="background:none;border:none;color:rgba(255,255,255,.7);font-size:18px;cursor:pointer">✕</button>
+    </div>
+
+    <!-- Search -->
+    <div class="srch">
+      <span>🔍</span>
+      <input id="search-inp" type="text" placeholder="ابحث عن تلميذ..." oninput="filterStudents(this.value)">
+      <button id="search-clr" onclick="clearSearch()" style="display:none;background:none;border:none;font-size:16px;cursor:pointer;color:#999">✕</button>
+    </div>
+
+    <div style="font-size:10px;color:#aaa;text-align:center;margin-bottom:6px">✋ اسحب لتغيير الترتيب</div>
+    <div id="stu-list"></div>
+  </div>
+</div>
+
+<!-- STATS -->
+<div class="page" id="page-stats">
+  <div class="page-inner">
+    <div class="ctabs" id="stats-tabs"></div>
+    <div id="stats-content"></div>
+  </div>
+</div>
+
+<!-- COMPARE -->
+<div class="page" id="page-compare">
+  <div class="page-inner">
+    <div class="card">
+      <div class="ct">🔄 مقارنة الأقسام</div>
+      <div id="compare-content"></div>
+    </div>
+  </div>
+</div>
+
+<!-- CLASSES -->
+<div class="page" id="page-classes">
+  <div class="page-inner">
+    <button class="btn bp" onclick="openMo('mCls')" style="width:100%;margin-bottom:10px">➕ إضافة قسم</button>
+    <div id="cls-list"></div>
+  </div>
+</div>
+
+<!-- SETTINGS -->
+<div class="page" id="page-settings">
+  <div class="page-inner">
+    <div class="set-section">
+      <div class="set-label">🏫 بيانات المؤسسة</div>
+      <div class="fg"><label class="fl">اسم المؤسسة</label><input class="fi" id="set-school" placeholder="اسم المؤسسة"></div>
+      <div class="fg"><label class="fl">اسم الأستاذ</label><input class="fi" id="set-teacher" placeholder="اسم الأستاذ"></div>
+      <div class="fg"><label class="fl">السنة الدراسية</label><input class="fi" id="set-year" placeholder="2025/2026"></div>
+      <button class="btn bp" onclick="saveSettings()" style="width:100%">💾 حفظ الإعدادات</button>
+    </div>
+    <div class="set-section">
+      <div class="set-label">💾 النسخ الاحتياطي</div>
+      <div style="display:flex;gap:8px">
+        <button class="btn bp" onclick="backupData()" style="flex:1">📥 نسخ احتياطي</button>
+        <button class="btn bb" onclick="restoreData()" style="flex:1">📤 استعادة</button>
+      </div>
+    </div>
+    <div class="set-section">
+      <div class="set-label">🌙 المظهر</div>
+      <button class="btn" onclick="toggleDark()" style="width:100%;background:linear-gradient(135deg,#263238,#37474F);color:#fff">🌙 وضع الليل / النهار</button>
+    </div>
+    <div class="set-section">
+      <div class="set-label">⚠️ خطر</div>
+      <button class="btn" onclick="resetAll()" style="width:100%;background:var(--red);color:#fff">🗑️ إعادة تعيين كل البيانات</button>
+    </div>
+  </div>
+</div>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <button class="nb active" id="nb-home" onclick="showPage('home')"><span class="nb-ic">🏠</span>الرئيسية</button>
+  <button class="nb" id="nb-students" onclick="showPage('students')"><span class="nb-ic">👥</span>التلاميذ</button>
+  <button class="nb" id="nb-stats" onclick="showPage('stats')"><span class="nb-ic">📊</span>الإحصائيات</button>
+  <button class="nb" id="nb-compare" onclick="showPage('compare')"><span class="nb-ic">🔄</span>مقارنة</button>
+  <button class="nb" id="nb-classes" onclick="showPage('classes')"><span class="nb-ic">🏫</span>الأقسام</button>
+  <button class="nb" id="nb-settings" onclick="showPage('settings')"><span class="nb-ic">⚙️</span>الإعدادات</button>
+</nav>
+
+<!-- ===== MODALS ===== -->
+
+<!-- Modal: إضافة/تعديل تلميذ -->
+<div class="mo" id="mStu">
+  <div class="modal-c">
+    <div class="mh"></div>
+    <div class="ct" id="mStu-title">➕ إضافة تلميذ</div>
+    <div class="fr">
+      <div class="fg"><label class="fl">اللقب</label><input class="fi" id="i-ln" placeholder="اللقب"></div>
+      <div class="fg"><label class="fl">الاسم</label><input class="fi" id="i-fn" placeholder="الاسم"></div>
+    </div>
+    <div class="fg">
+      <label class="fl">الجنس</label>
+      <select class="fi" id="i-gn"><option value="أنثى">👧 أنثى</option><option value="ذكر">👦 ذكر</option></select>
+    </div>
+    <div class="fg">
+      <label class="fl">القسم</label>
+      <select class="fi" id="i-cls"></select>
+    </div>
+    <div class="fr">
+      <div class="fg"><label class="fl">🟢 مراقبة /20</label><input class="fi" id="i-m" type="number" min="0" max="20" step=".25" placeholder="0"></div>
+      <div class="fg"><label class="fl">🔵 فرض /20</label><input class="fi" id="i-f" type="number" min="0" max="20" step=".25" placeholder="0"></div>
+      <div class="fg"><label class="fl">🟣 اختبار /20</label><input class="fi" id="i-a" type="number" min="0" max="20" step=".25" placeholder="0"></div>
+    </div>
+    <div class="fr">
+      <div class="fg"><label class="fl">🏥 غيابات</label><input class="fi" id="i-ab" type="number" min="0" placeholder="0"></div>
+      <div class="fg"><label class="fl">⭐ سلوك /10</label><input class="fi" id="i-bh" type="number" min="0" max="10" step=".5" placeholder="10"></div>
+    </div>
+    <div class="fg"><label class="fl">📞 هاتف الولي</label><input class="fi" id="i-ph" type="tel" placeholder="0555 000 000" style="direction:ltr"></div>
+    <div class="fg" style="flex-direction:row;align-items:center;gap:10px;background:#FFF3E0;border-radius:10px;padding:10px;margin-top:4px">
+      <input type="checkbox" id="i-ex" style="width:20px;height:20px;accent-color:#E65100">
+      <label for="i-ex" style="font-size:13px;font-weight:700;color:#E65100;cursor:pointer">🚫 معفى من التقييم</label>
+    </div>
+    <div style="display:flex;gap:8px;margin-top:12px">
+      <button class="btn bp" onclick="saveStu()" style="flex:1">💾 حفظ</button>
+      <button class="btn" onclick="closeMo('mStu')" style="flex:.4;background:#eee;color:#666">إلغاء</button>
+    </div>
+    <input type="hidden" id="i-edit-id">
+  </div>
+</div>
+
+<!-- Modal: استيراد Excel -->
+<div class="mo" id="mImp">
+  <div class="modal-c">
+    <div class="mh"></div>
+    <div class="ct">📥 استيراد من Excel</div>
+    <div class="fg">
+      <label class="fl">📌 الفصل المستهدف</label>
+      <select class="fi" id="imp-term">
+        <option value="f1">📘 الفصل الأول</option>
+        <option value="f2">📗 الفصل الثاني</option>
+        <option value="f3" selected>📕 الفصل الثالث</option>
+      </select>
+    </div>
+    <div class="fg">
+      <label class="fl">⚙️ وضع الاستيراد</label>
+      <label style="display:flex;align-items:center;gap:8px;font-size:12px;padding:8px;background:#f5f5f5;border-radius:8px;margin-bottom:6px;cursor:pointer">
+        <input type="radio" name="imp-mode" value="merge" checked> ➕ إضافة وتحديث (يحتفظ بالموجود)
+      </label>
+      <label style="display:flex;align-items:center;gap:8px;font-size:12px;padding:8px;background:#f5f5f5;border-radius:8px;cursor:pointer">
+        <input type="radio" name="imp-mode" value="replace"> 🔄 استبدال كامل (يحذف القديم)
+      </label>
+    </div>
+    <div class="fg">
+      <label class="fl">📎 ملف Excel</label>
+      <input class="fi" id="imp-file" type="file" accept=".xlsx,.xls,.csv">
+    </div>
+    <div id="imp-preview" style="display:none;background:#e8f5e9;border-radius:10px;padding:10px;margin:8px 0;font-size:12px"></div>
+    <div style="display:flex;gap:8px;margin-top:10px">
+      <button class="btn bp" onclick="doImport()" style="flex:1">📥 استيراد</button>
+      <button class="btn" onclick="closeMo('mImp')" style="flex:.4;background:#eee;color:#666">إلغاء</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: تصدير -->
+<div class="mo" id="mExp">
+  <div class="modal-c">
+    <div class="mh"></div>
+    <div class="ct">📤 تصدير البيانات</div>
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <button class="btn bp" onclick="exportExcel('class')">📊 تصدير القسم الحالي (Excel)</button>
+      <button class="btn bb" onclick="exportExcel('all')">📊 تصدير كل الأقسام (Excel)</button>
+      <button class="btn by" onclick="directPrint()">🖨️ طباعة كشف PDF</button>
+    </div>
+    <button class="btn" onclick="closeMo('mExp')" style="width:100%;background:#eee;color:#666;margin-top:10px">إغلاق</button>
+  </div>
+</div>
+
+<!-- Modal: إضافة قسم -->
+<div class="mo" id="mCls">
+  <div class="modal-c">
+    <div class="mh"></div>
+    <div class="ct" id="mCls-title">➕ إضافة قسم</div>
+    <div class="fg"><label class="fl">اسم القسم</label><input class="fi" id="cls-name" placeholder="مثال: ثانية آداب 1"></div>
+    <div class="fr">
+      <div class="fg"><label class="fl">المستوى</label>
+        <select class="fi" id="cls-level">
+          <option>أولى</option><option>ثانية</option><option>ثالثة</option>
+        </select>
+      </div>
+      <div class="fg"><label class="fl">الشعبة</label>
+        <select class="fi" id="cls-branch">
+          <option>آداب وفلسفة</option><option>لغات أجنبية</option>
+          <option>علوم تجريبية</option><option>رياضيات</option>
+          <option>تسيير واقتصاد</option><option>تقني رياضي</option>
+          <option>آداب</option><option>لغات وهندسة</option>
+        </select>
+      </div>
+    </div>
+    <div style="display:flex;gap:8px;margin-top:10px">
+      <button class="btn bp" onclick="saveCls()" style="flex:1">💾 حفظ</button>
+      <button class="btn" onclick="closeMo('mCls')" style="flex:.4;background:#eee;color:#666">إلغاء</button>
+    </div>
+    <input type="hidden" id="cls-edit-id">
+  </div>
+</div>
+
+<!-- Modal: دليل المستخدم -->
+<div class="mo" id="mGuide">
+  <div class="modal-c" style="border-radius:20px 20px 0 0">
+    <div class="mh"></div>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+      <div class="ct" style="margin-bottom:0">📖 دليل المستخدم</div>
+      <div style="display:flex;gap:8px">
+        <button onclick="downloadGuide()" style="background:var(--gd);color:#fff;border:none;border-radius:8px;padding:5px 10px;font-family:Cairo,sans-serif;font-size:11px;cursor:pointer">⬇️ تحميل</button>
+        <button onclick="closeMo('mGuide')" style="background:#f0f0f0;border:none;border-radius:50%;width:28px;height:28px;font-size:15px;cursor:pointer">✕</button>
+      </div>
+    </div>
+    <div id="guide-body" style="font-size:12px;line-height:2">
+      <div style="background:linear-gradient(135deg,var(--gd),var(--gm));color:#fff;border-radius:10px;padding:14px;text-align:center;margin-bottom:12px">
+        <div style="font-size:15px;font-weight:900">🏅 EPS Pro — برنامج التقييم الفصلي</div>
+        <div style="font-size:11px;opacity:.85;margin-top:4px">للأستاذ دلباز محمد · ثانوية سماحي بوعمامة بن أحمد</div>
+      </div>
+      <div class="guide-section" style="background:#e8f5e9">
+        <b style="color:var(--gd)">📱 الصفحات</b><br>
+        🏠 <b>الرئيسية</b> — ملخص عام وإحصائيات سريعة<br>
+        👥 <b>التلاميذ</b> — إدارة التلاميذ وإدخال الدرجات<br>
+        📊 <b>الإحصائيات</b> — تحليل نتائج كل قسم<br>
+        🔄 <b>المقارنة</b> — مقارنة الأقسام ببعضها<br>
+        🏫 <b>الأقسام</b> — إضافة وتعديل الأقسام<br>
+        ⚙️ <b>الإعدادات</b> — بيانات المؤسسة والأستاذ
+      </div>
+      <div class="guide-section" style="background:#e3f2fd">
+        <b style="color:#1565C0">📊 حساب المعدل</b><br>
+        المعدل = (مراقبة×1 + فرض×1 + اختبار×2) ÷ 4<br>
+        الاختبار يُحتسب من 20 ويُضرب في 2<br>
+        🚫 المعفى لا يُحتسب في الإحصائيات
+      </div>
+      <div class="guide-section" style="background:#f3e5f5">
+        <b style="color:#6A1B9A">👥 إدارة التلاميذ</b><br>
+        ➕ إضافة تلميذ — اضغط زر "➕ إضافة تلميذ"<br>
+        ✏️ تعديل — اضغط على اسم التلميذ<br>
+        🗑️ حذف فردي — زر 🗑️ بجانب التلميذ<br>
+        🗑️ حذف جماعي — زر "🗑️ حذف" ← حدد ← احذف<br>
+        ↩️ تراجع — يظهر تلقائياً بعد كل عملية<br>
+        🔍 بحث — اكتب في خانة البحث
+      </div>
+      <div class="guide-section" style="background:#fff3e0">
+        <b style="color:#E65100">📥 الاستيراد من Excel</b><br>
+        1. اضغط "📥 استيراد"<br>
+        2. اختر الفصل (ف1/ف2/ف3)<br>
+        3. اختر الوضع: إضافة أو استبدال<br>
+        4. اختر الملف ← اضغط استيراد<br>
+        <span style="color:var(--red)">⚠️ الملف يحتوي: اللقب، الاسم، م، ف، اختبار</span>
+      </div>
+      <div class="guide-section" style="background:#fce4ec">
+        <b style="color:#880E4F">📱 إرسال رسائل</b><br>
+        اضغط زر 📱 بجانب التلميذ<br>
+        اختر SMS أو واتساب<br>
+        يُرسَل: الاسم، القسم، الدرجات، المعدل، الإرشاد<br>
+        <span style="color:var(--red)">⚠️ يجب إدخال رقم الولي مسبقاً</span>
+      </div>
+      <div class="guide-section" style="background:#e0f7fa">
+        <b style="color:#006064">💡 نصائح</b><br>
+        💾 البيانات تُحفظ تلقائياً في المتصفح<br>
+        📥 نسخ احتياطي من الإعدادات دورياً<br>
+        🌙 وضع الليل في الإعدادات<br>
+        ⠿ اسحب التلميذ لتغيير ترتيبه
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SCRIPTS ===== -->
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+<script>
+// ======= DATA =======
+const TERMS = {
+  f1:{label:'الفصل الأول',icon:'📘',color:'#1B5E20',bg:'linear-gradient(135deg,#1B5E20,#2E7D32)'},
+  f2:{label:'الفصل الثاني',icon:'📗',color:'#1565C0',bg:'linear-gradient(135deg,#1565C0,#1976D2)'},
+  f3:{label:'الفصل الثالث',icon:'📕',color:'#6A1B9A',bg:'linear-gradient(135deg,#6A1B9A,#7B1FA2)'},
+  ann:{label:'السنوي',icon:'🏆',color:'#E65100',bg:'linear-gradient(135deg,#E65100,#F57C00)'}
+};
+
+let state = {
+  classes:[], f1:{students:[]}, f2:{students:[]}, f3:{students:[]},
+  activeTerm:'f3', curCls:null, editId:null
+};
+let settings = {
+  school:'ثانوية سماحي بوعمامة بن أحمد', teacher:'دلباز محمد', year:'2025/2026', term:'الثالث'
+};
+let pendingImp = null;
+let sortInst = null;
+
+function initData(){
+  return {
+    classes:[{"id": "c1", "name": "ثانية آداب 2", "level": "ثانية ثانوي"}, {"id": "c2", "name": "ثانية آداب 1", "level": "ثانية ثانوي"}, {"id": "c3", "name": "ثالثة لغات وهندسة", "level": "ثالثة ثانوي"}, {"id": "c4", "name": "ثانية علوم تجريبية", "level": "ثانية ثانوي"}, {"id": "c5", "name": "ثالثة آداب وفلسفة", "level": "ثالثة ثانوي"}, {"id": "c6", "name": "ثالثة علوم تجريبية", "level": "ثالثة ثانوي"}],
+    f1:{students:[{"id": "f1101", "classId": "c1", "lname": "بلفضال", "fname": "إسمهان", "m": 16.5, "f": 13, "a": 13.5, "exempt": false}, {"id": "f1102", "classId": "c1", "lname": "بن عيسى", "fname": "شهيناز", "m": 17.25, "f": 16, "a": 14.5, "exempt": false}, {"id": "f1103", "classId": "c1", "lname": "بوعزة", "fname": "رحاب إيمان", "m": 17.5, "f": 14, "a": 15.5, "exempt": false}, {"id": "f1104", "classId": "c1", "lname": "بوعزة", "fname": "سهام", "m": 17.5, "f": 17, "a": 16.5, "exempt": false}, {"id": "f1105", "classId": "c1", "lname": "بوعزة", "fname": "شيماء", "m": 18.5, "f": 19, "a": 17.5, "exempt": false}, {"id": "f1106", "classId": "c1", "lname": "بوعزة", "fname": "علاء الدين", "m": 17.25, "f": 17, "a": 17.5, "exempt": false}, {"id": "f1107", "classId": "c1", "lname": "بوعزة", "fname": "لويزة", "m": 17, "f": 15, "a": 15.5, "exempt": false}, {"id": "f1108", "classId": "c1", "lname": "بوعزة", "fname": "مكية", "m": 18.5, "f": 17, "a": 17.5, "exempt": false}, {"id": "f1109", "classId": "c1", "lname": "بوعكة", "fname": "مولات", "m": 16.25, "f": 12, "a": 13.5, "exempt": false}, {"id": "f1110", "classId": "c1", "lname": "توميات", "fname": "ابتسام", "m": 16.25, "f": 12, "a": 12, "exempt": false}, {"id": "f1111", "classId": "c1", "lname": "حكومي", "fname": "آمال", "m": 17.25, "f": 15, "a": 13.5, "exempt": false}, {"id": "f1112", "classId": "c1", "lname": "حكومي", "fname": "عبد الحميد", "m": 17.5, "f": 18, "a": 18.5, "exempt": false}, {"id": "f1113", "classId": "c1", "lname": "رحماني", "fname": "محمد الأمين", "m": 18.5, "f": 17, "a": 17.5, "exempt": false}, {"id": "f1114", "classId": "c1", "lname": "زاوي", "fname": "باهية", "m": 18.5, "f": 17, "a": 16.5, "exempt": false}, {"id": "f1115", "classId": "c1", "lname": "زاوي", "fname": "سيد احمد", "m": 17.5, "f": 18, "a": 18, "exempt": false}, {"id": "f1116", "classId": "c1", "lname": "سلامي", "fname": "شهيناز رانيا", "m": 17.25, "f": 12, "a": 12, "exempt": false}, {"id": "f1117", "classId": "c1", "lname": "سماعي", "fname": "حنان", "m": 17.25, "f": 14, "a": 15.5, "exempt": false}, {"id": "f1118", "classId": "c1", "lname": "صدادقة", "fname": "شاهيناز", "m": 17.25, "f": 17, "a": 17.5, "exempt": false}, {"id": "f1119", "classId": "c1", "lname": "طاهري", "fname": "رباب", "m": 17.25, "f": 16, "a": 14.5, "exempt": false}, {"id": "f1120", "classId": "c1", "lname": "مالكي", "fname": "روميسة", "m": 17.25, "f": 13, "a": 13.5, "exempt": false}, {"id": "f1121", "classId": "c1", "lname": "محي الدين", "fname": "ريان", "m": 0, "f": 0, "a": 0, "exempt": true}, {"id": "f1122", "classId": "c1", "lname": "معزوز", "fname": "عمارية", "m": 17.25, "f": 12, "a": 14.5, "exempt": false}, {"id": "f1123", "classId": "c1", "lname": "ملاتي", "fname": "كوثر", "m": 0, "f": 0, "a": 0, "exempt": true}, {"id": "f1124", "classId": "c1", "lname": "مناد", "fname": "وهيبة", "m": 16, "f": 12, "a": 12, "exempt": false}, {"id": "f1201", "classId": "c2", "lname": "براهمي", "fname": "أسماء", "m": 16.25, "f": 14, "a": 14, "exempt": false}, {"id": "f1202", "classId": "c2", "lname": "براهمي", "fname": "فريحة", "m": 17.5, "f": 16, "a": 14, "exempt": false}, {"id": "f1203", "classId": "c2", "lname": "بلقوراري", "fname": "خالد", "m": 15.5, "f": 18, "a": 18, "exempt": false}, {"id": "f1204", "classId": "c2", "lname": "بوسيف", "fname": "أماني إسراء", "m": 16.25, "f": 12, "a": 13, "exempt": false}, {"id": "f1205", "classId": "c2", "lname": "بوعزة", "fname": "إسراء", "m": 16.5, "f": 16, "a": 18, "exempt": false}, {"id": "f1206", "classId": "c2", "lname": "بوعزة", "fname": "بشرى", "m": 0, "f": 0, "a": 0, "exempt": true}, {"id": "f1207", "classId": "c2", "lname": "بوعزة", "fname": "حليمة", "m": 0, "f": 0, "a": 0, "exempt": true}, {"id": "f1208", "classId": "c2", "lname": "بوعزة", "fname": "عبد الوهاب", "m": 17.25, "f": 14, "a": 18, "exempt": false}, {"id": "f1209", "classId": "c2", "lname": "بوعزة", "fname": "نسرين", "m": 17.5, "f": 15, "a": 16, "exempt": false}, {"id": "f1210", "classId": "c2", "lname": "بوعزة", "fname": "هبة الرحمان", "m": 17.5, "f": 18, "a": 19, "exempt": false}, {"id": "f1211", "classId": "c2", "lname": "بوعكة", "fname": "بشرى", "m": 14.25, "f": 11, "a": 12, "exempt": false}, {"id": "f1212", "classId": "c2", "lname": "جرماني", "fname": "مريم", "m": 0, "f": 0, "a": 0, "exempt": true}, {"id": "f1213", "classId": "c2", "lname": "حكومي", "fname": "ذهيبة", "m": 15.25, "f": 14, "a": 14, "exempt": false}, {"id": "f1214", "classId": "c2", "lname": "حكومي", "fname": "وهيبة", "m": 17.25, "f": 14, "a": 14, "exempt": false}, {"id": "f1215", "classId": "c2", "lname": "حملات", "fname": "شيماء", "m": 16.5, "f": 14, "a": 14, "exempt": false}, {"id": "f1216", "classId": "c2", "lname": "زاوي", "fname": "بشرى", "m": 0, "f": 0, "a": 0, "exempt": true}, {"id": "f1217", "classId": "c2", "lname": "طراش", "fname": "رحاب", "m": 17.25, "f": 15, "a": 13, "exempt": false}, {"id": "f1218", "classId": "c2", "lname": "عبد النور", "fname": "حمزة", "m": 18.5, "f": 15, "a": 15, "exempt": false}, {"id": "f1219", "classId": "c2", "lname": "مالكي", "fname": "بشرى", "m": 14, "f": 10, "a": 13, "exempt": false}, {"id": "f1220", "classId": "c2", "lname": "مرزوقي", "fname": "سمية رانيا", "m": 15.5, "f": 15, "a": 15, "exempt": false}, {"id": "f1221", "classId": "c2", "lname": "مرسلي", "fname": "يوسف", "m": 16.5, "f": 19, "a": 20, "exempt": false}, {"id": "f1222", "classId": "c2", "lname": "وسعي", "fname": "خير الدين", "m": 17.5, "f": 18, "a": 18, "exempt": false}, {"id": "f1301", "classId": "c3", "lname": "براهيمي", "fname": "عايدة", "m": 0, "f": 0, "a": 0, "exempt": true}, {"id": "f1302", "classId": "c3", "lname": "بلفضيل", "fname": "فاطمة", "m": 17, "f": 16, "a": 15.5, "exempt": false}, {"id": "f1303", "classId": "c3", "lname": "بلقوراري", "fname": "مروة", "m": 17.25, "f": 18, "a": 15, "exempt": false}, {"id": "f1304", "classId": "c3", "lname": "بلكيحل", "fname": "مريم", "m": 16, "f": 17, "a": 15.5, "exempt": false}, {"id": "f1305", "classId": "c3", "lname": "بن جرد", "fname": "فاطمة", "m": 19.5, "f": 16, "a": 19, "exempt": false}, {"id": "f1306", "classId": "c3", "lname": "بودخيل", "fname": "نور الهدى", "m": 17.5, "f": 18, "a": 19, "exempt": false}, {"id": "f1307", "classId": "c3", "lname": "بوعزة", "fname": "رقية", "m": 17.5, "f": 19.5, "a": 20, "exempt": false}, {"id": "f1308", "classId": "c3", "lname": "بوعزة", "fname": "مروة", "m": 17.5, "f": 15, "a": 19, "exempt": false}, {"id": "f1309", "classId": "c3", "lname": "بوعكة", "fname": "هند", "m": 18.5, "f": 18, "a": 19, "exempt": false}, {"id": "f1310", "classId": "c3", "lname": "حمامد", "fname": "أسماء إيمان", "m": 17, "f": 16, "a": 15.5, "exempt": false}, {"id": "f1311", "classId": "c3", "lname": "خثراني", "fname": "مروى", "m": 17, "f": 16, "a": 15.5, "exempt": false}, {"id": "f1312", "classId": "c3", "lname": "سماعي", "fname": "ربيعة", "m": 16.25, "f": 16, "a": 18, "exempt": false}, {"id": "f1313", "classId": "c3", "lname": "مزوني", "fname": "عيدة", "m": 16.5, "f": 17, "a": 19, "exempt": false}, {"id": "f1314", "classId": "c3", "lname": "بوعزة", "fname": "أم سلمة", "m": 17.75, "f": 19, "a": 19, "exempt": false}, {"id": "f1315", "classId": "c3", "lname": "بوكبار", "fname": "أسماء", "m": 17, "f": 13, "a": 17, "exempt": false}, {"id": "f1316", "classId": "c3", "lname": "توميات", "fname": "ضيف الله", "m": 17.75, "f": 20, "a": 20, "exempt": false}, {"id": "f1317", "classId": "c3", "lname": "حكومي", "fname": "محمد", "m": 17.5, "f": 18, "a": 19, "exempt": false}, {"id": "f1318", "classId": "c3", "lname": "حكومي", "fname": "مروة", "m": 17.25, "f": 17, "a": 18, "exempt": false}, {"id": "f1319", "classId": "c3", "lname": "رحماني", "fname": "بشرى", "m": 17, "f": 13, "a": 17, "exempt": false}, {"id": "f1320", "classId": "c3", "lname": "سلاماني", "fname": "حامد", "m": 18.75, "f": 19.5, "a": 19.5, "exempt": false}, {"id": "f1321", "classId": "c3", "lname": "سلاماني", "fname": "سارة", "m": 16.5, "f": 16, "a": 19, "exempt": false}, {"id": "f1322", "classId": "c3", "lname": "سليماني", "fname": "رغد", "m": 17.5, "f": 17, "a": 18, "exempt": false}, {"id": "f1323", "classId": "c3", "lname": "سماعي", "fname": "عبد الرحمن", "m": 17.5, "f": 18, "a": 19, "exempt": false}, {"id": "f1324", "classId": "c3", "lname": "عبد الكريم", "fname": "كوثر", "m": 17.5, "f": 17, "a": 18, "exempt": false}, {"id": "f1325", "classId": "c3", "lname": "مرسلي", "fname": "رشيد", "m": 16.25, "f": 17, "a": 19, "exempt": false}, {"id": "f1326", "classId": "c3", "lname": "مرسلي", "fname": "صابرينة", "m": 17.5, "f": 14.5, "a": 16, "exempt": false}, {"id": "f1327", "classId": "c3", "lname": "مرسلي", "fname": "فاطمة", "m": 17, "f": 16, "a": 15.5, "exempt": false}, {"id": "f1328", "classId": "c3", "lname": "ملاتي", "fname": "أسماء خلود", "m": 0, "f": 0, "a": 0, "exempt": true}, {"id": "f1329", "classId": "c3", "lname": "ملاتي", "fname": "عبد الوحيد", "m": 16.5, "f": 20, "a": 19, "exempt": false}, {"id": "f1330", "classId": "c3", "lname": "مناد", "fname": "سهام", "m": 17.5, "f": 16, "a": 18, "exempt": false}, {"id": "f1401", "classId": "c4", "lname": "العرابي", "fname": "عثمان", "m": 17.5, "f": 15, "a": 15, "exempt": false}, {"id": "f1402", "classId": "c4", "lname": "العربي", "fname": "صباح", "m": 17.25, "f": 14, "a": 14, "exempt": false}, {"id": "f1403", "classId": "c4", "lname": "بن زهرة", "fname": "محمد", "m": 18.5, "f": 17, "a": 17, "exempt": false}, {"id": "f1404", "classId": "c4", "lname": "بوعزة", "fname": "خلود", "m": 0, "f": 0, "a": 0, "exempt": true}, {"id": "f1405", "classId": "c4", "lname": "بوعزة", "fname": "طه الأمين", "m": 17.5, "f": 19, "a": 19, "exempt": false}, {"id": "f1406", "classId": "c4", "lname": "بوعكة", "fname": "إيناس", "m": 17.25, "f": 15, "a": 17, "exempt": false}, {"id": "f1407", "classId": "c4", "lname": "بوعكة", "fname": "ضحى", "m": 16.5, "f": 17, "a": 18, "exempt": false}, {"id": "f1408", "classId": "c4", "lname": "تويمي", "fname": "عماد", "m": 17.75, "f": 20, "a": 20, "exempt": false}, {"id": "f1409", "classId": "c4", "lname": "حكومي", "fname": "بغداد", "m": 17.5, "f": 18, "a": 18, "exempt": false}, {"id": "f1410", "classId": "c4", "lname": "حكومي", "fname": "سارة", "m": 17.25, "f": 18, "a": 18, "exempt": false}, {"id": "f1411", "classId": "c4", "lname": "زاهي", "fname": "رودينة", "m": 0, "f": 0, "a": 0, "exempt": true}, {"id": "f1412", "classId": "c4", "lname": "زاوي", "fname": "أحمد", "m": 17.5, "f": 19, "a": 18, "exempt": false}, {"id": "f1413", "classId": "c4", "lname": "سلاماني", "fname": "وسيلة", "m": 16.25, "f": 15, "a": 13, "exempt": false}, {"id": "f1414", "classId": "c4", "lname": "سماعي", "fname": "آية", "m": 15.25, "f": 15, "a": 13, "exempt": false}, {"id": "f1415", "classId": "c4", "lname": "سماعي", "fname": "معتز", "m": 17.5, "f": 18, "a": 18, "exempt": false}, {"id": "f1416", "classId": "c4", "lname": "سماعي", "fname": "يمينة", "m": 17.25, "f": 13, "a": 16, "exempt": false}, {"id": "f1417", "classId": "c4", "lname": "طالبي", "fname": "كريمة", "m": 17.5, "f": 17, "a": 16, "exempt": false}, {"id": "f1418", "classId": "c4", "lname": "طاهري", "fname": "ورش", "m": 17.5, "f": 15, "a": 17, "exempt": false}, {"id": "f1419", "classId": "c4", "lname": "عريوي", "fname": "أمينة", "m": 17.25, "f": 15, "a": 16, "exempt": false}, {"id": "f1420", "classId": "c4", "lname": "علاوي", "fname": "محمد", "m": 17.5, "f": 17, "a": 19, "exempt": false}, {"id": "f1421", "classId": "c4", "lname": "غريب", "fname": "يوسف", "m": 0, "f": 0, "a": 0, "exempt": true}, {"id": "f1422", "classId": "c4", "lname": "كسالي", "fname": "دلال", "m": 0, "f": 0, "a": 0, "exempt": true}, {"id": "f1423", "classId": "c4", "lname": "مرسلي", "fname": "محمد", "m": 15.5, "f": 20, "a": 19, "exempt": false}, {"id": "f1424", "classId": "c4", "lname": "معاشو", "fname": "أيوب", "m": 17.5, "f": 18, "a": 19, "exempt": false}, {"id": "f1425", "classId": "c4", "lname": "ملاتي", "fname": "آمنة", "m": 0, "f": 0, "a": 0, "exempt": true}, {"id": "f1426", "classId": "c4", "lname": "ملاتي", "fname": "أسماء", "m": 18.25, "f": 19, "a": 20, "exempt": false}, {"id": "f1427", "classId": "c4", "lname": "مناد", "fname": "حورية", "m": 17.25, "f": 14, "a": 13, "exempt": false}, {"id": "f1501", "classId": "c5", "lname": "العربي", "fname": "كوثر", "m": 17.25, "f": 16, "a": 16, "exempt": false}, {"id": "f1502", "classId": "c5", "lname": "براهمي", "fname": "ملوكة", "m": 16, "f": 19, "a": 15, "exempt": false}, {"id": "f1503", "classId": "c5", "lname": "بن زهرة", "fname": "دعاء", "m": 15.25, "f": 18, "a": 17, "exempt": false}, {"id": "f1504", "classId": "c5", "lname": "بن علال", "fname": "ع الخالق", "m": 15.25, "f": 20, "a": 15, "exempt": false}, {"id": "f1505", "classId": "c5", "lname": "بن علال", "fname": "يونس", "m": 17.5, "f": 19.5, "a": 18, "exempt": false}, {"id": "f1506", "classId": "c5", "lname": "بن عيسى", "fname": "سندس", "m": 16.25, "f": 19, "a": 17, "exempt": false}, {"id": "f1507", "classId": "c5", "lname": "بوعزة", "fname": "رحاب", "m": 17.25, "f": 19, "a": 15, "exempt": false}, {"id": "f1508", "classId": "c5", "lname": "بوعزة", "fname": "عبد الله", "m": 17.75, "f": 20, "a": 19, "exempt": false}, {"id": "f1509", "classId": "c5", "lname": "بوعزة", "fname": "عبد المنعم", "m": 0, "f": 0, "a": 0, "exempt": true}, {"id": "f1510", "classId": "c5", "lname": "بوعزة", "fname": "فضل الرحمن", "m": 17.75, "f": 20, "a": 20, "exempt": false}, {"id": "f1511", "classId": "c5", "lname": "توميات", "fname": "فاطيمة", "m": 16, "f": 18, "a": 15, "exempt": false}, {"id": "f1512", "classId": "c5", "lname": "توميات", "fname": "نور رشيدة", "m": 16.5, "f": 18, "a": 15, "exempt": false}, {"id": "f1513", "classId": "c5", "lname": "زاوي", "fname": "زكرياء", "m": 17.5, "f": 17, "a": 16, "exempt": false}, {"id": "f1514", "classId": "c5", "lname": "مالكي", "fname": "منير", "m": 17.5, "f": 19.5, "a": 17, "exempt": false}, {"id": "f1515", "classId": "c5", "lname": "محلحل", "fname": "عبد الرحمان", "m": 17.5, "f": 17, "a": 16, "exempt": false}, {"id": "f1516", "classId": "c5", "lname": "مرسلي", "fname": "زكرياء", "m": 17.5, "f": 19.5, "a": 17, "exempt": false}, {"id": "f1517", "classId": "c5", "lname": "مزوزي", "fname": "رشا", "m": 17.5, "f": 16.5, "a": 15, "exempt": false}, {"id": "f1518", "classId": "c5", "lname": "ملاتي", "fname": "إسمهان", "m": 17.25, "f": 19, "a": 15, "exempt": false}, {"id": "f1519", "classId": "c5", "lname": "ملاتي", "fname": "حفصة دعاء", "m": 16.25, "f": 18, "a": 15, "exempt": false}, {"id": "f1520", "classId": "c5", "lname": "مليياني", "fname": "بشرى", "m": 17.5, "f": 17.5, "a": 14.5, "exempt": false}, {"id": "f1601", "classId": "c6", "lname": "العربي", "fname": "إخلاص", "m": 17, "f": 16, "a": 15, "exempt": false}, {"id": "f1602", "classId": "c6", "lname": "العربي", "fname": "لويزة", "m": 17.5, "f": 19, "a": 17, "exempt": false}, {"id": "f1603", "classId": "c6", "lname": "براهمي", "fname": "آية", "m": 18.5, "f": 19, "a": 17, "exempt": false}, {"id": "f1604", "classId": "c6", "lname": "بلخنيفرات", "fname": "فاطنة", "m": 17.25, "f": 19, "a": 15, "exempt": false}, {"id": "f1605", "classId": "c6", "lname": "بلقوراري", "fname": "بشرى", "m": 17, "f": 17, "a": 15, "exempt": false}, {"id": "f1606", "classId": "c6", "lname": "بن عيسى", "fname": "خديجة", "m": 15, "f": 16, "a": 17, "exempt": false}, {"id": "f1607", "classId": "c6", "lname": "بوسيف", "fname": "أحمد", "m": 17.5, "f": 19, "a": 19, "exempt": false}, {"id": "f1608", "classId": "c6", "lname": "بوسيف", "fname": "عبد القادر", "m": 17.5, "f": 19.5, "a": 19.5, "exempt": false}, {"id": "f1609", "classId": "c6", "lname": "بوشيخي", "fname": "أمينة", "m": 18.5, "f": 19, "a": 18, "exempt": false}, {"id": "f1610", "classId": "c6", "lname": "بوشيخي", "fname": "خلود", "m": 15, "f": 16, "a": 16, "exempt": false}, {"id": "f1611", "classId": "c6", "lname": "بوشيخي", "fname": "رشيدة", "m": 17, "f": 19, "a": 19, "exempt": false}, {"id": "f1612", "classId": "c6", "lname": "بوعزة", "fname": "مختار", "m": 18.5, "f": 20, "a": 20, "exempt": false}, {"id": "f1613", "classId": "c6", "lname": "بوعزة", "fname": "نجاة", "m": 18.5, "f": 17, "a": 17, "exempt": false}, {"id": "f1614", "classId": "c6", "lname": "بوعزة", "fname": "نعيمة", "m": 15.25, "f": 17, "a": 17, "exempt": false}, {"id": "f1615", "classId": "c6", "lname": "تويمي", "fname": "مروة", "m": 17.25, "f": 17, "a": 15, "exempt": false}, {"id": "f1616", "classId": "c6", "lname": "جباري", "fname": "بشرى", "m": 0, "f": 0, "a": 0, "exempt": true}, {"id": "f1617", "classId": "c6", "lname": "دحماني", "fname": "أحمد", "m": 17, "f": 19, "a": 18, "exempt": false}, {"id": "f1618", "classId": "c6", "lname": "زاوي", "fname": "اكرام", "m": 17.25, "f": 16, "a": 15, "exempt": false}, {"id": "f1619", "classId": "c6", "lname": "زاوي", "fname": "خديجة", "m": 17.5, "f": 20, "a": 20, "exempt": false}, {"id": "f1620", "classId": "c6", "lname": "زاوي", "fname": "كريمة", "m": 16.25, "f": 16, "a": 15, "exempt": false}, {"id": "f1621", "classId": "c6", "lname": "زاوي", "fname": "مريم", "m": 17.5, "f": 17, "a": 15, "exempt": false}, {"id": "f1622", "classId": "c6", "lname": "سماعي", "fname": "بشرى", "m": 17.25, "f": 19.5, "a": 17, "exempt": false}, {"id": "f1623", "classId": "c6", "lname": "سماعي", "fname": "خيرة", "m": 16.25, "f": 16, "a": 16, "exempt": false}, {"id": "f1624", "classId": "c6", "lname": "شارف", "fname": "يسرى", "m": 17.25, "f": 17, "a": 15, "exempt": false}, {"id": "f1625", "classId": "c6", "lname": "صباحي", "fname": "ضحى", "m": 16, "f": 17, "a": 15, "exempt": false}, {"id": "f1626", "classId": "c6", "lname": "مالكي", "fname": "منال", "m": 17.25, "f": 19, "a": 17, "exempt": false}, {"id": "f1627", "classId": "c6", "lname": "مرسلي", "fname": "اية هبة الله", "m": 16, "f": 19.5, "a": 16, "exempt": false}, {"id": "f1628", "classId": "c6", "lname": "مرسلي", "fname": "ايمان", "m": 17, "f": 16, "a": 15.5, "exempt": false}, {"id": "f1629", "classId": "c6", "lname": "مرسلي", "fname": "هوارية", "m": 16.25, "f": 18, "a": 16, "exempt": false}, {"id": "f1630", "classId": "c6", "lname": "معزوز", "fname": "فاطمة", "m": 16.25, "f": 16, "a": 15.5, "exempt": false}, {"id": "f1631", "classId": "c6", "lname": "ملاتي", "fname": "إيناس", "m": 0, "f": 0, "a": 0, "exempt": true}, {"id": "f1632", "classId": "c6", "lname": "ملاتي", "fname": "رحاب", "m": 17.25, "f": 18, "a": 18, "exempt": false}, {"id": "f1633", "classId": "c6", "lname": "ملاتي", "fname": "عيدة", "m": 16.25, "f": 16, "a": 17, "exempt": false}, {"id": "f1634", "classId": "c6", "lname": "ملاتي", "fname": "نسرين", "m": 17.25, "f": 19, "a": 16, "exempt": false}, {"id": "s1778709532207", "classId": "c1", "lname": "ملاتي", "fname": "حنان", "exempt": false, "gender": "أنثى", "m": 17.5, "f": 18, "a": 16.5, "_empty": false, "absences": 0, "behavior": 10, "note": "", "phone": "0541034625"}]},
+    f2:{students:[{"id": "f2101", "classId": "c1", "lname": "بلفضال", "fname": "إسمهان", "m": 16.5, "f": 14, "a": 15, "exempt": false}, {"id": "f2102", "classId": "c1", "lname": "بن عيسى", "fname": "شهيناز", "m": 17.25, "f": 17, "a": 17, "exempt": false}, {"id": "f2103", "classId": "c1", "lname": "بوعزة", "fname": "رحاب إيمان", "m": 17.5, "f": 14, "a": 14, "exempt": false}, {"id": "f2104", "classId": "c1", "lname": "بوعزة", "fname": "سهام", "m": 17.5, "f": 18, "a": 18, "exempt": false}, {"id": "f2105", "classId": "c1", "lname": "بوعزة", "fname": "شيماء", "m": 18.5, "f": 18, "a": 16, "exempt": false}, {"id": "f2106", "classId": "c1", "lname": "بوعزة", "fname": "علاء الدين", "m": 16.25, "f": 16, "a": 17, "exempt": false}, {"id": "f2107", "classId": "c1", "lname": "بوعزة", "fname": "لويزة", "m": 17, "f": 14, "a": 16, "exempt": false}, {"id": "f2108", "classId": "c1", "lname": "بوعزة", "fname": "مكية", "m": 18.5, "f": 17, "a": 18, "exempt": false}, {"id": "f2109", "classId": "c1", "lname": "بوعكة", "fname": "مولات", "m": 16.25, "f": 17, "a": 16, "exempt": false}, {"id": "f2110", "classId": "c1", "lname": "توميات", "fname": "ابتسام", "m": 17.25, "f": 17, "a": 16, "exempt": false}, {"id": "f2111", "classId": "c1", "lname": "حكومي", "fname": "آمال", "m": 17.25, "f": 14, "a": 14, "exempt": false}, {"id": "f2112", "classId": "c1", "lname": "حكومي", "fname": "عبد الحميد", "m": 17.5, "f": 20, "a": 20, "exempt": false}, {"id": "f2113", "classId": "c1", "lname": "رحماني", "fname": "محمد الأمين", "m": 18.5, "f": 17, "a": 18, "exempt": false}, {"id": "f2114", "classId": "c1", "lname": "زاوي", "fname": "باهية", "m": 18.5, "f": 16, "a": 16, "exempt": false}, {"id": "f2115", "classId": "c1", "lname": "زاوي", "fname": "سيد احمد", "m": 16.5, "f": 17, "a": 19, "exempt": false}, {"id": "f2116", "classId": "c1", "lname": "سلامي", "fname": "شهيناز رانيا", "m": 13.25, "f": 15, "a": 14, "exempt": false}, {"id": "f2117", "classId": "c1", "lname": "سماعي", "fname": "حنان", "m": 17.25, "f": 17, "a": 16, "exempt": false}, {"id": "f2118", "classId": "c1", "lname": "صدادقة", "fname": "شاهيناز", "m": 17.25, "f": 16, "a": 16, "exempt": false}, {"id": "f2119", "classId": "c1", "lname": "طاهري", "fname": "رباب", "m": 17.25, "f": 19, "a": 19, "exempt": false}, {"id": "f2120", "classId": "c1", "lname": "مالكي", "fname": "روميسة", "m": 17.25, "f": 17, "a": 16, "exempt": false}, {"id": "f2121", "classId": "c1", "lname": "محي الدين", "fname": "ريان", "m": 16.25, "f": 14, "a": 15, "exempt": false}, {"id": "f2122", "classId": "c1", "lname": "معزوز", "fname": "عمارية", "m": 17.25, "f": 15, "a": 16, "exempt": false}, {"id": "f2123", "classId": "c1", "lname": "ملاتي", "fname": "كوثر", "m": 0, "f": 0, "a": 0, "exempt": true}, {"id": "f2124", "classId": "c1", "lname": "مناد", "fname": "وهيبة", "m": 14, "f": 14, "a": 14, "exempt": false}, {"id": "f2201", "classId": "c2", "lname": "براهمي", "fname": "أسماء", "m": 13.25, "f": 16, "a": 17, "exempt": false}, {"id": "f2202", "classId": "c2", "lname": "براهمي", "fname": "فريحة", "m": 17.5, "f": 16, "a": 17, "exempt": false}, {"id": "f2203", "classId": "c2", "lname": "بلقوراري", "fname": "خالد", "m": 17.5, "f": 20, "a": 20, "exempt": false}, {"id": "f2204", "classId": "c2", "lname": "بوسيف", "fname": "أماني إسراء", "m": 17.25, "f": 14, "a": 15, "exempt": false}, {"id": "f2205", "classId": "c2", "lname": "بوعزة", "fname": "إسراء", "m": 18.5, "f": 16, "a": 17, "exempt": false}, {"id": "f2206", "classId": "c2", "lname": "بوعزة", "fname": "بشرى", "m": 17.5, "f": 17, "a": 16, "exempt": false}, {"id": "f2207", "classId": "c2", "lname": "بوعزة", "fname": "حليمة", "m": 0, "f": 0, "a": 0, "exempt": true}, {"id": "f2208", "classId": "c2", "lname": "بوعزة", "fname": "عبد الوهاب", "m": 17.25, "f": 17, "a": 17, "exempt": false}, {"id": "f2209", "classId": "c2", "lname": "بوعزة", "fname": "نسرين", "m": 17.5, "f": 18, "a": 16, "exempt": false}, {"id": "f2210", "classId": "c2", "lname": "بوعزة", "fname": "هبة الرحمان", "m": 17.5, "f": 18, "a": 18, "exempt": false}, {"id": "f2211", "classId": "c2", "lname": "بوعكة", "fname": "بشرى", "m": 14.25, "f": 12, "a": 14, "exempt": false}, {"id": "f2212", "classId": "c2", "lname": "جرماني", "fname": "مريم", "m": 0, "f": 0, "a": 0, "exempt": true}, {"id": "f2213", "classId": "c2", "lname": "حكومي", "fname": "ذهيبة", "m": 18.25, "f": 14, "a": 15, "exempt": false}, {"id": "f2214", "classId": "c2", "lname": "حكومي", "fname": "وهيبة", "m": 16.25, "f": 16, "a": 16, "exempt": false}, {"id": "f2215", "classId": "c2", "lname": "حملات", "fname": "شيماء", "m": 14.5, "f": 12, "a": 15, "exempt": false}, {"id": "f2216", "classId": "c2", "lname": "زاوي", "fname": "بشرى", "m": 0, "f": 0, "a": 0, "exempt": true}, {"id": "f2217", "classId": "c2", "lname": "طراش", "fname": "رحاب", "m": 17.25, "f": 16, "a": 17, "exempt": false}, {"id": "f2218", "classId": "c2", "lname": "عبد النور", "fname": "حمزة", "m": 18.5, "f": 18, "a": 19, "exempt": false}, {"id": "f2219", "classId": "c2", "lname": "مالكي", "fname": "بشرى", "m": 16, "f": 17, "a": 16, "exempt": false}, {"id": "f2220", "classId": "c2", "lname": "مرزوقي", "fname": "سمية رانيا", "m": 16.5, "f": 15, "a": 16, "exempt": false}, {"id": "f2221", "classId": "c2", "lname": "مرسلي", "fname": "يوسف", "m": 15.5, "f": 20, "a": 17, "exempt": false}, {"id": "f2222", "classId": "c2", "lname": "وسعي", "fname": "خير الدين", "m": 17.5, "f": 18, "a": 19, "exempt": false}, {"id": "f2301", "classId": "c3", "lname": "براهيمي", "fname": "عايدة", "m": 16.25, "f": 16, "a": 16, "exempt": false}, {"id": "f2302", "classId": "c3", "lname": "بلفضيل", "fname": "فاطمة", "m": 17.25, "f": 16, "a": 16, "exempt": false}, {"id": "f2303", "classId": "c3", "lname": "بلقوراري", "fname": "مروة", "m": 17.25, "f": 19, "a": 19, "exempt": false}, {"id": "f2304", "classId": "c3", "lname": "بلكيحل", "fname": "مريم", "m": 17.25, "f": 16, "a": 16, "exempt": false}, {"id": "f2305", "classId": "c3", "lname": "بن جرد", "fname": "فاطمة", "m": 19.5, "f": 19, "a": 19, "exempt": false}, {"id": "f2306", "classId": "c3", "lname": "بودخيل", "fname": "نور الهدى", "m": 17.5, "f": 16, "a": 16, "exempt": false}, {"id": "f2307", "classId": "c3", "lname": "بوعزة", "fname": "رقية", "m": 17.5, "f": 19, "a": 20, "exempt": false}, {"id": "f2308", "classId": "c3", "lname": "بوعزة", "fname": "مروة", "m": 17.5, "f": 17, "a": 19, "exempt": false}, {"id": "f2309", "classId": "c3", "lname": "بوعكة", "fname": "هند", "m": 18.5, "f": 16, "a": 16, "exempt": false}, {"id": "f2310", "classId": "c3", "lname": "حمامد", "fname": "أسماء إيمان", "m": 17.25, "f": 16, "a": 16, "exempt": false}, {"id": "f2311", "classId": "c3", "lname": "خثراني", "fname": "مروى", "m": 18.25, "f": 16, "a": 16, "exempt": false}, {"id": "f2312", "classId": "c3", "lname": "سماعي", "fname": "ربيعة", "m": 17.25, "f": 16, "a": 16, "exempt": false}, {"id": "f2313", "classId": "c3", "lname": "مزوني", "fname": "عيدة", "m": 17.5, "f": 19, "a": 19, "exempt": false}, {"id": "f2314", "classId": "c3", "lname": "بوعزة", "fname": "أم سلمة", "m": 17.75, "f": 19, "a": 19, "exempt": false}, {"id": "f2315", "classId": "c3", "lname": "بوكبار", "fname": "أسماء", "m": 17.25, "f": 16, "a": 17, "exempt": false}, {"id": "f2316", "classId": "c3", "lname": "توميات", "fname": "ضيف الله", "m": 17.75, "f": 20, "a": 20, "exempt": false}, {"id": "f2317", "classId": "c3", "lname": "حكومي", "fname": "محمد", "m": 16.5, "f": 19, "a": 19, "exempt": false}, {"id": "f2318", "classId": "c3", "lname": "حكومي", "fname": "مروة", "m": 17.25, "f": 18, "a": 19, "exempt": false}, {"id": "f2319", "classId": "c3", "lname": "رحماني", "fname": "بشرى", "m": 17.25, "f": 18, "a": 18, "exempt": false}, {"id": "f2320", "classId": "c3", "lname": "سلاماني", "fname": "حامد", "m": 18.75, "f": 20, "a": 20, "exempt": false}, {"id": "f2321", "classId": "c3", "lname": "سلاماني", "fname": "سارة", "m": 18.5, "f": 18, "a": 19, "exempt": false}, {"id": "f2322", "classId": "c3", "lname": "سليماني", "fname": "رغد", "m": 17.5, "f": 18, "a": 18, "exempt": false}, {"id": "f2323", "classId": "c3", "lname": "سماعي", "fname": "عبد الرحمن", "m": 17.5, "f": 19, "a": 19, "exempt": false}, {"id": "f2324", "classId": "c3", "lname": "عبد الكريم", "fname": "كوثر", "m": 17.5, "f": 19, "a": 17, "exempt": false}, {"id": "f2325", "classId": "c3", "lname": "مرسلي", "fname": "رشيد", "m": 17.25, "f": 18, "a": 18, "exempt": false}, {"id": "f2326", "classId": "c3", "lname": "مرسلي", "fname": "صابرينة", "m": 16.5, "f": 16, "a": 16, "exempt": false}, {"id": "f2327", "classId": "c3", "lname": "مرسلي", "fname": "فاطمة", "m": 17.25, "f": 16, "a": 16, "exempt": false}, {"id": "f2328", "classId": "c3", "lname": "ملاتي", "fname": "أسماء خلود", "m": 0, "f": 0, "a": 0, "exempt": true}, {"id": "f2329", "classId": "c3", "lname": "ملاتي", "fname": "عبد الوحيد", "m": 16.5, "f": 19, "a": 19, "exempt": false}, {"id": "f2330", "classId": "c3", "lname": "مناد", "fname": "سهام", "m": 17.5, "f": 18, "a": 18, "exempt": false}, {"id": "f2401", "classId": "c4", "lname": "العرابي", "fname": "عثمان", "m": 17.5, "f": 16, "a": 16, "exempt": false}, {"id": "f2402", "classId": "c4", "lname": "العربي", "fname": "صباح", "m": 17.25, "f": 15, "a": 15, "exempt": false}, {"id": "f2403", "classId": "c4", "lname": "بن زهرة", "fname": "محمد", "m": 17.5, "f": 20, "a": 20, "exempt": false}, {"id": "f2404", "classId": "c4", "lname": "بوعزة", "fname": "خلود", "m": 0, "f": 0, "a": 0, "exempt": true}, {"id": "f2405", "classId": "c4", "lname": "بوعزة", "fname": "طه الأمين", "m": 17.5, "f": 18, "a": 19, "exempt": false}, {"id": "f2406", "classId": "c4", "lname": "بوعكة", "fname": "إيناس", "m": 16.25, "f": 15, "a": 16, "exempt": false}, {"id": "f2407", "classId": "c4", "lname": "بوعكة", "fname": "ضحى", "m": 14.25, "f": 18, "a": 17, "exempt": false}, {"id": "f2408", "classId": "c4", "lname": "تويمي", "fname": "عماد", "m": 17.75, "f": 20, "a": 20, "exempt": false}, {"id": "f2409", "classId": "c4", "lname": "حكومي", "fname": "بغداد", "m": 17.5, "f": 20, "a": 19, "exempt": false}, {"id": "f2410", "classId": "c4", "lname": "حكومي", "fname": "سارة", "m": 16.25, "f": 15, "a": 18, "exempt": false}, {"id": "f2411", "classId": "c4", "lname": "زاهي", "fname": "رودينة", "m": 0, "f": 0, "a": 0, "exempt": true}, {"id": "f2412", "classId": "c4", "lname": "زاوي", "fname": "أحمد", "m": 17.5, "f": 20, "a": 19, "exempt": false}, {"id": "f2413", "classId": "c4", "lname": "سلاماني", "fname": "وسيلة", "m": 14.25, "f": 15, "a": 15, "exempt": false}, {"id": "f2414", "classId": "c4", "lname": "سماعي", "fname": "آية", "m": 15.25, "f": 15, "a": 15, "exempt": false}, {"id": "f2415", "classId": "c4", "lname": "سماعي", "fname": "معتز", "m": 17.5, "f": 18, "a": 18, "exempt": false}, {"id": "f2416", "classId": "c4", "lname": "سماعي", "fname": "يمينة", "m": 17.25, "f": 16, "a": 18, "exempt": false}, {"id": "f2417", "classId": "c4", "lname": "طالبي", "fname": "كريمة", "m": 17.5, "f": 18, "a": 18, "exempt": false}, {"id": "f2418", "classId": "c4", "lname": "طاهري", "fname": "ورش", "m": 17.5, "f": 18, "a": 19, "exempt": false}, {"id": "f2419", "classId": "c4", "lname": "عريوي", "fname": "أمينة", "m": 16.25, "f": 15, "a": 16, "exempt": false}, {"id": "f2420", "classId": "c4", "lname": "علاوي", "fname": "محمد", "m": 15.5, "f": 18, "a": 18, "exempt": false}, {"id": "f2421", "classId": "c4", "lname": "غريب", "fname": "يوسف", "m": 16.5, "f": 18, "a": 18, "exempt": false}, {"id": "f2422", "classId": "c4", "lname": "كسالي", "fname": "دلال", "m": 0, "f": 0, "a": 0, "exempt": true}, {"id": "f2423", "classId": "c4", "lname": "مرسلي", "fname": "محمد", "m": 17.5, "f": 19, "a": 19, "exempt": false}, {"id": "f2424", "classId": "c4", "lname": "معاشو", "fname": "أيوب", "m": 16.5, "f": 19, "a": 20, "exempt": false}, {"id": "f2425", "classId": "c4", "lname": "ملاتي", "fname": "آمنة", "m": 0, "f": 0, "a": 0, "exempt": true}, {"id": "f2426", "classId": "c4", "lname": "ملاتي", "fname": "أسماء", "m": 16.25, "f": 17, "a": 20, "exempt": false}, {"id": "f2427", "classId": "c4", "lname": "مناد", "fname": "حورية", "m": 17.25, "f": 14, "a": 14, "exempt": false}, {"id": "f2501", "classId": "c5", "lname": "العربي", "fname": "كوثر", "m": 17.25, "f": 16, "a": 17, "exempt": false}, {"id": "f2502", "classId": "c5", "lname": "براهمي", "fname": "ملوكة", "m": 16, "f": 16, "a": 17, "exempt": false}, {"id": "f2503", "classId": "c5", "lname": "بن زهرة", "fname": "دعاء", "m": 16.25, "f": 19, "a": 20, "exempt": false}, {"id": "f2504", "classId": "c5", "lname": "بن علال", "fname": "ع الخالق", "m": 17.25, "f": 19, "a": 19, "exempt": false}, {"id": "f2505", "classId": "c5", "lname": "بن علال", "fname": "يونس", "m": 17.5, "f": 19, "a": 19, "exempt": false}, {"id": "f2506", "classId": "c5", "lname": "بن عيسى", "fname": "سندس", "m": 16.25, "f": 17, "a": 17, "exempt": false}, {"id": "f2507", "classId": "c5", "lname": "بوعزة", "fname": "رحاب", "m": 15.25, "f": 19, "a": 19, "exempt": false}, {"id": "f2508", "classId": "c5", "lname": "بوعزة", "fname": "عبد الله", "m": 17.75, "f": 20, "a": 19, "exempt": false}, {"id": "f2509", "classId": "c5", "lname": "بوعزة", "fname": "عبد المنعم", "m": 0, "f": 0, "a": 0, "exempt": true}, {"id": "f2510", "classId": "c5", "lname": "بوعزة", "fname": "فضل الرحمن", "m": 17.75, "f": 20, "a": 20, "exempt": false}, {"id": "f2511", "classId": "c5", "lname": "توميات", "fname": "فاطيمة", "m": 17, "f": 16, "a": 18, "exempt": false}, {"id": "f2512", "classId": "c5", "lname": "توميات", "fname": "نور رشيدة", "m": 16.5, "f": 16, "a": 16, "exempt": false}, {"id": "f2513", "classId": "c5", "lname": "زاوي", "fname": "زكرياء", "m": 17.5, "f": 17, "a": 16, "exempt": false}, {"id": "f2514", "classId": "c5", "lname": "مالكي", "fname": "منير", "m": 17.5, "f": 19, "a": 19, "exempt": false}, {"id": "f2515", "classId": "c5", "lname": "محلحل", "fname": "عبد الرحمان", "m": 16.5, "f": 17, "a": 16, "exempt": false}, {"id": "f2516", "classId": "c5", "lname": "مرسلي", "fname": "زكرياء", "m": 17.5, "f": 19, "a": 19, "exempt": false}, {"id": "f2517", "classId": "c5", "lname": "مزوزي", "fname": "رشا", "m": 16, "f": 16, "a": 16, "exempt": false}, {"id": "f2518", "classId": "c5", "lname": "ملاتي", "fname": "إسمهان", "m": 16.25, "f": 17, "a": 17, "exempt": false}, {"id": "f2519", "classId": "c5", "lname": "ملاتي", "fname": "حفصة دعاء", "m": 15.25, "f": 16, "a": 16, "exempt": false}, {"id": "f2520", "classId": "c5", "lname": "مليياني", "fname": "بشرى", "m": 15.25, "f": 17, "a": 18, "exempt": false}, {"id": "f2601", "classId": "c6", "lname": "العربي", "fname": "إخلاص", "m": 16.25, "f": 18, "a": 19, "exempt": false}, {"id": "f2602", "classId": "c6", "lname": "العربي", "fname": "لويزة", "m": 17.5, "f": 19, "a": 19, "exempt": false}, {"id": "f2603", "classId": "c6", "lname": "براهمي", "fname": "آية", "m": 18.5, "f": 19, "a": 19, "exempt": false}, {"id": "f2604", "classId": "c6", "lname": "بلخنيفرات", "fname": "فاطنة", "m": 16.25, "f": 18, "a": 18, "exempt": false}, {"id": "f2605", "classId": "c6", "lname": "بلقوراري", "fname": "بشرى", "m": 17.25, "f": 16, "a": 18, "exempt": false}, {"id": "f2606", "classId": "c6", "lname": "بن عيسى", "fname": "خديجة", "m": 16, "f": 16, "a": 17, "exempt": false}, {"id": "f2607", "classId": "c6", "lname": "بوسيف", "fname": "أحمد", "m": 17.5, "f": 20, "a": 19, "exempt": false}, {"id": "f2608", "classId": "c6", "lname": "بوسيف", "fname": "عبد القادر", "m": 17.5, "f": 19, "a": 19, "exempt": false}, {"id": "f2609", "classId": "c6", "lname": "بوشيخي", "fname": "أمينة", "m": 18.5, "f": 19, "a": 19, "exempt": false}, {"id": "f2610", "classId": "c6", "lname": "بوشيخي", "fname": "خلود", "m": 17.25, "f": 16, "a": 17, "exempt": false}, {"id": "f2611", "classId": "c6", "lname": "بوشيخي", "fname": "رشيدة", "m": 17.5, "f": 17, "a": 18, "exempt": false}, {"id": "f2612", "classId": "c6", "lname": "بوعزة", "fname": "مختار", "m": 18.5, "f": 20, "a": 20, "exempt": false}, {"id": "f2613", "classId": "c6", "lname": "بوعزة", "fname": "نجاة", "m": 17.5, "f": 18, "a": 19, "exempt": false}, {"id": "f2614", "classId": "c6", "lname": "بوعزة", "fname": "نعيمة", "m": 16.25, "f": 16, "a": 16, "exempt": false}, {"id": "f2615", "classId": "c6", "lname": "تويمي", "fname": "مروة", "m": 17.25, "f": 16, "a": 18, "exempt": false}, {"id": "f2616", "classId": "c6", "lname": "جباري", "fname": "بشرى", "m": 17.5, "f": 18, "a": 17, "exempt": false}, {"id": "f2617", "classId": "c6", "lname": "دحماني", "fname": "أحمد", "m": 17.25, "f": 19, "a": 20, "exempt": false}, {"id": "f2618", "classId": "c6", "lname": "زاوي", "fname": "اكرام", "m": 18.5, "f": 17, "a": 17, "exempt": false}, {"id": "f2619", "classId": "c6", "lname": "زاوي", "fname": "خديجة", "m": 16.25, "f": 20, "a": 20, "exempt": false}, {"id": "f2620", "classId": "c6", "lname": "زاوي", "fname": "كريمة", "m": 17.5, "f": 16, "a": 16, "exempt": false}, {"id": "f2621", "classId": "c6", "lname": "زاوي", "fname": "مريم", "m": 17.25, "f": 19, "a": 20, "exempt": false}, {"id": "f2622", "classId": "c6", "lname": "سماعي", "fname": "بشرى", "m": 17.25, "f": 18, "a": 19, "exempt": false}, {"id": "f2623", "classId": "c6", "lname": "سماعي", "fname": "خيرة", "m": 17.25, "f": 16, "a": 16, "exempt": false}, {"id": "f2624", "classId": "c6", "lname": "شارف", "fname": "يسرى", "m": 17.25, "f": 18, "a": 19, "exempt": false}, {"id": "f2625", "classId": "c6", "lname": "صباحي", "fname": "ضحى", "m": 17.25, "f": 18, "a": 19, "exempt": false}, {"id": "f2626", "classId": "c6", "lname": "مالكي", "fname": "منال", "m": 17.25, "f": 19, "a": 19, "exempt": false}, {"id": "f2627", "classId": "c6", "lname": "مرسلي", "fname": "اية هبة الله", "m": 16, "f": 19, "a": 20, "exempt": false}, {"id": "f2628", "classId": "c6", "lname": "مرسلي", "fname": "ايمان", "m": 16.25, "f": 17, "a": 19, "exempt": false}, {"id": "f2629", "classId": "c6", "lname": "مرسلي", "fname": "هوارية", "m": 16.25, "f": 18, "a": 18, "exempt": false}, {"id": "f2630", "classId": "c6", "lname": "معزوز", "fname": "فاطمة", "m": 16, "f": 17, "a": 19, "exempt": false}, {"id": "f2631", "classId": "c6", "lname": "ملاتي", "fname": "إيناس", "m": 0, "f": 0, "a": 0, "exempt": true}, {"id": "f2632", "classId": "c6", "lname": "ملاتي", "fname": "رحاب", "m": 17.25, "f": 16, "a": 16, "exempt": false}, {"id": "f2633", "classId": "c6", "lname": "ملاتي", "fname": "عيدة", "m": 17.25, "f": 16, "a": 18, "exempt": false}, {"id": "f2634", "classId": "c6", "lname": "ملاتي", "fname": "نسرين", "m": 17.25, "f": 17, "a": 18, "exempt": false}, {"id": "f2_1778709532212_sgjoex", "classId": "c1", "lname": "ملاتي", "fname": "حنان", "exempt": false, "m": 0, "f": 0, "a": 0, "_empty": true}]},
+    f3:{students:[{"id": "s101", "classId": "c1", "lname": "بلفضال", "fname": "إسمهان", "m": 16.5, "f": 17, "a": 17, "exempt": false}, {"id": "s102", "classId": "c1", "lname": "بن عيسى", "fname": "شهيناز", "m": 15.5, "f": 17, "a": 20, "exempt": false}, {"id": "s103", "classId": "c1", "lname": "بوعزة", "fname": "رحاب إيمان", "m": 17.5, "f": 17, "a": 17, "exempt": false}, {"id": "s104", "classId": "c1", "lname": "بوعزة", "fname": "سهام", "m": 17.5, "f": 20, "a": 20, "exempt": false}, {"id": "s105", "classId": "c1", "lname": "بوعزة", "fname": "شيماء", "m": 18.5, "f": 19, "a": 20, "exempt": false}, {"id": "s106", "classId": "c1", "lname": "بوعزة", "fname": "علاء الدين", "m": 17.5, "f": 16, "a": 18, "exempt": false}, {"id": "s107", "classId": "c1", "lname": "بوعزة", "fname": "لويزة", "m": 17.5, "f": 15, "a": 18, "exempt": false}, {"id": "s108", "classId": "c1", "lname": "بوعزة", "fname": "مكية", "m": 18.5, "f": 18, "a": 20, "exempt": false}, {"id": "s109", "classId": "c1", "lname": "بوعكة", "fname": "مولات", "m": 16.5, "f": 20, "a": 20, "exempt": false}, {"id": "s110", "classId": "c1", "lname": "توميات", "fname": "ابتسام", "m": 17.5, "f": 14, "a": 15, "exempt": false}, {"id": "s111", "classId": "c1", "lname": "حكومي", "fname": "آمال", "m": 16.5, "f": 18, "a": 19, "exempt": false}, {"id": "s112", "classId": "c1", "lname": "حكومي", "fname": "عبد الحميد", "m": 17.5, "f": 18, "a": 19, "exempt": false}, {"id": "s113", "classId": "c1", "lname": "رحماني", "fname": "محمد الأمين", "m": 17.5, "f": 17, "a": 18, "exempt": false}, {"id": "s114", "classId": "c1", "lname": "زاوي", "fname": "باهية", "m": 15.5, "f": 17, "a": 18, "exempt": false}, {"id": "s115", "classId": "c1", "lname": "زاوي", "fname": "سيد احمد", "m": 17.5, "f": 18, "a": 18, "exempt": false}, {"id": "s116", "classId": "c1", "lname": "سلامي", "fname": "شهيناز رانيا", "m": 17.5, "f": 17, "a": 17, "exempt": false}, {"id": "s117", "classId": "c1", "lname": "سماعي", "fname": "حنان", "m": 16.5, "f": 16, "a": 17, "exempt": false}, {"id": "s118", "classId": "c1", "lname": "صدادقة", "fname": "شاهيناز", "m": 17.5, "f": 14, "a": 15, "exempt": false}, {"id": "s119", "classId": "c1", "lname": "طاهري", "fname": "رباب", "m": 16.5, "f": 20, "a": 20, "exempt": false}, {"id": "s120", "classId": "c1", "lname": "مالكي", "fname": "روميسة", "m": 17.5, "f": 16, "a": 16, "exempt": false}, {"id": "s121", "classId": "c1", "lname": "محي الدين", "fname": "ريان", "m": 18.5, "f": 18, "a": 18, "exempt": false}, {"id": "s122", "classId": "c1", "lname": "معزوز", "fname": "عمارية", "m": 17.5, "f": 15, "a": 15, "exempt": false}, {"id": "s123", "classId": "c1", "lname": "ملاتي", "fname": "كوثر", "m": 0, "f": 0, "a": 0, "exempt": true}, {"id": "s124", "classId": "c1", "lname": "مناد", "fname": "وهيبة", "m": 17.5, "f": 16, "a": 16, "exempt": false}, {"id": "s201", "classId": "c2", "lname": "براهمي", "fname": "أسماء", "m": 14.5, "f": 17, "a": 17, "exempt": false}, {"id": "s202", "classId": "c2", "lname": "براهمي", "fname": "فريحة", "m": 16.5, "f": 17, "a": 17, "exempt": false}, {"id": "s203", "classId": "c2", "lname": "بلقوراري", "fname": "خالد", "m": 15.5, "f": 19, "a": 19, "exempt": false}, {"id": "s204", "classId": "c2", "lname": "بوسيف", "fname": "أماني إسراء", "m": 17.5, "f": 16, "a": 17, "exempt": false}, {"id": "s205", "classId": "c2", "lname": "بوعزة", "fname": "إسراء", "m": 16.5, "f": 16, "a": 17, "exempt": false}, {"id": "s206", "classId": "c2", "lname": "بوعزة", "fname": "بشرى", "m": 17.5, "f": 19, "a": 20, "exempt": false}, {"id": "s207", "classId": "c2", "lname": "بوعزة", "fname": "حليمة", "m": 0, "f": 0, "a": 0, "exempt": true}, {"id": "s208", "classId": "c2", "lname": "بوعزة", "fname": "عبد الوهاب", "m": 17.5, "f": 18, "a": 17, "exempt": false}, {"id": "s209", "classId": "c2", "lname": "بوعزة", "fname": "نسرين", "m": 17.5, "f": 18, "a": 19, "exempt": false}, {"id": "s210", "classId": "c2", "lname": "بوعزة", "fname": "هبة الرحمان", "m": 17.5, "f": 20, "a": 20, "exempt": false}, {"id": "s211", "classId": "c2", "lname": "بوعكة", "fname": "بشرى", "m": 16.5, "f": 15, "a": 15, "exempt": false}, {"id": "s212", "classId": "c2", "lname": "جرماني", "fname": "مريم", "m": 0, "f": 0, "a": 0, "exempt": true}, {"id": "s213", "classId": "c2", "lname": "حكومي", "fname": "ذهيبة", "m": 17.5, "f": 17, "a": 17, "exempt": false}, {"id": "s214", "classId": "c2", "lname": "حكومي", "fname": "وهيبة", "m": 18.5, "f": 15, "a": 15, "exempt": false}, {"id": "s215", "classId": "c2", "lname": "حملات", "fname": "شيماء", "m": 15.5, "f": 14, "a": 15, "exempt": false}, {"id": "s216", "classId": "c2", "lname": "زاوي", "fname": "بشرى", "m": 0, "f": 0, "a": 0, "exempt": true}, {"id": "s217", "classId": "c2", "lname": "طراش", "fname": "رحاب", "m": 16.5, "f": 14, "a": 14, "exempt": false}, {"id": "s218", "classId": "c2", "lname": "عبد النور", "fname": "حمزة", "m": 17.5, "f": 16, "a": 18, "exempt": false}, {"id": "s219", "classId": "c2", "lname": "مالكي", "fname": "بشرى", "m": 16.5, "f": 18, "a": 18, "exempt": false}, {"id": "s220", "classId": "c2", "lname": "مرزوقي", "fname": "سمية رانيا", "m": 17.5, "f": 14, "a": 14, "exempt": false}, {"id": "s221", "classId": "c2", "lname": "مرسلي", "fname": "يوسف", "m": 17.5, "f": 20, "a": 19, "exempt": false}, {"id": "s222", "classId": "c2", "lname": "وسعي", "fname": "خير الدين", "m": 17.5, "f": 20, "a": 19, "exempt": false}, {"id": "s301", "classId": "c3", "lname": "براهيمي", "fname": "عايدة", "m": 17.5, "f": 19, "a": 19, "exempt": false}, {"id": "s302", "classId": "c3", "lname": "بلفضيل", "fname": "فاطمة", "m": 17.5, "f": 18, "a": 18, "exempt": false}, {"id": "s303", "classId": "c3", "lname": "بلقوراري", "fname": "مروة", "m": 17.5, "f": 19, "a": 20, "exempt": false}, {"id": "s304", "classId": "c3", "lname": "بلكيحل", "fname": "مريم", "m": 15.5, "f": 18, "a": 18, "exempt": false}, {"id": "s305", "classId": "c3", "lname": "بن جرد", "fname": "فاطمة", "m": 19.5, "f": 19, "a": 20, "exempt": false}, {"id": "s306", "classId": "c3", "lname": "بودخيل", "fname": "نور الهدى", "m": 17.5, "f": 20, "a": 20, "exempt": false}, {"id": "s307", "classId": "c3", "lname": "بوعزة", "fname": "رقية", "m": 17.5, "f": 20, "a": 20, "exempt": false}, {"id": "s308", "classId": "c3", "lname": "بوعزة", "fname": "مروة", "m": 17.5, "f": 20, "a": 20, "exempt": false}, {"id": "s309", "classId": "c3", "lname": "بوعكة", "fname": "هند", "m": 18.5, "f": 20, "a": 20, "exempt": false}, {"id": "s310", "classId": "c3", "lname": "حمامد", "fname": "أسماء إيمان", "m": 17.5, "f": 18, "a": 18, "exempt": false}, {"id": "s311", "classId": "c3", "lname": "خثراني", "fname": "مروى", "m": 16.5, "f": 16, "a": 19, "exempt": false}, {"id": "s312", "classId": "c3", "lname": "سماعي", "fname": "ربيعة", "m": 17.5, "f": 19, "a": 19, "exempt": false}, {"id": "s313", "classId": "c3", "lname": "مزوني", "fname": "عيدة", "m": 17.5, "f": 19, "a": 19, "exempt": false}, {"id": "s314", "classId": "c3", "lname": "بوعزة", "fname": "أم سلمة", "m": 17.5, "f": 20, "a": 20, "exempt": false}, {"id": "s315", "classId": "c3", "lname": "بوكبار", "fname": "أسماء", "m": 17.5, "f": 18, "a": 18, "exempt": false}, {"id": "s316", "classId": "c3", "lname": "توميات", "fname": "ضيف الله", "m": 17.5, "f": 19, "a": 20, "exempt": false}, {"id": "s317", "classId": "c3", "lname": "حكومي", "fname": "محمد", "m": 17.5, "f": 19, "a": 19, "exempt": false}, {"id": "s318", "classId": "c3", "lname": "حكومي", "fname": "مروة", "m": 17.5, "f": 20, "a": 20, "exempt": false}, {"id": "s319", "classId": "c3", "lname": "رحماني", "fname": "بشرى", "m": 17.5, "f": 17, "a": 18, "exempt": false}, {"id": "s320", "classId": "c3", "lname": "سلاماني", "fname": "حامد", "m": 17.5, "f": 20, "a": 20, "exempt": false}, {"id": "s321", "classId": "c3", "lname": "سلاماني", "fname": "سارة", "m": 18.5, "f": 19, "a": 19, "exempt": false}, {"id": "s322", "classId": "c3", "lname": "سليماني", "fname": "رغد", "m": 17.5, "f": 18, "a": 18, "exempt": false}, {"id": "s323", "classId": "c3", "lname": "سماعي", "fname": "عبد الرحمن", "m": 17.5, "f": 19, "a": 19, "exempt": false}, {"id": "s324", "classId": "c3", "lname": "عبد الكريم", "fname": "كوثر", "m": 17.5, "f": 16, "a": 16, "exempt": false}, {"id": "s325", "classId": "c3", "lname": "مرسلي", "fname": "رشيد", "m": 17.5, "f": 20, "a": 20, "exempt": false}, {"id": "s326", "classId": "c3", "lname": "مرسلي", "fname": "صابرينة", "m": 17.5, "f": 17, "a": 18, "exempt": false}, {"id": "s327", "classId": "c3", "lname": "مرسلي", "fname": "فاطمة", "m": 17.5, "f": 18, "a": 18, "exempt": false}, {"id": "s328", "classId": "c3", "lname": "ملاتي", "fname": "أسماء خلود", "m": 0, "f": 0, "a": 0, "exempt": true}, {"id": "s329", "classId": "c3", "lname": "ملاتي", "fname": "عبد الوحيد", "m": 18.5, "f": 19, "a": 19, "exempt": false}, {"id": "s330", "classId": "c3", "lname": "مناد", "fname": "سهام", "m": 17.5, "f": 18, "a": 19, "exempt": false}, {"id": "s401", "classId": "c4", "lname": "العرابي", "fname": "عثمان", "m": 17.5, "f": 17, "a": 18, "exempt": false}, {"id": "s402", "classId": "c4", "lname": "العربي", "fname": "صباح", "m": 17.5, "f": 17, "a": 20, "exempt": false}, {"id": "s403", "classId": "c4", "lname": "بن زهرة", "fname": "محمد", "m": 16.5, "f": 19, "a": 19, "exempt": false}, {"id": "s404", "classId": "c4", "lname": "بوعزة", "fname": "خلود", "m": 0, "f": 0, "a": 0, "exempt": true}, {"id": "s405", "classId": "c4", "lname": "بوعزة", "fname": "طه الأمين", "m": 17.5, "f": 16, "a": 16, "exempt": false}, {"id": "s406", "classId": "c4", "lname": "بوعكة", "fname": "إيناس", "m": 18.5, "f": 18, "a": 18, "exempt": false}, {"id": "s407", "classId": "c4", "lname": "بوعكة", "fname": "ضحى", "m": 18.5, "f": 20, "a": 20, "exempt": false}, {"id": "s408", "classId": "c4", "lname": "تويمي", "fname": "عماد", "m": 17.5, "f": 19, "a": 20, "exempt": false}, {"id": "s409", "classId": "c4", "lname": "حكومي", "fname": "بغداد", "m": 17.5, "f": 19, "a": 18, "exempt": false}, {"id": "s410", "classId": "c4", "lname": "حكومي", "fname": "سارة", "m": 15.5, "f": 20, "a": 20, "exempt": false}, {"id": "s411", "classId": "c4", "lname": "زاهي", "fname": "رودينة", "m": 0, "f": 0, "a": 0, "exempt": true}, {"id": "s412", "classId": "c4", "lname": "زاوي", "fname": "أحمد", "m": 18.5, "f": 18, "a": 18, "exempt": false}, {"id": "s413", "classId": "c4", "lname": "سلاماني", "fname": "وسيلة", "m": 16.5, "f": 20, "a": 19, "exempt": false}, {"id": "s414", "classId": "c4", "lname": "سماعي", "fname": "آية", "m": 17.5, "f": 16, "a": 19, "exempt": false}, {"id": "s415", "classId": "c4", "lname": "سماعي", "fname": "معتز", "m": 17.5, "f": 16, "a": 17, "exempt": false}, {"id": "s416", "classId": "c4", "lname": "سماعي", "fname": "يمينة", "m": 17.5, "f": 16, "a": 19, "exempt": false}, {"id": "s417", "classId": "c4", "lname": "طالبي", "fname": "كريمة", "m": 17.5, "f": 17, "a": 18, "exempt": false}, {"id": "s418", "classId": "c4", "lname": "طاهري", "fname": "ورش", "m": 17.5, "f": 18, "a": 18, "exempt": false}, {"id": "s419", "classId": "c4", "lname": "عريوي", "fname": "أمينة", "m": 17.5, "f": 16, "a": 18, "exempt": false}, {"id": "s420", "classId": "c4", "lname": "علاوي", "fname": "محمد", "m": 17.5, "f": 16, "a": 17, "exempt": false}, {"id": "s421", "classId": "c4", "lname": "غريب", "fname": "يوسف", "m": 17.5, "f": 18, "a": 18, "exempt": false}, {"id": "s422", "classId": "c4", "lname": "كسالي", "fname": "دلال", "m": 0, "f": 0, "a": 0, "exempt": true}, {"id": "s423", "classId": "c4", "lname": "مرسلي", "fname": "محمد", "m": 17.5, "f": 18, "a": 18, "exempt": false}, {"id": "s424", "classId": "c4", "lname": "معاشو", "fname": "أيوب", "m": 17.5, "f": 18, "a": 18, "exempt": false}, {"id": "s425", "classId": "c4", "lname": "ملاتي", "fname": "آمنة", "m": 0, "f": 0, "a": 0, "exempt": true}, {"id": "s426", "classId": "c4", "lname": "ملاتي", "fname": "أسماء", "m": 17.5, "f": 20, "a": 20, "exempt": false}, {"id": "s427", "classId": "c4", "lname": "مناد", "fname": "حورية", "m": 17.5, "f": 15, "a": 19, "exempt": false}, {"id": "s501", "classId": "c5", "lname": "العربي", "fname": "كوثر", "m": 18.5, "f": 19, "a": 20, "exempt": false}, {"id": "s502", "classId": "c5", "lname": "براهمي", "fname": "ملوكة", "m": 15.5, "f": 19, "a": 18, "exempt": false}, {"id": "s503", "classId": "c5", "lname": "بن زهرة", "fname": "دعاء", "m": 16.5, "f": 19, "a": 20, "exempt": false}, {"id": "s504", "classId": "c5", "lname": "بن علال", "fname": "ع الخالق", "m": 17.5, "f": 20, "a": 20, "exempt": false}, {"id": "s505", "classId": "c5", "lname": "بن علال", "fname": "يونس", "m": 18.5, "f": 19, "a": 19, "exempt": false}, {"id": "s506", "classId": "c5", "lname": "بن عيسى", "fname": "سندس", "m": 17.5, "f": 18, "a": 17, "exempt": false}, {"id": "s507", "classId": "c5", "lname": "بوعزة", "fname": "رحاب", "m": 14.5, "f": 20, "a": 20, "exempt": false}, {"id": "s508", "classId": "c5", "lname": "بوعزة", "fname": "عبد الله", "m": 17.5, "f": 19, "a": 19, "exempt": false}, {"id": "s509", "classId": "c5", "lname": "بوعزة", "fname": "عبد المنعم", "m": 0, "f": 0, "a": 0, "exempt": true}, {"id": "s510", "classId": "c5", "lname": "بوعزة", "fname": "فضل الرحمن", "m": 17.5, "f": 20, "a": 20, "exempt": false}, {"id": "s511", "classId": "c5", "lname": "توميات", "fname": "فاطيمة", "m": 17.5, "f": 18, "a": 18, "exempt": false}, {"id": "s512", "classId": "c5", "lname": "توميات", "fname": "نور رشيدة", "m": 16.5, "f": 16, "a": 18, "exempt": false}, {"id": "s513", "classId": "c5", "lname": "زاوي", "fname": "زكرياء", "m": 17.5, "f": 20, "a": 19, "exempt": false}, {"id": "s514", "classId": "c5", "lname": "مالكي", "fname": "منير", "m": 17.5, "f": 20, "a": 19, "exempt": false}, {"id": "s515", "classId": "c5", "lname": "محلحل", "fname": "عبد الرحمان", "m": 17.5, "f": 19, "a": 19, "exempt": false}, {"id": "s516", "classId": "c5", "lname": "مرسلي", "fname": "زكرياء", "m": 17.5, "f": 19, "a": 19, "exempt": false}, {"id": "s517", "classId": "c5", "lname": "مزوزي", "fname": "رشا", "m": 18.5, "f": 18, "a": 17, "exempt": false}, {"id": "s518", "classId": "c5", "lname": "ملاتي", "fname": "إسمهان", "m": 19.5, "f": 19, "a": 19, "exempt": false}, {"id": "s519", "classId": "c5", "lname": "ملاتي", "fname": "حفصة دعاء", "m": 16.5, "f": 19, "a": 20, "exempt": false}, {"id": "s520", "classId": "c5", "lname": "مليياني", "fname": "بشرى", "m": 17, "f": 19, "a": 18, "exempt": false}, {"id": "s601", "classId": "c6", "lname": "العربي", "fname": "إخلاص", "m": 16.5, "f": 18, "a": 20, "exempt": false}, {"id": "s602", "classId": "c6", "lname": "العربي", "fname": "لويزة", "m": 15.5, "f": 20, "a": 20, "exempt": false}, {"id": "s603", "classId": "c6", "lname": "براهمي", "fname": "آية", "m": 16.5, "f": 20, "a": 20, "exempt": false}, {"id": "s604", "classId": "c6", "lname": "بلخنيفرات", "fname": "فاطنة", "m": 15.5, "f": 18, "a": 18, "exempt": false}, {"id": "s605", "classId": "c6", "lname": "بلقوراري", "fname": "بشرى", "m": 17.5, "f": 20, "a": 20, "exempt": false}, {"id": "s606", "classId": "c6", "lname": "بن عيسى", "fname": "خديجة", "m": 16.5, "f": 17, "a": 18, "exempt": false}, {"id": "s607", "classId": "c6", "lname": "بوسيف", "fname": "أحمد", "m": 17.5, "f": 19, "a": 20, "exempt": false}, {"id": "s608", "classId": "c6", "lname": "بوسيف", "fname": "عبد القادر", "m": 17.5, "f": 19, "a": 20, "exempt": false}, {"id": "s609", "classId": "c6", "lname": "بوشيخي", "fname": "أمينة", "m": 18.5, "f": 20, "a": 20, "exempt": false}, {"id": "s610", "classId": "c6", "lname": "بوشيخي", "fname": "خلود", "m": 17.5, "f": 18, "a": 18, "exempt": false}, {"id": "s611", "classId": "c6", "lname": "بوشيخي", "fname": "رشيدة", "m": 17.5, "f": 20, "a": 20, "exempt": false}, {"id": "s612", "classId": "c6", "lname": "بوعزة", "fname": "مختار", "m": 17.5, "f": 19, "a": 20, "exempt": false}, {"id": "s613", "classId": "c6", "lname": "بوعزة", "fname": "نجاة", "m": 18.5, "f": 20, "a": 20, "exempt": false}, {"id": "s614", "classId": "c6", "lname": "بوعزة", "fname": "نعيمة", "m": 16.5, "f": 18, "a": 18, "exempt": false}, {"id": "s615", "classId": "c6", "lname": "تويمي", "fname": "مروة", "m": 16.5, "f": 20, "a": 20, "exempt": false}, {"id": "s616", "classId": "c6", "lname": "جباري", "fname": "بشرى", "m": 15.5, "f": 19, "a": 19, "exempt": false}, {"id": "s617", "classId": "c6", "lname": "دحماني", "fname": "أحمد", "m": 18.5, "f": 19, "a": 20, "exempt": false}, {"id": "s618", "classId": "c6", "lname": "زاوي", "fname": "اكرام", "m": 16.5, "f": 16, "a": 16, "exempt": false}, {"id": "s619", "classId": "c6", "lname": "زاوي", "fname": "خديجة", "m": 18.5, "f": 20, "a": 20, "exempt": false}, {"id": "s620", "classId": "c6", "lname": "زاوي", "fname": "كريمة", "m": 17.5, "f": 16, "a": 17, "exempt": false}, {"id": "s621", "classId": "c6", "lname": "زاوي", "fname": "مريم", "m": 17.5, "f": 20, "a": 20, "exempt": false}, {"id": "s622", "classId": "c6", "lname": "سماعي", "fname": "بشرى", "m": 17.5, "f": 18, "a": 19, "exempt": false}, {"id": "s623", "classId": "c6", "lname": "سماعي", "fname": "خيرة", "m": 18.3, "f": 18.5, "a": 19, "exempt": false}, {"id": "s624", "classId": "c6", "lname": "شارف", "fname": "يسرى", "m": 17.5, "f": 18, "a": 18, "exempt": false}, {"id": "s625", "classId": "c6", "lname": "صباحي", "fname": "ضحى", "m": 17.5, "f": 18, "a": 18, "exempt": false}, {"id": "s626", "classId": "c6", "lname": "مالكي", "fname": "منال", "m": 17.5, "f": 19, "a": 20, "exempt": false}, {"id": "s627", "classId": "c6", "lname": "مرسلي", "fname": "اية هبة الله", "m": 17.5, "f": 20, "a": 20, "exempt": false}, {"id": "s628", "classId": "c6", "lname": "مرسلي", "fname": "ايمان", "m": 17.5, "f": 18, "a": 19, "exempt": false}, {"id": "s629", "classId": "c6", "lname": "مرسلي", "fname": "هوارية", "m": 17.5, "f": 18, "a": 18, "exempt": false}, {"id": "s630", "classId": "c6", "lname": "معزوز", "fname": "فاطمة", "m": 16.5, "f": 19, "a": 18, "exempt": false}, {"id": "s631", "classId": "c6", "lname": "ملاتي", "fname": "إيناس", "m": 0, "f": 0, "a": 0, "exempt": true}, {"id": "s632", "classId": "c6", "lname": "ملاتي", "fname": "رحاب", "m": 17.5, "f": 20, "a": 20, "exempt": false}, {"id": "s633", "classId": "c6", "lname": "ملاتي", "fname": "عيدة", "m": 17.5, "f": 18, "a": 18, "exempt": false}, {"id": "s634", "classId": "c6", "lname": "ملاتي", "fname": "نسرين", "m": 17.5, "f": 19, "a": 19, "exempt": false}, {"id": "f3_1778709532215_or4ici", "classId": "c1", "lname": "ملاتي", "fname": "حنان", "exempt": false, "m": 0, "f": 0, "a": 0, "_empty": true}]}
+  };
+}
+
+// ======= STATE =======
+function loadState(){
+  try{
+    const s = localStorage.getItem('eps_pro');
+    if(s){
+      const d = JSON.parse(s);
+      if(d.state && d.state.classes && d.state.classes.length > 0){
+        state = Object.assign({}, state, d.state);
+        if(d.settings) settings = Object.assign({}, settings, d.settings);
+        if(!state.f1) state.f1 = {students:[]};
+        if(!state.f2) state.f2 = {students:[]};
+        if(!state.f3) state.f3 = {students:[]};
+        if(!state.curCls && state.classes.length) state.curCls = state.classes[0].id;
+        return;
+      }
+    }
+  } catch(e) {}
+  // البيانات الأصلية
+  const d = initData();
+  state.classes = d.classes;
+  state.f1 = d.f1; state.f2 = d.f2; state.f3 = d.f3;
+  state.activeTerm = 'f3';
+  state.curCls = state.classes[0] ? state.classes[0].id : null;
+}
+
+function saveState(){
+  try{ localStorage.setItem('eps_pro', JSON.stringify({state, settings})); }catch(e){}
+}
+
+// ======= HELPERS =======
+function getT(){ return state.activeTerm === 'ann' ? 'f3' : state.activeTerm; }
+function getTD(t){ return state[t] || {students:[]}; }
+function tStu(t, cid){ return getTD(t).students.filter(s => s.classId === cid); }
+function tAvgs(t, cid){ return tStu(t,cid).filter(s=>!s.exempt&&s.m!=null&&s.f!=null&&s.a!=null).map(s=>avg(s.m,s.f,s.a)).filter(x=>x!==null); }
+
+function avg(m,f,a){
+  const mv=parseFloat(m), fv=parseFloat(f), av=parseFloat(a);
+  if(isNaN(mv)||isNaN(fv)||isNaN(av)) return null;
+  return (mv + fv + av*2) / 4;
+}
+
+function men(a){
+  if(a===null||a===undefined) return {t:'--',c:'#aaa',cl:''};
+  if(a>=18) return {t:'ممتاز',c:'#1B5E20',cl:'sa-high'};
+  if(a>=16) return {t:'جيد جداً',c:'#F57F17',cl:'sa-mid'};
+  if(a>=14) return {t:'جيد',c:'#1565C0',cl:'sa-mid'};
+  if(a>=10) return {t:'مقبول',c:'#6A1B9A',cl:'sa-mid'};
+  return {t:'ضعيف',c:'#C62828',cl:'sa-low'};
+}
+
+function irshad(a, exempt){
+  if(exempt||a===null||a===undefined) return '';
+  if(a>=18) return 'ممتاز جداً، استمر 🌟';
+  if(a>=16) return 'جيد جداً، واصل الجهد';
+  if(a>=14) return 'جيد، حسّن أداءك';
+  if(a>=12) return 'متوسط، تحتاج مزيداً من العمل';
+  if(a>=10) return 'مقبول، ركّز على نقاط ضعفك';
+  return 'راسب، تحتاج دعماً ومتابعة';
+}
+
+function annAvg(ln,fn,cid){
+  const avgs = ['f1','f2','f3'].map(t=>{
+    const s = getTD(t).students.find(x=>x.lname===ln&&x.fname===fn&&x.classId===cid);
+    return (s&&!s.exempt&&s.m!=null) ? avg(s.m,s.f,s.a) : null;
+  }).filter(x=>x!==null);
+  return avgs.length ? avgs.reduce((a,b)=>a+b,0)/avgs.length : null;
+}
+
+function toast(msg, dur=2500){
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), dur);
+}
+
+function openMo(id){ document.getElementById(id).classList.add('open'); }
+function closeMo(id){ document.getElementById(id).classList.remove('open'); }
+
+// ======= UNDO =======
+let undoStack = [];
+function pushUndo(label){
+  try{
+    undoStack.push({label, snap:JSON.stringify({state:JSON.parse(JSON.stringify(state)),settings:JSON.parse(JSON.stringify(settings))}) });
+    if(undoStack.length > 10) undoStack.shift();
+  }catch(e){}
+}
+function undoAct(){
+  if(!undoStack.length){ toast('لا يوجد ما يمكن التراجع عنه'); return; }
+  const item = undoStack.pop();
+  try{
+    const d = JSON.parse(item.snap);
+    state = d.state; settings = d.settings;
+    saveState(); renderPage();
+  }catch(e){}
+  hideUndo();
+  toast('↩️ تراجع: ' + item.label);
+}
+function showUndo(label){
+  const bar = document.getElementById('undo-bar');
+  document.getElementById('undo-label').textContent = label;
+  bar.style.display = 'flex';
+}
+function hideUndo(){ document.getElementById('undo-bar').style.display = 'none'; }
+
+// ======= BULK DELETE =======
+let bulkMode = false;
+let bulkSel = new Set();
+function toggleBulkMode(){
+  bulkMode = !bulkMode; bulkSel.clear();
+  document.getElementById('bulk-bar').style.display = bulkMode ? 'flex' : 'none';
+  renderStuList();
+}
+function toggleBulkSel(id){
+  if(bulkSel.has(id)) bulkSel.delete(id); else bulkSel.add(id);
+  document.getElementById('bulk-count').textContent = 'محدد: ' + bulkSel.size;
+  renderStuList();
+}
+function selectAllBulk(){
+  const stus = tStu(getT(), state.curCls);
+  if(bulkSel.size === stus.length) bulkSel.clear();
+  else stus.forEach(s => bulkSel.add(s.id));
+  document.getElementById('bulk-count').textContent = 'محدد: ' + bulkSel.size;
+  renderStuList();
+}
+function bulkDelete(){
+  if(!bulkSel.size) return;
+  if(!confirm('حذف ' + bulkSel.size + ' تلميذ من الفصول الثلاثة؟')) return;
+  pushUndo('حذف جماعي (' + bulkSel.size + ')');
+  ['f1','f2','f3'].forEach(t=>{
+    if(state[t]&&state[t].students)
+      state[t].students = state[t].students.filter(s=>!bulkSel.has(s.id));
+  });
+  bulkSel.clear(); bulkMode = false;
+  document.getElementById('bulk-bar').style.display = 'none';
+  saveState(); renderStuList();
+  showUndo('تم حذف التلاميذ');
+}
+
+// ======= SEARCH =======
+function filterStudents(q){
+  const clr = document.getElementById('search-clr');
+  if(clr) clr.style.display = q ? 'block' : 'none';
+  const items = document.querySelectorAll('#stu-list .si');
+  items.forEach(el=>{
+    const name = el.querySelector('.sn')?.textContent||'';
+    el.style.display = (!q || name.includes(q)) ? '' : 'none';
+  });
+}
+function clearSearch(){
+  const inp = document.getElementById('search-inp');
+  if(inp){ inp.value=''; filterStudents(''); inp.focus(); }
+}
+
+// ======= NAVIGATION =======
+let curPage = 'home';
+function showPage(id){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nb').forEach(b=>b.classList.remove('active'));
+  document.getElementById('page-'+id)?.classList.add('active');
+  document.getElementById('nb-'+id)?.classList.add('active');
+  curPage = id;
+  renderPage();
+}
+
+function setTerm(t){
+  state.activeTerm = t;
+  document.querySelectorAll('.termb').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.termb')[['f1','f2','f3','ann'].indexOf(t)]?.classList.add('active');
+  const tb = document.getElementById('topbar');
+  tb.className = 'topbar topbar-'+t;
+  saveState(); renderPage();
+}
+
+function renderPage(){
+  if(curPage==='home') renderHome();
+  else if(curPage==='students') renderStudents();
+  else if(curPage==='stats') renderStats();
+  else if(curPage==='compare') renderCompare();
+  else if(curPage==='classes') renderClasses();
+  else if(curPage==='settings') renderSettings();
+}
+
+// ======= HOME =======
+function renderHome(){
+  const t = getT();
+  let totalStu=0, totalPass=0, totalExempt=0;
+  state.classes.forEach(cls=>{
+    const stus = tStu(t, cls.id);
+    const avgs = tAvgs(t, cls.id);
+    totalStu += stus.length;
+    totalPass += avgs.filter(a=>a>=10).length;
+    totalExempt += stus.filter(s=>s.exempt).length;
+  });
+
+  document.getElementById('h-info').textContent = TERMS[t].label + ' · ' + settings.year;
+  document.getElementById('h-stats').innerHTML = `
+    <div class="qs"><div class="qs-val">${totalStu}</div><div class="qs-lbl">إجمالي التلاميذ</div></div>
+    <div class="qs"><div class="qs-val" style="color:#1565C0">${totalPass}</div><div class="qs-lbl">ناجحون ✅</div></div>
+    <div class="qs"><div class="qs-val" style="color:#E65100">${totalExempt}</div><div class="qs-lbl">معفيون 🚫</div></div>
+  `;
+
+  // تنبيهات
+  const notifs = [];
+  state.classes.forEach(cls=>{
+    const stus = tStu(t, cls.id);
+    const empty = stus.filter(s=>!s.exempt&&(s.m==null||s.f==null||s.a==null));
+    if(empty.length) notifs.push(`<div class="notif">⚠️ ${cls.name}: ${empty.length} تلميذ بدون درجات</div>`);
+  });
+  const nc = document.getElementById('h-notif-card');
+  if(notifs.length){ nc.style.display=''; document.getElementById('h-notifs').innerHTML=notifs.join(''); }
+  else nc.style.display='none';
+
+  // قائمة الأقسام
+  const listEl = document.getElementById('h-list');
+  if(!state.classes.length){ listEl.innerHTML='<div style="color:#aaa;text-align:center;padding:20px">لا توجد أقسام</div>'; return; }
+  listEl.innerHTML = state.classes.map(cls=>{
+    const avgs = tAvgs(t, cls.id);
+    const stus = tStu(t, cls.id);
+    const ca = avgs.length ? (avgs.reduce((a,b)=>a+b,0)/avgs.length) : null;
+    const pass = avgs.filter(a=>a>=10).length;
+    const rate = stus.length ? (pass/stus.length*100) : 0;
+    const mn = men(ca);
+    return `<div class="comp-row" onclick="state.curCls='${cls.id}';showPage('students')" style="cursor:pointer">
+      <div class="comp-name">${cls.name}<br><span style="font-size:10px;color:#888">${stus.length} تلميذ | ${pass} ناجح | ${rate.toFixed(0)}%</span></div>
+      <div class="comp-bar-wrap"><div class="comp-bar" style="width:${rate}%;background:${mn.c}"></div></div>
+      <div class="comp-val" style="color:${mn.c}">${ca!==null?ca.toFixed(2):'--'}</div>
+    </div>`;
+  }).join('');
+}
+
+// ======= STUDENTS =======
+function renderStudents(){
+  // tabs
+  const tabs = document.getElementById('cls-tabs');
+  tabs.innerHTML = state.classes.map(c=>
+    `<button class="ctab ${state.curCls===c.id?'active':''}" onclick="state.curCls='${c.id}';saveState();renderStuList()">${c.name}</button>`
+  ).join('');
+  if(!state.curCls && state.classes.length) state.curCls = state.classes[0].id;
+  renderStuList();
+}
+
+function renderStuList(){
+  const t = getT();
+  const listEl = document.getElementById('stu-list');
+  if(!state.curCls){ listEl.innerHTML='<div style="color:#aaa;text-align:center;padding:30px">اختر قسماً أولاً</div>'; return; }
+  const stus = tStu(t, state.curCls);
+  if(!stus.length){ listEl.innerHTML='<div style="color:#aaa;text-align:center;padding:30px">لا يوجد تلاميذ في هذا القسم<br><small>اضغط ➕ لإضافة تلاميذ</small></div>'; return; }
+
+  listEl.innerHTML = stus.map((s,i)=>{
+    const a = s.exempt ? null : avg(s.m,s.f,s.a);
+    const mn = men(a);
+    const ir = irshad(a, s.exempt);
+    const isSel = bulkSel.has(s.id);
+    return `<div class="si ${isSel?'bulk-sel':''}" data-id="${s.id}">
+      ${bulkMode
+        ? `<input type="checkbox" ${isSel?'checked':''} onchange="toggleBulkSel('${s.id}')" style="width:20px;height:20px;accent-color:var(--red);cursor:pointer">`
+        : '<span class="drag-handle">⠿</span>'
+      }
+      <div style="flex:1;cursor:pointer;min-width:0" onclick="${bulkMode?`toggleBulkSel('${s.id}')`:`openStuMo('${s.id}')` }">
+        <div class="sn">${s.gender==='ذكر'?'👦':'👧'} ${s.lname} ${s.fname}</div>
+        <div style="margin-top:3px;display:flex;flex-wrap:wrap;gap:3px;align-items:center">
+          ${s.exempt
+            ? '<span style="font-size:11px;color:#E65100;font-weight:700;background:#FFE0B2;padding:2px 7px;border-radius:5px">🚫 معفى</span>'
+            : `<span style="font-size:11px;font-weight:700;display:inline-flex;gap:4px">
+                <span style="background:#e8f5e9;color:#1B5E20;border-radius:4px;padding:1px 6px">م:${s.m??'-'}</span>
+                <span style="background:#e3f2fd;color:#1565C0;border-radius:4px;padding:1px 6px">ف:${s.f??'-'}</span>
+                <span style="background:#f3e5f5;color:#6A1B9A;border-radius:4px;padding:1px 6px">اخ:${s.a??'-'}</span>
+              </span>`
+          }
+        </div>
+        ${ir?`<div style="font-size:10px;color:#666;margin-top:2px;font-style:italic">💡 ${ir}</div>`:''}
+      </div>
+      <div style="display:flex;align-items:center;gap:4px">
+        <div class="sa ${s.exempt?'sa-ex':mn.cl}">${s.exempt?'معفى':(a!==null?a.toFixed(2):'--')}</div>
+        ${!bulkMode?`<button class="sms-btn" onclick="sendMsg('${s.id}')" title="إرسال رسالة">📱</button>`:''};
+        ${!bulkMode?`<button class="sdel" onclick="delStu('${s.id}')">🗑️</button>`:''};
+      </div>
+    </div>`;
+  }).join('');
+
+  // Sortable
+  if(sortInst) sortInst.destroy();
+  if(!bulkMode){
+    sortInst = Sortable.create(listEl, {
+      handle:'.drag-handle', animation:150,
+      onEnd: e=>{
+        const t2 = getT();
+        const arr = getTD(t2).students.filter(s=>s.classId===state.curCls);
+        const others = getTD(t2).students.filter(s=>s.classId!==state.curCls);
+        const moved = arr.splice(e.oldIndex,1)[0];
+        arr.splice(e.newIndex,0,moved);
+        state[t2].students = [...others,...arr];
+        saveState();
+      }
+    });
+  }
+}
+
+// ======= STUDENT MODAL =======
+function openStuMo(id){
+  const clsSel = document.getElementById('i-cls');
+  clsSel.innerHTML = state.classes.map(c=>`<option value="${c.id}">${c.name}</option>`).join('');
+  state.editId = id || null;
+
+  if(id){
+    const t = getT();
+    const s = getTD(t).students.find(x=>x.id===id);
+    if(!s) return;
+    document.getElementById('mStu-title').textContent = '✏️ تعديل بيانات التلميذ';
+    document.getElementById('i-ln').value = s.lname||'';
+    document.getElementById('i-fn').value = s.fname||'';
+    document.getElementById('i-gn').value = s.gender||'أنثى';
+    document.getElementById('i-cls').value = s.classId||state.curCls;
+    document.getElementById('i-m').value = s.m??'';
+    document.getElementById('i-f').value = s.f??'';
+    document.getElementById('i-a').value = s.a??'';
+    document.getElementById('i-ab').value = s.absences||0;
+    document.getElementById('i-bh').value = s.behavior!==undefined?s.behavior:10;
+    document.getElementById('i-ph').value = s.phone||'';
+    document.getElementById('i-ex').checked = !!s.exempt;
+  }else{
+    document.getElementById('mStu-title').textContent = '➕ إضافة تلميذ';
+    ['i-ln','i-fn','i-m','i-f','i-a','i-ph'].forEach(x=>document.getElementById(x).value='');
+    document.getElementById('i-gn').value = 'أنثى';
+    document.getElementById('i-cls').value = state.curCls||'';
+    document.getElementById('i-ab').value = 0;
+    document.getElementById('i-bh').value = 10;
+    document.getElementById('i-ex').checked = false;
+  }
+  openMo('mStu');
+}
+
+function saveStu(){
+  const ln = document.getElementById('i-ln').value.trim();
+  const fn = document.getElementById('i-fn').value.trim();
+  const cid = document.getElementById('i-cls').value;
+  if(!ln||!fn){ toast('❗ أدخل اللقب والاسم'); return; }
+
+  pushUndo(state.editId ? 'تعديل تلميذ' : 'إضافة تلميذ');
+
+  const stuData = {
+    id: state.editId || ('s'+Date.now()),
+    classId: cid,
+    lname: ln, fname: fn,
+    gender: document.getElementById('i-gn').value,
+    m: parseFloat(document.getElementById('i-m').value)||null,
+    f: parseFloat(document.getElementById('i-f').value)||null,
+    a: parseFloat(document.getElementById('i-a').value)||null,
+    absences: parseInt(document.getElementById('i-ab').value)||0,
+    behavior: parseFloat(document.getElementById('i-bh').value)||10,
+    phone: document.getElementById('i-ph').value.trim(),
+    exempt: document.getElementById('i-ex').checked
+  };
+
+  ['f1','f2','f3'].forEach(t=>{
+    if(!state[t]) state[t]={students:[]};
+    const idx = state[t].students.findIndex(s=>s.id===stuData.id);
+    if(idx>=0) state[t].students[idx]={...state[t].students[idx],...stuData};
+    else if(!state.editId) state[t].students.push({...stuData});
+  });
+
+  state.curCls = cid;
+  saveState(); closeMo('mStu'); renderStudents();
+  showUndo(state.editId?'تم تعديل التلميذ':'تمت الإضافة');
+  toast('✅ ' + (state.editId?'تم التعديل':'تمت الإضافة'));
+}
+
+function delStu(id){
+  if(!confirm('حذف هذا التلميذ من الفصول الثلاثة؟')) return;
+  pushUndo('حذف تلميذ');
+  ['f1','f2','f3'].forEach(t=>{
+    if(state[t]&&state[t].students)
+      state[t].students = state[t].students.filter(s=>s.id!==id);
+  });
+  saveState(); renderStuList();
+  showUndo('تم حذف التلميذ');
+}
+
+// ======= SMS/WHATSAPP =======
+function sendMsg(sid){
+  const t = getT();
+  const s = getTD(t).students.find(x=>x.id===sid);
+  if(!s) return;
+  const cls = (state.classes.find(c=>c.id===s.classId)||{}).name||'';
+  const a = s.exempt ? null : avg(s.m,s.f,s.a);
+  const mn = men(a);
+  const ir = irshad(a, s.exempt);
+  const TERM_LBL = TERMS[t]?.label||'';
+  const lines = [
+    '🏅 برنامج التقييم الفصلي',
+    settings.school,
+    '━━━━━━━━━━━━━━━',
+    'التلميذ: ' + s.lname + ' ' + s.fname,
+    'القسم: ' + cls + ' | ' + TERM_LBL + ' | ' + settings.year,
+    '━━━━━━━━━━━━━━━',
+    s.exempt ? 'الحالة: معفى من التقييم' :
+      'م:' + (s.m??'-') + '/20  ف:' + (s.f??'-') + '/20  اخ:' + (s.a??'-') + '/20\n' +
+      'المعدل: ' + (a!==null?a.toFixed(2)+'/20':'--') + ' | ' + mn.t +
+      (ir ? '\n💡 ' + ir : ''),
+    '━━━━━━━━━━━━━━━',
+    'أستاذ التربية البدنية: ' + settings.teacher
+  ];
+  const msg = lines.join('\n');
+  const phone = s.phone ? s.phone.replace(/[^0-9]/g,'') : '';
+
+  const d = document.createElement('div');
+  d.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px;font-family:Cairo,sans-serif';
+  d.innerHTML=`<div style="background:#fff;border-radius:16px;padding:20px;max-width:320px;width:100%;direction:rtl">
+    <div style="font-weight:900;font-size:15px;margin-bottom:10px;color:var(--gd)">📨 إرسال رسالة</div>
+    <div style="font-size:11px;background:#f5f5f5;border-radius:8px;padding:10px;margin-bottom:14px;white-space:pre-wrap;line-height:1.8;max-height:180px;overflow-y:auto">${msg.replace(/\n/g,'<br>')}</div>
+    <div style="display:flex;flex-direction:column;gap:8px">
+      <button onclick="window.open('sms:${phone}?body='+encodeURIComponent(this.dataset.msg),'_blank');this.closest('[style*=fixed]').remove()" data-msg="${msg}"
+        style="background:var(--gd);color:#fff;border:none;border-radius:10px;padding:12px;font-family:Cairo,sans-serif;font-size:13px;font-weight:700;cursor:pointer">
+        📱 SMS ${phone?'→ '+phone:''}
+      </button>
+      <button onclick="window.open('https://wa.me/${phone}?text='+encodeURIComponent(this.dataset.msg),'_blank');this.closest('[style*=fixed]').remove()" data-msg="${msg}"
+        style="background:#25D366;color:#fff;border:none;border-radius:10px;padding:12px;font-family:Cairo,sans-serif;font-size:13px;font-weight:700;cursor:pointer">
+        💬 واتساب ${phone?'→ '+phone:''}
+      </button>
+      <button onclick="this.closest('[style*=fixed]').remove()"
+        style="background:#eee;color:#666;border:none;border-radius:10px;padding:10px;font-family:Cairo,sans-serif;font-size:13px;cursor:pointer">إلغاء</button>
+    </div>
+  </div>`;
+  document.body.appendChild(d);
+}
+
+// ======= STATS =======
+function renderStats(){
+  const t = getT();
+  const tabsEl = document.getElementById('stats-tabs');
+  const contEl = document.getElementById('stats-content');
+  tabsEl.innerHTML = state.classes.map(c=>
+    `<button class="ctab ${state.curCls===c.id?'active':''}" onclick="state.curCls='${c.id}';renderStats()">${c.name}</button>`
+  ).join('');
+  if(!state.curCls&&state.classes.length) state.curCls=state.classes[0].id;
+  if(!state.curCls){ contEl.innerHTML='<div style="color:#aaa;text-align:center;padding:30px">لا توجد أقسام</div>'; return; }
+
+  if(state.activeTerm==='ann'){
+    renderAnnual(); return;
+  }
+
+  const cls = state.classes.find(c=>c.id===state.curCls);
+  const stus = tStu(t, state.curCls);
+  const avgs = tAvgs(t, state.curCls);
+  const passed = avgs.filter(a=>a>=10).length;
+  const cAvg = avgs.length ? avgs.reduce((a,b)=>a+b,0)/avgs.length : null;
+  const rate = stus.length ? (passed/stus.length*100) : 0;
+  const exempt = stus.filter(s=>s.exempt).length;
+  const mn = men(cAvg);
+
+  const ranked = [...stus].filter(s=>!s.exempt&&avg(s.m,s.f,s.a)!==null)
+    .map(s=>{return{...s,av:avg(s.m,s.f,s.a)}})
+    .sort((a,b)=>b.av-a.av);
+
+  contEl.innerHTML = `
+    <div class="stat-grid">
+      <div class="stat-box"><div class="stat-val">${stus.length}</div><div class="stat-lbl">إجمالي</div></div>
+      <div class="stat-box"><div class="stat-val" style="color:#1565C0">${passed}</div><div class="stat-lbl">ناجحون</div></div>
+      <div class="stat-box"><div class="stat-val" style="color:var(--red)">${stus.length-exempt-passed}</div><div class="stat-lbl">راسبون</div></div>
+      <div class="stat-box"><div class="stat-val" style="color:#E65100">${exempt}</div><div class="stat-lbl">معفيون</div></div>
+      <div class="stat-box"><div class="stat-val" style="color:#F9A825">${rate.toFixed(1)}%</div><div class="stat-lbl">نسبة النجاح</div></div>
+      <div class="stat-box"><div class="stat-val" style="color:${mn.c}">${cAvg!==null?cAvg.toFixed(2):'--'}</div><div class="stat-lbl">معدل القسم</div></div>
+    </div>
+    ${ranked.length?`<div class="card">
+      <div class="ct">🏆 الترتيب</div>
+      ${ranked.map((s,i)=>`<div class="ann-row">
+        <div class="ann-rank">${i+1}</div>
+        <div style="flex:1;font-size:12px;font-weight:700">${s.lname} ${s.fname}</div>
+        <div style="font-size:13px;font-weight:900;color:${men(s.av).c}">${s.av.toFixed(2)}</div>
+        <div style="font-size:10px;color:#888;margin-right:6px">${men(s.av).t}</div>
+      </div>`).join('')}
+    </div>`:''}
+  `;
+}
+
+function renderAnnual(){
+  const contEl = document.getElementById('stats-content');
+  const stus = tStu('f3', state.curCls);
+  const rows = stus.map(s=>{
+    const a = annAvg(s.lname,s.fname,s.classId);
+    return {...s,annav:a};
+  }).sort((a,b)=>(b.annav??-1)-(a.annav??-1));
+
+  contEl.innerHTML = `<div class="card">
+    <div class="ct">🏆 المعدل السنوي</div>
+    ${rows.map((s,i)=>`<div class="ann-row">
+      <div class="ann-rank">${s.annav!==null?i+1:''}</div>
+      <div style="flex:1;font-size:12px;font-weight:700">${s.lname} ${s.fname}</div>
+      <div style="font-size:13px;font-weight:900;color:${men(s.annav).c}">${s.annav!==null?s.annav.toFixed(2):s.exempt?'معفى':'--'}</div>
+      <div style="font-size:10px;color:#888;margin-right:4px">${s.annav!==null?men(s.annav).t:''}</div>
+    </div>`).join('')}
+  </div>`;
+}
+
+// ======= COMPARE =======
+function renderCompare(){
+  const t = getT();
+  const el = document.getElementById('compare-content');
+  const data = state.classes.map(cls=>{
+    const avgs = tAvgs(t, cls.id);
+    const stus = tStu(t, cls.id);
+    const ca = avgs.length ? avgs.reduce((a,b)=>a+b,0)/avgs.length : null;
+    const rate = stus.length ? avgs.filter(a=>a>=10).length/stus.length*100 : 0;
+    return {cls, ca, rate, count:stus.length};
+  }).sort((a,b)=>(b.ca??-1)-(a.ca??-1));
+
+  el.innerHTML = data.map((d,i)=>{
+    const mn = men(d.ca);
+    return `<div class="comp-row">
+      <div class="comp-name">${i+1}. ${d.cls.name}<br><span style="font-size:10px;color:#888">${d.count} تلميذ | ${d.rate.toFixed(0)}% نجاح</span></div>
+      <div class="comp-bar-wrap"><div class="comp-bar" style="width:${d.rate}%;background:${mn.c}"></div></div>
+      <div class="comp-val" style="color:${mn.c}">${d.ca!==null?d.ca.toFixed(2):'--'}</div>
+    </div>`;
+  }).join('');
+}
+
+// ======= CLASSES =======
+function renderClasses(){
+  const el = document.getElementById('cls-list');
+  el.innerHTML = state.classes.map(c=>{
+    const total = ['f1','f2','f3'].reduce((sum,t)=>sum+tStu(t,c.id).length,0);
+    return `<div class="card" style="display:flex;align-items:center;gap:10px">
+      <div style="flex:1">
+        <div style="font-weight:700">${c.name}</div>
+        <div style="font-size:11px;color:#888;margin-top:2px">إجمالي التلاميذ: ${total/3|0}</div>
+      </div>
+      <button class="btn" style="background:#eee;color:#333;font-size:12px" onclick="editCls('${c.id}')">✏️</button>
+      <button class="btn" style="background:var(--red);color:#fff;font-size:12px" onclick="deleteCls('${c.id}')">🗑️</button>
+    </div>`;
+  }).join('') || '<div style="color:#aaa;text-align:center;padding:30px">لا توجد أقسام</div>';
+}
+
+function saveCls(){
+  const name = document.getElementById('cls-name').value.trim();
+  const editId = document.getElementById('cls-edit-id').value;
+  if(!name){ toast('❗ أدخل اسم القسم'); return; }
+  pushUndo(editId?'تعديل قسم':'إضافة قسم');
+  if(editId){
+    const cls = state.classes.find(c=>c.id===editId);
+    if(cls) cls.name = name;
+  }else{
+    state.classes.push({id:'c'+Date.now(),name});
+  }
+  saveState(); closeMo('mCls'); renderClasses();
+  toast('✅ تم الحفظ');
+}
+
+function editCls(id){
+  const cls = state.classes.find(c=>c.id===id);
+  if(!cls) return;
+  document.getElementById('mCls-title').textContent='✏️ تعديل القسم';
+  document.getElementById('cls-name').value=cls.name;
+  document.getElementById('cls-edit-id').value=id;
+  openMo('mCls');
+}
+
+function deleteCls(id){
+  if(!confirm('حذف هذا القسم وكل تلاميذه؟')) return;
+  pushUndo('حذف قسم');
+  state.classes = state.classes.filter(c=>c.id!==id);
+  ['f1','f2','f3'].forEach(t=>{
+    if(state[t]) state[t].students = state[t].students.filter(s=>s.classId!==id);
+  });
+  if(state.curCls===id) state.curCls=state.classes[0]?.id||null;
+  saveState(); renderClasses();
+  showUndo('تم حذف القسم');
+}
+
+// ======= SETTINGS =======
+function renderSettings(){
+  document.getElementById('set-school').value = settings.school||'';
+  document.getElementById('set-teacher').value = settings.teacher||'';
+  document.getElementById('set-year').value = settings.year||'';
+}
+function saveSettings(){
+  settings.school = document.getElementById('set-school').value.trim();
+  settings.teacher = document.getElementById('set-teacher').value.trim();
+  settings.year = document.getElementById('set-year').value.trim();
+  saveState();
+  document.getElementById('ts-sub').textContent = settings.school + ' · ' + settings.teacher;
+  toast('✅ تم حفظ الإعدادات');
+}
+function resetAll(){
+  if(!confirm('⚠️ سيتم حذف كل البيانات! هل أنت متأكد؟')) return;
+  if(!confirm('هذا الإجراء لا يمكن التراجع عنه. هل تؤكد؟')) return;
+  localStorage.removeItem('eps_pro');
+  const d = initData();
+  state.classes=d.classes; state.f1=d.f1; state.f2=d.f2; state.f3=d.f3;
+  state.curCls=state.classes[0]?.id||null;
+  saveState(); renderPage();
+  toast('✅ تمت إعادة التعيين');
+}
+
+// ======= DARK MODE =======
+function toggleDark(){
+  document.body.classList.toggle('dark');
+  localStorage.setItem('eps_dark', document.body.classList.contains('dark')?'1':'0');
+}
+
+// ======= BACKUP =======
+function backupData(){
+  const d = {state, settings, dataVersion:'v3.0', backupDate:new Date().toLocaleDateString('ar-DZ')};
+  const blob = new Blob([JSON.stringify(d,null,2)],{type:'application/json'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'نسخة_احتياطية_' + settings.year + '_' + new Date().toISOString().slice(0,10) + '.json';
+  a.click();
+  toast('✅ تم حفظ النسخة الاحتياطية');
+}
+function restoreData(){
+  const inp = document.createElement('input');
+  inp.type='file'; inp.accept='.json';
+  inp.onchange = e=>{
+    const file = e.target.files[0]; if(!file) return;
+    const reader = new FileReader();
+    reader.onload = ev=>{
+      try{
+        const d = JSON.parse(ev.target.result);
+        if(d.state&&d.state.classes){
+          pushUndo('قبل الاستعادة');
+          state=d.state; if(d.settings) settings=d.settings;
+          if(!state.f1) state.f1={students:[]};
+          if(!state.f2) state.f2={students:[]};
+          if(!state.f3) state.f3={students:[]};
+          if(!state.curCls&&state.classes.length) state.curCls=state.classes[0].id;
+          saveState(); renderPage();
+          toast('✅ تمت الاستعادة بنجاح');
+        }else toast('❌ ملف غير صالح');
+      }catch(err){ toast('❌ خطأ في الملف'); }
+    };
+    reader.readAsText(file,'utf-8');
+  };
+  inp.click();
+}
+
+// ======= IMPORT =======
+function doImport(){
+  const fileInp = document.getElementById('imp-file');
+  const file = fileInp.files[0];
+  if(!file){ toast('❗ اختر ملفاً'); return; }
+  const t = document.getElementById('imp-term').value;
+  const mode = document.querySelector('input[name="imp-mode"]:checked').value;
+  const reader = new FileReader();
+  reader.onload = e=>{
+    try{
+      const wb = XLSX.read(e.target.result, {type:'binary'});
+      const ws = wb.Sheets[wb.SheetNames[0]];
+      const rows = XLSX.utils.sheet_to_json(ws, {header:1});
+      let added=0, updated=0;
+      pushUndo('استيراد بيانات');
+      if(mode==='replace') state[t].students = state[t].students.filter(s=>s.classId!==state.curCls);
+      rows.slice(1).forEach(row=>{
+        if(!row[0]&&!row[1]) return;
+        const ln=(row[0]+'').trim(), fn=(row[1]+'').trim();
+        if(!ln&&!fn) return;
+        const stuData={
+          id:'s'+Date.now()+Math.random().toString(36).slice(2),
+          classId: state.curCls, lname:ln, fname:fn, gender:'أنثى',
+          m:parseFloat(row[2])||null, f:parseFloat(row[3])||null, a:parseFloat(row[4])||null,
+          exempt:false, absences:0, behavior:10, phone:''
+        };
+        const existing = state[t].students.findIndex(s=>s.lname===ln&&s.fname===fn&&s.classId===state.curCls);
+        if(mode==='merge'&&existing>=0){ state[t].students[existing]={...state[t].students[existing],...stuData}; updated++; }
+        else{ state[t].students.push(stuData); added++; }
+      });
+      saveState(); closeMo('mImp'); renderStudents();
+      toast(`✅ ${added} مضاف، ${updated} محدَّث`);
+    }catch(err){ toast('❌ خطأ في الملف: '+err.message); }
+  };
+  reader.readAsBinaryString(file);
+}
+
+// ======= EXPORT =======
+function exportExcel(scope){
+  const t = getT();
+  const wb = XLSX.utils.book_new();
+  const classes = scope==='class' ? state.classes.filter(c=>c.id===state.curCls) : state.classes;
+  classes.forEach(cls=>{
+    const stus = tStu(t, cls.id);
+    const rows = [['اللقب','الاسم','الجنس','المراقبة','الفرض','الاختبار','المعدل','التقدير','الغيابات','السلوك']];
+    stus.forEach(s=>{
+      const a = s.exempt ? null : avg(s.m,s.f,s.a);
+      rows.push([s.lname,s.fname,s.gender,s.m,s.f,s.a,a?a.toFixed(2):'',s.exempt?'معفى':men(a).t,s.absences,s.behavior]);
+    });
+    XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(rows), cls.name.slice(0,31));
+  });
+  XLSX.writeFile(wb, 'نتائج_'+settings.year+'_'+new Date().toISOString().slice(0,10)+'.xlsx');
+  toast('✅ تم التصدير');
+}
+
+// ======= PRINT =======
+function directPrint(){
+  const t = getT();
+  if(!state.curCls){ toast('❗ اختر قسماً أولاً'); return; }
+  const cls = state.classes.find(c=>c.id===state.curCls);
+  if(!cls) return;
+  const stus = tStu(t, state.curCls);
+  const avgs = tAvgs(t, state.curCls);
+  const passed = avgs.filter(a=>a>=10).length;
+  const cAvg = avgs.length ? avgs.reduce((a,b)=>a+b,0)/avgs.length : null;
+  const rate = stus.length ? (passed/stus.length*100) : 0;
+  const mn = men(cAvg);
+  const exempt = stus.filter(s=>s.exempt).length;
+  const TERM_LBL = TERMS[t]?.label||'';
+
+  const rows = stus.map((s,i)=>{
+    if(s.exempt) return `<tr><td>${i+1}</td><td>${s.gender==='ذكر'?'ذ':'أ'}</td><td style="text-align:right">${s.lname} ${s.fname}</td><td colspan="7" style="color:#E65100;text-align:center;font-weight:700">معفى</td></tr>`;
+    const a = avg(s.m,s.f,s.a); const mn2=men(a); const ir=irshad(a,false);
+    return `<tr><td>${i+1}</td><td>${s.gender==='ذكر'?'ذ':'أ'}</td><td style="text-align:right">${s.lname} ${s.fname}</td><td>${s.m??'-'}</td><td>${s.f??'-'}</td><td>${s.a??'-'}</td><td>${s.a!=null?((s.a*2).toFixed(1)):''}</td><td style="font-weight:700;color:${mn2.c}">${a!==null?a.toFixed(2):'--'}</td><td style="color:${mn2.c}">${mn2.t}</td><td style="font-size:6.5pt;font-style:italic;color:#555">${ir}</td></tr>`;
+  }).join('');
+
+  const w = window.open('','_blank');
+  if(!w){ toast('❗ فعّل النوافذ المنبثقة'); return; }
+  w.document.write(`<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="UTF-8">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>*{box-sizing:border-box;margin:0;padding:0}body{font-family:Cairo,sans-serif;padding:7mm;font-size:9pt}
+    @page{size:A4;margin:7mm}.hdr{text-align:center;border-bottom:3px solid #1B5E20;padding-bottom:8px;margin-bottom:8px}
+    .hs{font-size:13px;font-weight:900;color:#1B5E20}.hi{font-size:9px;color:#555;margin-top:3px}
+    .stats{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin:8px 0}
+    .sb{border:1.5px solid #1B5E20;border-radius:7px;padding:4px 9px;text-align:center;min-width:70px}
+    .sv{font-size:14px;font-weight:900;color:#1B5E20}.sl{font-size:7px;color:#666}
+    table{width:100%;border-collapse:collapse;font-size:7.5pt}th{background:#1B5E20;color:#fff;padding:3px 4px;text-align:center}
+    td{padding:2px 4px;border:.5px solid #ddd;text-align:center}tr:nth-child(even) td{background:#f9f9f9}
+    .sigs{display:flex;justify-content:space-between;margin-top:12px;border-top:1px solid #ddd;padding-top:8px}
+    .sig{text-align:center;font-size:8px;min-width:80px}.sigl{border-top:1px solid #999;margin-top:16px;padding-top:3px;color:#888}
+    </style></head><body>
+    <div class="hdr"><div class="hs">${settings.school}</div>
+    <div class="hi">القسم: <b>${cls.name}</b> | ${TERM_LBL} | السنة: ${settings.year} | الأستاذ: ${settings.teacher}</div></div>
+    <div class="stats">
+      <div class="sb"><div class="sv">${stus.length}</div><div class="sl">إجمالي</div></div>
+      <div class="sb"><div class="sv" style="color:#E65100">${exempt}</div><div class="sl">معفيون</div></div>
+      <div class="sb"><div class="sv">${passed}</div><div class="sl">ناجحون</div></div>
+      <div class="sb"><div class="sv" style="color:var(--red)">${stus.length-exempt-passed}</div><div class="sl">راسبون</div></div>
+      <div class="sb"><div class="sv">${rate.toFixed(1)}%</div><div class="sl">النجاح</div></div>
+      <div class="sb"><div class="sv" style="color:${mn.c}">${cAvg!==null?cAvg.toFixed(2):'--'}</div><div class="sl">المعدل</div></div>
+    </div>
+    <table><tr><th>#</th><th>ج</th><th style="text-align:right;min-width:120px">اللقب والاسم</th>
+    <th>م</th><th>ف</th><th>اخ/20</th><th>اخ/40</th><th>المعدل</th><th>التقدير</th><th>الإرشاد</th></tr>
+    ${rows}</table>
+    <div class="sigs">
+      <div class="sig"><div class="sigl">مدير المؤسسة</div></div>
+      <div class="sig"><div class="sigl">أستاذ التربية البدنية</div><div>${settings.teacher}</div></div>
+      <div class="sig"><div class="sigl">المستشار التربوي</div></div>
+    </div></body></html>`);
+  w.document.close();
+  setTimeout(()=>w.print(), 800);
+}
+
+// ======= GUIDE =======
+function downloadGuide(){
+  const body = document.getElementById('guide-body');
+  const blob = new Blob([`<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="UTF-8"><title>دليل EPS Pro</title><style>body{font-family:Cairo,Arial,sans-serif;padding:20px;max-width:700px;margin:auto;line-height:2}b{color:#1B5E20}.guide-section{border-radius:10px;padding:12px;margin-bottom:10px}</style></head><body><h2 style="color:#1B5E20">📖 دليل المستخدم — EPS Pro</h2>${body.innerHTML}</body></html>`],{type:'text/html;charset=utf-8'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'دليل_EPS_Pro.html';
+  a.click();
+  toast('✅ تم تحميل الدليل');
+}
+
+// ======= INIT =======
+loadState();
+if(localStorage.getItem('eps_dark')==='1') document.body.classList.add('dark');
+document.getElementById('ts-sub').textContent = settings.school + ' · ' + settings.teacher;
+setTerm(state.activeTerm||'f3');
+renderPage();
+
+// Close modals on backdrop click
+document.querySelectorAll('.mo').forEach(mo=>{
+  mo.addEventListener('click', e=>{ if(e.target===mo) mo.classList.remove('open'); });
+});
+</script>
+</body>
+</html>
