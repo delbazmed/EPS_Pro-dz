@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#1B5E20">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<title>EPS Pro</title>
+<title>EPS Pro v2.4 | Delbaz_Med</title>
 <link rel="manifest" href="/manifest.json">
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
 <style>
@@ -142,6 +142,11 @@ body.dark .navbar{background:#1e1e1e;border-color:#333}
 
 /* Guide */
 .guide-section{border-radius:10px;padding:12px;margin-bottom:10px}
+
+body.dark #guide-body { color: #e0e0e0 !important; }
+body.dark #guide-body b { color: #81C784 !important; }
+body.dark .guide-section { background: #1e1e1e !important; color: #e0e0e0 !important; }
+body.dark .modal-c { color: #e0e0e0 !important; }
 </style>
 </head>
 <body>
@@ -167,7 +172,7 @@ body.dark .navbar{background:#1e1e1e;border-color:#333}
 <div class="page active" id="page-home">
   <div class="page-inner">
     <div class="home-header">
-      <div class="home-title">🏅 برنامج التقييم الفصلي</div>
+      <div class="home-title">🏅 برنامج التقييم الفصلي</div><div style="font-size:9px;opacity:.75;margin-top:2px;letter-spacing:.5px">EPS Pro v2.4 | Delbaz_Med</div>
       <div class="home-sub" id="h-school">ثانوية سماحي بوعمامة بن أحمد</div>
       <div class="home-sub" id="h-info"></div>
     </div>
@@ -268,6 +273,13 @@ body.dark .navbar{background:#1e1e1e;border-color:#333}
     <div class="set-section">
       <div class="set-label">🌙 المظهر</div>
       <button class="btn" onclick="toggleDark()" style="width:100%;background:linear-gradient(135deg,#263238,#37474F);color:#fff">🌙 وضع الليل / النهار</button>
+    </div>
+    <div class="set-section">
+      <div class="set-label">🚫 قائمة المعفيين</div>
+      <p style="font-size:11px;color:#888;margin-bottom:8px">تحميل قائمة جميع المعفيين من كل الأقسام مع الإمضاءات</p>
+      <button class="btn" onclick="downloadExemptList()" style="width:100%;background:linear-gradient(135deg,#E65100,#FF6D00);color:#fff">
+        ⬇️ تحميل قائمة المعفيين (PDF)
+      </button>
     </div>
     <div class="set-section">
       <div class="set-label">⚠️ خطر</div>
@@ -404,6 +416,20 @@ body.dark .navbar{background:#1e1e1e;border-color:#333}
   </div>
 </div>
 
+
+<!-- Modal: تأكيد الحذف -->
+<div class="mo" id="mDel">
+  <div class="modal-c" style="text-align:center">
+    <div class="mh"></div>
+    <div style="font-size:40px;margin-bottom:8px">🗑️</div>
+    <div style="font-size:16px;font-weight:900;margin-bottom:6px">تأكيد الحذف</div>
+    <div id="mDel-msg" style="font-size:13px;color:#666;margin-bottom:16px"></div>
+    <div style="display:flex;gap:8px">
+      <button onclick="confirmDel()" style="flex:1;background:var(--red);color:#fff;border:none;border-radius:10px;padding:12px;font-family:Cairo,sans-serif;font-size:14px;font-weight:700;cursor:pointer">🗑️ نعم، احذف</button>
+      <button onclick="closeMo('mDel')" style="flex:1;background:#eee;color:#333;border:none;border-radius:10px;padding:12px;font-family:Cairo,sans-serif;font-size:14px;font-weight:700;cursor:pointer">إلغاء</button>
+    </div>
+  </div>
+</div>
 <!-- Modal: دليل المستخدم -->
 <div class="mo" id="mGuide">
   <div class="modal-c" style="border-radius:20px 20px 0 0">
@@ -416,57 +442,86 @@ body.dark .navbar{background:#1e1e1e;border-color:#333}
       </div>
     </div>
     <div id="guide-body" style="font-size:12px;line-height:2">
-      <div style="background:linear-gradient(135deg,var(--gd),var(--gm));color:#fff;border-radius:10px;padding:14px;text-align:center;margin-bottom:12px">
-        <div style="font-size:15px;font-weight:900">🏅 EPS Pro — برنامج التقييم الفصلي</div>
-        <div style="font-size:11px;opacity:.85;margin-top:4px">للأستاذ دلباز محمد · ثانوية سماحي بوعمامة بن أحمد</div>
+      <div style="background:linear-gradient(135deg,#1B5E20,#2E7D32);color:#fff;border-radius:12px;padding:16px;text-align:center;margin-bottom:14px">
+        <div style="font-size:16px;font-weight:900">🏅 EPS Pro v2.4</div>
+        <div style="font-size:11px;opacity:.85;margin-top:4px">برنامج التقييم الفصلي للتربية البدنية والرياضية</div>
+        <div style="font-size:10px;opacity:.7;margin-top:2px">Delbaz_Med | Mai 2026</div>
       </div>
-      <div class="guide-section" style="background:#e8f5e9">
-        <b style="color:var(--gd)">📱 الصفحات</b><br>
-        🏠 <b>الرئيسية</b> — ملخص عام وإحصائيات سريعة<br>
+
+      <div class="guide-section" style="background:#e8f5e9;margin-bottom:8px">
+        <b style="color:#1B5E20;font-size:13px">📱 الصفحات الرئيسية</b><br>
+        🏠 <b>الرئيسية</b> — ملخص عام وتنبيهات الأقسام<br>
         👥 <b>التلاميذ</b> — إدارة التلاميذ وإدخال الدرجات<br>
-        📊 <b>الإحصائيات</b> — تحليل نتائج كل قسم<br>
-        🔄 <b>المقارنة</b> — مقارنة الأقسام ببعضها<br>
-        🏫 <b>الأقسام</b> — إضافة وتعديل الأقسام<br>
-        ⚙️ <b>الإعدادات</b> — بيانات المؤسسة والأستاذ
+        📊 <b>الإحصائيات</b> — تحليل نتائج كل قسم + المعدل السنوي<br>
+        🔄 <b>المقارنة</b> — مقارنة الأقسام مع ملخص تفصيلي<br>
+        🏫 <b>الأقسام</b> — إضافة وتعديل وحذف الأقسام<br>
+        ⚙️ <b>الإعدادات</b> — بيانات المؤسسة، النسخ الاحتياطي، المعفيون
       </div>
-      <div class="guide-section" style="background:#e3f2fd">
-        <b style="color:#1565C0">📊 حساب المعدل</b><br>
-        المعدل = (مراقبة×1 + فرض×1 + اختبار×2) ÷ 4<br>
-        الاختبار يُحتسب من 20 ويُضرب في 2<br>
-        🚫 المعفى لا يُحتسب في الإحصائيات
+
+      <div class="guide-section" style="background:#e3f2fd;margin-bottom:8px">
+        <b style="color:#1565C0;font-size:13px">📊 حساب المعدلات</b><br>
+        <b>الفصلي:</b> المعدل = (مراقبة×1 + فرض×1 + اختبار×2) ÷ 4<br>
+        <b>السنوي:</b> المعدل = (معدل ف1 + معدل ف2 + معدل ف3) ÷ 3<br>
+        ⚠️ الاختبار يُحتسب من 20 ويُضرب في 2 (يُعادل 40)<br>
+        🚫 المعفى كلياً (بلا درجات في الفصول الثلاثة) لا يُحتسب في الإحصائيات
       </div>
-      <div class="guide-section" style="background:#f3e5f5">
-        <b style="color:#6A1B9A">👥 إدارة التلاميذ</b><br>
-        ➕ إضافة تلميذ — اضغط زر "➕ إضافة تلميذ"<br>
-        ✏️ تعديل — اضغط على اسم التلميذ<br>
-        🗑️ حذف فردي — زر 🗑️ بجانب التلميذ<br>
-        🗑️ حذف جماعي — زر "🗑️ حذف" ← حدد ← احذف<br>
-        ↩️ تراجع — يظهر تلقائياً بعد كل عملية<br>
-        🔍 بحث — اكتب في خانة البحث
+
+      <div class="guide-section" style="background:#f3e5f5;margin-bottom:8px">
+        <b style="color:#6A1B9A;font-size:13px">👥 إدارة التلاميذ</b><br>
+        ➕ <b>إضافة</b> — زر "➕ إضافة تلميذ" (اسم، جنس، درجات، غيابات، سلوك، هاتف الولي)<br>
+        ✏️ <b>تعديل</b> — اضغط على اسم التلميذ في القائمة<br>
+        🗑️ <b>حذف فردي</b> — زر 🗑️ ← نافذة تأكيد منبثقة<br>
+        🗑️ <b>حذف جماعي</b> — زر "🗑️ حذف" ← حدد التلاميذ ← احذف<br>
+        ☑️ <b>تحديد الكل</b> — زر "☑️ تحديد الكل" في شريط الحذف<br>
+        ↩️ <b>تراجع</b> — يظهر تلقائياً فوق البحث بعد كل عملية<br>
+        🔍 <b>بحث</b> — اكتب في خانة البحث للتصفية الفورية<br>
+        ⠿ <b>ترتيب</b> — اسحب التلميذ لتغيير ترتيبه
       </div>
-      <div class="guide-section" style="background:#fff3e0">
-        <b style="color:#E65100">📥 الاستيراد من Excel</b><br>
-        1. اضغط "📥 استيراد"<br>
-        2. اختر الفصل (ف1/ف2/ف3)<br>
-        3. اختر الوضع: إضافة أو استبدال<br>
-        4. اختر الملف ← اضغط استيراد<br>
-        <span style="color:var(--red)">⚠️ الملف يحتوي: اللقب، الاسم، م، ف، اختبار</span>
+
+      <div class="guide-section" style="background:#fff3e0;margin-bottom:8px">
+        <b style="color:#E65100;font-size:13px">📥 الاستيراد من Excel</b><br>
+        1. اضغط "📥 استيراد" في صفحة التلاميذ<br>
+        2. اختر الفصل المستهدف (ف1 / ف2 / ف3)<br>
+        3. اختر وضع الاستيراد:<br>
+        &nbsp;&nbsp;➕ <b>إضافة وتحديث</b> — يحتفظ بالموجود ويضيف الجديد<br>
+        &nbsp;&nbsp;🔄 <b>استبدال كامل</b> — يحذف القسم ويستورد من جديد<br>
+        4. اختر الملف واضغط استيراد<br>
+        ⚠️ <b>تنسيق الملف:</b> اللقب | الاسم | المراقبة | الفرض | الاختبار
       </div>
-      <div class="guide-section" style="background:#fce4ec">
-        <b style="color:#880E4F">📱 إرسال رسائل</b><br>
-        اضغط زر 📱 بجانب التلميذ<br>
-        اختر SMS أو واتساب<br>
-        يُرسَل: الاسم، القسم، الدرجات، المعدل، الإرشاد<br>
-        <span style="color:var(--red)">⚠️ يجب إدخال رقم الولي مسبقاً</span>
+
+      <div class="guide-section" style="background:#e8f5e9;margin-bottom:8px">
+        <b style="color:#1B5E20;font-size:13px">📤 التصدير والطباعة</b><br>
+        📊 <b>تصدير Excel</b> — القسم الحالي أو كل الأقسام (مع ورقة معلومات البرنامج)<br>
+        🖨️ <b>طباعة PDF</b> — كشف بالترتيب والمعدلات والإرشاد التربوي<br>
+        💾 <b>نسخ احتياطي</b> — في الإعدادات — يحفظ كل البيانات كملف JSON<br>
+        📤 <b>استعادة</b> — تحميل نسخة احتياطية سابقة<br>
+        🚫 <b>قائمة المعفيين</b> — في الإعدادات — PDF مع إمضاءات الأستاذ والمستشار والناظر
       </div>
-      <div class="guide-section" style="background:#e0f7fa">
-        <b style="color:#006064">💡 نصائح</b><br>
+
+      <div class="guide-section" style="background:#fce4ec;margin-bottom:8px">
+        <b style="color:#880E4F;font-size:13px">📱 إرسال الرسائل</b><br>
+        • اضغط زر 📱 بجانب اسم التلميذ<br>
+        • اختر <b>SMS</b> (مختصر) أو <b>واتساب</b> (مفصّل)<br>
+        • الرسالة تحتوي: الاسم، القسم، الدرجات، المعدل، التقدير<br>
+        ⚠️ يجب إدخال رقم هاتف الولي في بيانات التلميذ مسبقاً
+      </div>
+
+      <div class="guide-section" style="background:#e0f7fa;margin-bottom:8px">
+        <b style="color:#006064;font-size:13px">🚫 نظام الإعفاء</b><br>
+        • <b>معفى كلياً</b> = بلا درجات في الفصول الثلاثة → لا يُحتسب في الإحصائيات<br>
+        • <b>معفى جزئياً</b> = له درجات في فصل أو فصلين → يُحتسب معدله من الفصول المتاحة<br>
+        • في السنوي: المعفى كلياً يظهر بعلامة "معفى" بدون ترتيب
+      </div>
+
+      <div class="guide-section" style="background:#f5f5f5">
+        <b style="color:#333;font-size:13px">💡 نصائح مهمة</b><br>
         💾 البيانات تُحفظ تلقائياً في المتصفح<br>
-        📥 نسخ احتياطي من الإعدادات دورياً<br>
+        📥 خذ نسخة احتياطية دورياً من الإعدادات<br>
         🌙 وضع الليل في الإعدادات<br>
-        ⠿ اسحب التلميذ لتغيير ترتيبه
+        ↩️ التراجع يحفظ آخر 10 عمليات<br>
+        📱 التطبيق يعمل بدون إنترنت بعد التثبيت (PWA)
       </div>
-    </div>
+    </div></div>
   </div>
 </div>
 
@@ -577,6 +632,198 @@ function toast(msg, dur=2500){
 
 function openMo(id){ document.getElementById(id).classList.add('open'); }
 function closeMo(id){ document.getElementById(id).classList.remove('open'); }
+
+
+// معفى كلياً = معفى في الفصول الثلاثة
+function isFullyExempt(lname, fname, cid) {
+  return ['f1','f2','f3'].every(t => {
+    const s = (state[t]?.students||[]).find(x=>x.lname===lname&&x.fname===fname&&x.classId===cid);
+    return s && s.exempt;
+  });
+}
+
+// معدل التلميذ من الفصول التي له فيها درجات
+function studentAnnAvg(lname, fname, cid) {
+  const avgs = ['f1','f2','f3'].map(t=>{
+    const s=(state[t]?.students||[]).find(x=>x.lname===lname&&x.fname===fname&&x.classId===cid);
+    return (s&&!s.exempt&&s.m!=null&&s.f!=null&&s.a!=null)?avg(s.m,s.f,s.a):null;
+  }).filter(x=>x!==null);
+  return avgs.length ? avgs.reduce((a,b)=>a+b,0)/avgs.length : null;
+}
+
+
+// ======= DELETE MODAL =======
+let delTarget = null;
+function confirmDelStu(id) {
+  const t = getT();
+  const s = getTD(t).students.find(x=>x.id===id);
+  if(!s) return;
+  delTarget = {type:'stu', id};
+  document.getElementById('mDel-msg').textContent = s.lname + ' ' + s.fname + ' — سيُحذف من الفصول الثلاثة';
+  openMo('mDel');
+}
+function confirmDel() {
+  if(!delTarget) return;
+  if(delTarget.type==='stu') {
+    pushUndo('حذف تلميذ');
+    ['f1','f2','f3'].forEach(t=>{
+      if(state[t]?.students) state[t].students = state[t].students.filter(s=>s.id!==delTarget.id);
+    });
+    saveState(); renderStuList();
+    showUndo('تم حذف التلميذ');
+  }
+  delTarget = null;
+  closeMo('mDel');
+}
+
+
+function downloadExemptList(){
+  // جمع المعفيين كلياً من كل الأقسام
+  const allExempt=[];
+  const seen=new Set();
+  state.classes.forEach(cls=>{
+    // نجمع التلاميذ من الفصول الثلاثة (بدون تكرار)
+    const stuMap=new Map();
+    ['f1','f2','f3'].forEach(t=>{
+      (state[t]?.students||[]).filter(s=>s.classId===cls.id).forEach(s=>{
+        const k=s.lname+'|'+s.fname+'|'+s.classId;
+        if(!stuMap.has(k)) stuMap.set(k,{...s});
+      });
+    });
+    stuMap.forEach(s=>{
+      if(isFullyExempt(s.lname,s.fname,s.classId)){
+        const k=s.lname+'|'+s.fname+'|'+s.classId;
+        if(!seen.has(k)){
+          seen.add(k);
+          allExempt.push({...s,className:cls.name});
+        }
+      }
+    });
+  });
+
+  if(!allExempt.length){toast('لا يوجد معفيون في أي قسم');return;}
+
+  // تجميع حسب القسم
+  const byClass={};
+  allExempt.forEach(s=>{
+    if(!byClass[s.className]) byClass[s.className]=[];
+    byClass[s.className].push(s);
+  });
+
+  let rowNum=0;
+  const rows=Object.entries(byClass).map(([cls,stus])=>{
+    const clsRows=stus.map(s=>{
+      rowNum++;
+      const gender=s.gender==='ذكر'?'ذكر':'أنثى';
+      return `<tr>
+        <td>${rowNum}</td>
+        <td style="text-align:right;font-weight:700">${s.lname}</td>
+        <td style="text-align:right;font-weight:700">${s.fname}</td>
+        <td>${gender}</td>
+        <td style="text-align:right;color:#1B5E20;font-weight:700">${cls}</td>
+      </tr>`;
+    }).join('');
+    return `<tr style="background:#e8f5e9">
+      <td colspan="5" style="text-align:right;font-weight:900;color:#1B5E20;padding:6px 8px">
+        🏫 ${cls} — ${stus.length} معفى/ة
+      </td>
+    </tr>${clsRows}`;
+  }).join('');
+
+  const w=window.open('','_blank');
+  if(!w){toast('❗ فعّل النوافذ المنبثقة');return;}
+  w.document.write(`<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:Cairo,sans-serif;padding:10mm;font-size:10pt;color:#222}
+  @page{size:A4;margin:10mm}
+  @media print{body{padding:0}}
+  .wm{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) rotate(-35deg);
+      font-size:70px;font-weight:900;color:rgba(27,94,32,.05);pointer-events:none;
+      white-space:nowrap;z-index:-1;font-family:Arial}
+  .hdr{text-align:center;border-bottom:3px solid #1B5E20;padding-bottom:10px;margin-bottom:16px}
+  .hs{font-size:15px;font-weight:900;color:#1B5E20}
+  .hi{font-size:10px;color:#555;margin-top:5px}
+  h2{font-size:13px;font-weight:900;color:#E65100;margin:12px 0;text-align:center;
+     background:#FFF3E0;padding:6px;border-radius:8px}
+  .total{text-align:center;font-size:12px;font-weight:700;color:#E65100;
+         margin-bottom:14px;background:#FFF3E0;padding:6px;border-radius:8px}
+  table{width:100%;border-collapse:collapse;margin-bottom:20px}
+  th{background:#1B5E20;color:#fff;padding:7px 6px;text-align:center;font-size:10pt}
+  td{padding:5px 6px;border:.5px solid #ccc;text-align:center;font-size:10pt}
+  tr:nth-child(even) td{background:#f9f9f9}
+  .sigs{display:flex;justify-content:space-around;margin-top:35px;padding-top:16px;border-top:2px solid #1B5E20}
+  .sig{text-align:center;min-width:120px}
+  .sig-title{font-size:11px;font-weight:900;color:#1B5E20;margin-bottom:5px}
+  .sig-line{border-top:1px solid #999;margin-top:45px;padding-top:5px;font-size:9pt;color:#666}
+  .footer{text-align:center;margin-top:16px;font-size:8pt;color:#aaa;border-top:1px solid #eee;padding-top:8px}
+</style>
+</head>
+<body>
+  <div class="wm">Delbaz_Med 26</div>
+  <div class="hdr">
+    <div class="hs">الجمهورية الجزائرية الديمقراطية الشعبية</div>
+    <div class="hs" style="margin-top:4px">${settings.school}</div>
+    <div class="hi">
+      السنة الدراسية: <b>${settings.year}</b> &nbsp;|&nbsp;
+      أستاذ التربية البدنية والرياضية: <b>${settings.teacher}</b> &nbsp;|&nbsp;
+      التاريخ: <b>${new Date().toLocaleDateString('ar-DZ')}</b>
+    </div>
+  </div>
+
+  <h2>🚫 قائمة التلاميذ المعفيين من التقييم الفصلي</h2>
+  <div class="total">إجمالي المعفيين: <span style="font-size:15px">${allExempt.length}</span> تلميذ/ة من ${state.classes.length} أقسام</div>
+
+  <table>
+    <tr>
+      <th style="width:35px">#</th>
+      <th>اللقب</th>
+      <th>الاسم</th>
+      <th style="width:60px">الجنس</th>
+      <th>القسم</th>
+    </tr>
+    ${rows}
+  </table>
+
+  <div class="sigs">
+    <div class="sig">
+      <div class="sig-title">أستاذ التربية البدنية</div>
+      <div class="sig-line">${settings.teacher}</div>
+    </div>
+    <div class="sig">
+      <div class="sig-title">مستشار التربية</div>
+      <div class="sig-line">&nbsp;</div>
+    </div>
+    <div class="sig">
+      <div class="sig-title">الناظر</div>
+      <div class="sig-line">&nbsp;</div>
+    </div>
+  </div>
+
+  <div class="footer">
+    EPS Pro v2.4 | المطور: Delbaz_Med 26 | ${new Date().toLocaleDateString('ar-DZ')}
+  </div>
+</body>
+</html>`);
+  w.document.close();
+  setTimeout(()=>w.print(),700);
+}
+
+function genderIcon(s){
+  if(s.gender==='ذكر') return '👦';
+  if(s.gender==='أنثى') return '👧';
+  // تخمين من الاسم
+  const maleEndings=['ين','ان','ون','ون','اد','ام','يم','ود','وف','ير','ير','دي','دى'];
+  const femaleEndings=['ة','ات','اء','ى','ية','ينة','ان','ية'];
+  const name = (s.fname||'').trim();
+  for(const e of femaleEndings){ if(name.endsWith(e)) return '👧'; }
+  for(const e of maleEndings){ if(name.endsWith(e)) return '👦'; }
+  return '🧑';
+}
 
 // ======= UNDO =======
 let undoStack = [];
@@ -691,7 +938,7 @@ function renderHome(){
     const avgs = tAvgs(t, cls.id);
     totalStu += stus.length;
     totalPass += avgs.filter(a=>a>=10).length;
-    totalExempt += stus.filter(s=>s.exempt).length;
+    totalExempt += stus.filter(s=>isFullyExempt(s.lname,s.fname,s.classId)).length;
   });
 
   document.getElementById('h-info').textContent = TERMS[t].label + ' · ' + settings.year;
@@ -743,15 +990,59 @@ function renderStudents(){
 
 function renderStuList(){
   const t = getT();
+  const isAnn = state.activeTerm === 'ann';
   const listEl = document.getElementById('stu-list');
   if(!state.curCls){ listEl.innerHTML='<div style="color:#aaa;text-align:center;padding:30px">اختر قسماً أولاً</div>'; return; }
-  const stus = tStu(t, state.curCls);
+  // في السنوي نجمع التلاميذ من كل الفصول
+  let stus;
+  if(isAnn){
+    const stuMap=new Map();
+    ['f1','f2','f3'].forEach(tm=>{
+      (state[tm]?.students||[]).filter(s=>s.classId===state.curCls).forEach(s=>{
+        const key=s.lname+'|'+s.fname+'|'+s.classId;
+        if(!stuMap.has(key)) stuMap.set(key,{...s});
+      });
+    });
+    stus=[...stuMap.values()];
+  } else {
+    stus = tStu(t, state.curCls);
+  }
   if(!stus.length){ listEl.innerHTML='<div style="color:#aaa;text-align:center;padding:30px">لا يوجد تلاميذ في هذا القسم<br><small>اضغط ➕ لإضافة تلاميذ</small></div>'; return; }
 
   listEl.innerHTML = stus.map((s,i)=>{
-    const a = s.exempt ? null : avg(s.m,s.f,s.a);
+    // حساب المعدل حسب الفصل
+    let a, dispContent;
+    if(isAnn){
+      // السنوي: معدل كل فصل ثم القسمة على 3
+      const gta=tm=>{
+        const ts=(state[tm]?.students||[]).find(x=>x.id===s.id||( x.lname===s.lname&&x.fname===s.fname&&x.classId===s.classId));
+        return(!ts||ts.exempt||ts.m==null||ts.f==null||ts.a==null)?null:avg(ts.m,ts.f,ts.a);
+      };
+      const a1=gta('f1'), a2=gta('f2'), a3=gta('f3');
+      const fullEx=isFullyExempt(s.lname,s.fname,s.classId);
+      a = fullEx ? null : (((a1??0)+(a2??0)+(a3??0))/3 || null);
+      if(fullEx){
+        dispContent=`<span style="font-size:11px;color:#E65100;font-weight:700;background:#FFE0B2;padding:2px 7px;border-radius:5px">🚫 معفى</span>`;
+      } else {
+        dispContent=`<span style="font-size:11px;font-weight:700;display:inline-flex;gap:4px">
+          <span style="background:#e8f5e9;color:#1B5E20;border-radius:4px;padding:1px 6px">📘${a1!==null?a1.toFixed(1):'-'}</span>
+          <span style="background:#e3f2fd;color:#1565C0;border-radius:4px;padding:1px 6px">📗${a2!==null?a2.toFixed(1):'-'}</span>
+          <span style="background:#f3e5f5;color:#6A1B9A;border-radius:4px;padding:1px 6px">📕${a3!==null?a3.toFixed(1):'-'}</span>
+        </span>`;
+      }
+    } else {
+      a = s.exempt ? null : avg(s.m,s.f,s.a);
+      if(s.exempt){
+        dispContent=`<span style="font-size:11px;color:#E65100;font-weight:700;background:#FFE0B2;padding:2px 7px;border-radius:5px">🚫 معفى</span>`;
+      } else {
+        dispContent=`<span style="font-size:11px;font-weight:700;display:inline-flex;gap:4px">
+          <span style="background:#e8f5e9;color:#1B5E20;border-radius:4px;padding:1px 6px">م:${s.m??'-'}</span>
+          <span style="background:#e3f2fd;color:#1565C0;border-radius:4px;padding:1px 6px">ف:${s.f??'-'}</span>
+          <span style="background:#f3e5f5;color:#6A1B9A;border-radius:4px;padding:1px 6px">اخ:${s.a??'-'}</span>
+        </span>`;
+      }
+    }
     const mn = men(a);
-    const ir = irshad(a, s.exempt);
     const isSel = bulkSel.has(s.id);
     return `<div class="si ${isSel?'bulk-sel':''}" data-id="${s.id}">
       ${bulkMode
@@ -759,21 +1050,13 @@ function renderStuList(){
         : '<span class="drag-handle">⠿</span>'
       }
       <div style="flex:1;cursor:pointer;min-width:0" onclick="${bulkMode?`toggleBulkSel('${s.id}')`:`openStuMo('${s.id}')` }">
-        <div class="sn">${s.gender==='ذكر'?'👦':'👧'} ${s.lname} ${s.fname}</div>
+        <div class="sn">${genderIcon(s)} ${s.lname} ${s.fname}</div>
         <div style="margin-top:3px;display:flex;flex-wrap:wrap;gap:3px;align-items:center">
-          ${s.exempt
-            ? '<span style="font-size:11px;color:#E65100;font-weight:700;background:#FFE0B2;padding:2px 7px;border-radius:5px">🚫 معفى</span>'
-            : `<span style="font-size:11px;font-weight:700;display:inline-flex;gap:4px">
-                <span style="background:#e8f5e9;color:#1B5E20;border-radius:4px;padding:1px 6px">م:${s.m??'-'}</span>
-                <span style="background:#e3f2fd;color:#1565C0;border-radius:4px;padding:1px 6px">ف:${s.f??'-'}</span>
-                <span style="background:#f3e5f5;color:#6A1B9A;border-radius:4px;padding:1px 6px">اخ:${s.a??'-'}</span>
-              </span>`
-          }
+          ${dispContent}
         </div>
-        ${ir?`<div style="font-size:10px;color:#666;margin-top:2px;font-style:italic">💡 ${ir}</div>`:''}
       </div>
       <div style="display:flex;align-items:center;gap:4px">
-        <div class="sa ${s.exempt?'sa-ex':mn.cl}">${s.exempt?'معفى':(a!==null?a.toFixed(2):'--')}</div>
+        <div class="sa ${(isAnn?isFullyExempt(s.lname,s.fname,s.classId):s.exempt)?'sa-ex':mn.cl}">${(isAnn?isFullyExempt(s.lname,s.fname,s.classId):s.exempt)?'معفى':(a!==null?a.toFixed(2):'--')}</div>
         ${!bulkMode?`<button class="sms-btn" onclick="sendMsg('${s.id}')" title="إرسال رسالة">📱</button>`:''};
         ${!bulkMode?`<button class="sdel" onclick="delStu('${s.id}')">🗑️</button>`:''};
       </div>
@@ -867,16 +1150,7 @@ function saveStu(){
   toast('✅ ' + (state.editId?'تم التعديل':'تمت الإضافة'));
 }
 
-function delStu(id){
-  if(!confirm('حذف هذا التلميذ من الفصول الثلاثة؟')) return;
-  pushUndo('حذف تلميذ');
-  ['f1','f2','f3'].forEach(t=>{
-    if(state[t]&&state[t].students)
-      state[t].students = state[t].students.filter(s=>s.id!==id);
-  });
-  saveState(); renderStuList();
-  showUndo('تم حذف التلميذ');
-}
+function delStu(id){ confirmDelStu(id); }
 
 // ======= SMS/WHATSAPP =======
 function sendMsg(sid){
@@ -886,24 +1160,30 @@ function sendMsg(sid){
   const cls = (state.classes.find(c=>c.id===s.classId)||{}).name||'';
   const a = s.exempt ? null : avg(s.m,s.f,s.a);
   const mn = men(a);
-  const ir = irshad(a, s.exempt);
   const TERM_LBL = TERMS[t]?.label||'';
-  const lines = [
+  const phone = s.phone ? s.phone.replace(/[^0-9]/g,'') : '';
+
+  // SMS مختصر (لتجنب MMS)
+  const smsLines = [
+    'EPS: ' + s.lname + ' ' + s.fname,
+    cls + ' | ' + TERM_LBL,
+    s.exempt ? 'معفى' : 'م:' + (s.m??'-') + ' ف:' + (s.f??'-') + ' اخ:' + (s.a??'-') + ' | ' + (a!==null?a.toFixed(2)+'/20':'--') + ' ' + mn.t,
+    settings.teacher
+  ];
+  const smsMsg = smsLines.join('\n');
+
+  // واتساب مطول
+  const waLines = [
     '🏅 برنامج التقييم الفصلي',
     settings.school,
-    '━━━━━━━━━━━━━━━',
     'التلميذ: ' + s.lname + ' ' + s.fname,
     'القسم: ' + cls + ' | ' + TERM_LBL + ' | ' + settings.year,
-    '━━━━━━━━━━━━━━━',
     s.exempt ? 'الحالة: معفى من التقييم' :
       'م:' + (s.m??'-') + '/20  ف:' + (s.f??'-') + '/20  اخ:' + (s.a??'-') + '/20\n' +
-      'المعدل: ' + (a!==null?a.toFixed(2)+'/20':'--') + ' | ' + mn.t +
-      (ir ? '\n💡 ' + ir : ''),
-    '━━━━━━━━━━━━━━━',
+      'المعدل: ' + (a!==null?a.toFixed(2)+'/20':'--') + ' | التقدير: ' + mn.t,
     'أستاذ التربية البدنية: ' + settings.teacher
   ];
-  const msg = lines.join('\n');
-  const phone = s.phone ? s.phone.replace(/[^0-9]/g,'') : '';
+  const msg = waLines.join('\n');
 
   const d = document.createElement('div');
   d.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px;font-family:Cairo,sans-serif';
@@ -911,7 +1191,7 @@ function sendMsg(sid){
     <div style="font-weight:900;font-size:15px;margin-bottom:10px;color:var(--gd)">📨 إرسال رسالة</div>
     <div style="font-size:11px;background:#f5f5f5;border-radius:8px;padding:10px;margin-bottom:14px;white-space:pre-wrap;line-height:1.8;max-height:180px;overflow-y:auto">${msg.replace(/\n/g,'<br>')}</div>
     <div style="display:flex;flex-direction:column;gap:8px">
-      <button onclick="window.open('sms:${phone}?body='+encodeURIComponent(this.dataset.msg),'_blank');this.closest('[style*=fixed]').remove()" data-msg="${msg}"
+      <button onclick="window.open('sms:${phone}?body='+encodeURIComponent(this.dataset.smsmsg),'_blank');this.closest('[style*=fixed]').remove()" data-smsmsg="${smsMsg}"
         style="background:var(--gd);color:#fff;border:none;border-radius:10px;padding:12px;font-family:Cairo,sans-serif;font-size:13px;font-weight:700;cursor:pointer">
         📱 SMS ${phone?'→ '+phone:''}
       </button>
@@ -947,13 +1227,15 @@ function renderStats(){
   const passed = avgs.filter(a=>a>=10).length;
   const cAvg = avgs.length ? avgs.reduce((a,b)=>a+b,0)/avgs.length : null;
   const rate = stus.length ? (passed/stus.length*100) : 0;
-  const exempt = stus.filter(s=>s.exempt).length;
+  const exempt = stus.filter(s=>isFullyExempt(s.lname,s.fname,s.classId)).length;
   const mn = men(cAvg);
 
   const ranked = [...stus].filter(s=>!s.exempt&&avg(s.m,s.f,s.a)!==null)
     .map(s=>{return{...s,av:avg(s.m,s.f,s.a)}})
     .sort((a,b)=>b.av-a.av);
 
+  const exemptList=stus.filter(s=>isFullyExempt(s.lname,s.fname,s.classId));
+  const exemptSection=exemptList.length?`<div class="card" style="border-right:4px solid #E65100;margin-top:10px"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px"><div class="ct" style="margin-bottom:0;color:#E65100">🚫 المعفيون (${exemptList.length})</div></div>${exemptList.map((s,i)=>`<div style="display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid #f5f5f5;font-size:12px"><span style="color:#888;min-width:20px;text-align:center">${i+1}</span><span style="flex:1;font-weight:700">${s.lname} ${s.fname}</span><span>${genderIcon(s)}</span></div>`).join('')}</div>`:'';
   contEl.innerHTML = `
     <div class="stat-grid">
       <div class="stat-box"><div class="stat-val">${stus.length}</div><div class="stat-lbl">إجمالي</div></div>
@@ -963,57 +1245,165 @@ function renderStats(){
       <div class="stat-box"><div class="stat-val" style="color:#F9A825">${rate.toFixed(1)}%</div><div class="stat-lbl">نسبة النجاح</div></div>
       <div class="stat-box"><div class="stat-val" style="color:${mn.c}">${cAvg!==null?cAvg.toFixed(2):'--'}</div><div class="stat-lbl">معدل القسم</div></div>
     </div>
+    ${exemptSection}
     ${ranked.length?`<div class="card">
       <div class="ct">🏆 الترتيب</div>
-      ${ranked.map((s,i)=>`<div class="ann-row">
-        <div class="ann-rank">${i+1}</div>
-        <div style="flex:1;font-size:12px;font-weight:700">${s.lname} ${s.fname}</div>
-        <div style="font-size:13px;font-weight:900;color:${men(s.av).c}">${s.av.toFixed(2)}</div>
-        <div style="font-size:10px;color:#888;margin-right:6px">${men(s.av).t}</div>
+      <div style="display:grid;grid-template-columns:30px 1fr 60px 55px;gap:4px;font-size:10px;font-weight:700;color:#888;padding:4px 6px;border-bottom:2px solid #eee;margin-bottom:4px">
+        <span>#</span><span>اللقب والاسم</span><span style="text-align:center">المعدل</span><span style="text-align:center">التقدير</span>
+      </div>
+      ${ranked.map((s,i)=>`<div style="display:grid;grid-template-columns:30px 1fr 60px 55px;gap:4px;align-items:center;padding:5px 6px;border-radius:8px;margin-bottom:3px;background:${i%2===0?'#f9f9f9':'#fff'}">
+        <span style="font-size:11px;font-weight:900;color:#aaa;text-align:center">${i+1}</span>
+        <span style="font-size:12px;font-weight:700">${s.lname} ${s.fname}</span>
+        <span style="font-size:14px;font-weight:900;color:${men(s.av).c};text-align:center">${s.av.toFixed(2)}</span>
+        <span style="font-size:10px;color:${men(s.av).c};text-align:center;background:${men(s.av).c}22;border-radius:6px;padding:2px 4px">${men(s.av).t}</span>
       </div>`).join('')}
     </div>`:''}
   `;
 }
 
 function renderAnnual(){
-  const contEl = document.getElementById('stats-content');
-  const stus = tStu('f3', state.curCls);
-  const rows = stus.map(s=>{
-    const a = annAvg(s.lname,s.fname,s.classId);
-    return {...s,annav:a};
+  const contEl=document.getElementById('stats-content');
+  if(!state.curCls){contEl.innerHTML='<div style="color:#aaa;text-align:center;padding:30px">اختر قسماً</div>';return;}
+
+  // نجمع التلاميذ بدون تكرار — بالاسم واللقب والقسم
+  const stuMap=new Map();
+  ['f1','f2','f3'].forEach(t=>{
+    (state[t]?.students||[]).filter(s=>s.classId===state.curCls).forEach(s=>{
+      const key=s.lname+'|'+s.fname+'|'+s.classId;
+      if(!stuMap.has(key)) stuMap.set(key,{...s});
+    });
+  });
+  const allStus=[...stuMap.values()];
+
+  // حساب معدل كل فصل لكل تلميذ
+  const rows=allStus.map(s=>{
+    const gta=t=>{
+      // ابحث بنفس الـ id أولاً، ثم بالاسم
+      let ts=(state[t]?.students||[]).find(x=>x.id===s.id);
+      if(!ts) ts=(state[t]?.students||[]).find(x=>x.lname===s.lname&&x.fname===s.fname&&x.classId===s.classId);
+      if(!ts||ts.exempt) return null;
+      if(ts.m==null||ts.f==null||ts.a==null) return null;
+      return avg(ts.m,ts.f,ts.a);
+    };
+    const a1=gta('f1'), a2=gta('f2'), a3=gta('f3');
+    const valid=[a1,a2,a3].filter(x=>x!==null);
+    // السنوي = مجموع معدلات الفصول ÷ 3 (حتى لو فصل فارغ = صفر)
+    const annav=valid.length ? (a1??0)+(a2??0)+(a3??0) === 0 ? null : ((a1??0)+(a2??0)+(a3??0))/3 : null;
+    const fullEx=isFullyExempt(s.lname,s.fname,s.classId);
+    return {...s,a1,a2,a3,annav,fullEx};
   }).sort((a,b)=>(b.annav??-1)-(a.annav??-1));
 
-  contEl.innerHTML = `<div class="card">
-    <div class="ct">🏆 المعدل السنوي</div>
-    ${rows.map((s,i)=>`<div class="ann-row">
-      <div class="ann-rank">${s.annav!==null?i+1:''}</div>
-      <div style="flex:1;font-size:12px;font-weight:700">${s.lname} ${s.fname}</div>
-      <div style="font-size:13px;font-weight:900;color:${men(s.annav).c}">${s.annav!==null?s.annav.toFixed(2):s.exempt?'معفى':'--'}</div>
-      <div style="font-size:10px;color:#888;margin-right:4px">${s.annav!==null?men(s.annav).t:''}</div>
-    </div>`).join('')}
-  </div>`;
+  const validRows=rows.filter(r=>!r.fullEx&&r.annav!==null);
+  const exemptRows=rows.filter(r=>r.fullEx);
+  const noDataRows=rows.filter(r=>!r.fullEx&&r.annav===null);
+  let rank=0;
+
+  const fmt=v=>v!==null?v.toFixed(2):'--';
+
+  contEl.innerHTML=`
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+        <div class="ct" style="margin-bottom:0">🏆 المعدل السنوي</div>
+        <div style="font-size:11px;color:#888">${validRows.length} تلميذ | ${exemptRows.length} معفى</div>
+      </div>
+
+      ${rows.map(s=>{
+        if(s.fullEx) return `<div style="background:#FFF3E0;border-radius:8px;padding:8px;margin-bottom:5px;display:flex;align-items:center;gap:8px">
+          <span style="color:#E65100;min-width:24px;text-align:center;font-size:12px">–</span>
+          <div style="flex:1"><div style="font-size:12px;font-weight:700">${s.lname} ${s.fname}</div><div style="font-size:10px;color:#E65100">معفى من التقييم</div></div>
+          <span style="font-size:11px;color:#E65100;font-weight:700;background:#FFE0B2;border-radius:6px;padding:3px 8px">معفى</span>
+        </div>`;
+
+        if(s.annav===null) return `<div style="background:#f9f9f9;border-radius:8px;padding:8px;margin-bottom:5px;display:flex;align-items:center;gap:8px;opacity:.6">
+          <span style="color:#aaa;min-width:24px;text-align:center">–</span>
+          <div style="flex:1"><div style="font-size:12px;font-weight:700">${s.lname} ${s.fname}</div><div style="font-size:10px;color:#aaa">لم تُدخَل الدرجات</div></div>
+          <span style="font-size:11px;color:#aaa">--</span>
+        </div>`;
+
+        rank++;
+        return `<div style="border-radius:10px;padding:10px;margin-bottom:6px;border-right:4px solid ${men(s.annav).c};background:#f9f9f9">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+            <div style="min-width:26px;height:26px;border-radius:50%;background:${men(s.annav).c};color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:900">${rank}</div>
+            <div style="flex:1;font-size:13px;font-weight:900">${s.lname} ${s.fname}</div>
+            <div style="font-size:20px;font-weight:900;color:${men(s.annav).c}">${fmt(s.annav)}</div>
+          </div>
+          <div style="display:flex;gap:5px;flex-wrap:wrap;padding-right:34px">
+            <span style="background:#e8f5e9;color:#1B5E20;border-radius:5px;padding:2px 8px;font-size:10px;font-weight:700">📘 ف1: ${fmt(s.a1)}</span>
+            <span style="background:#e3f2fd;color:#1565C0;border-radius:5px;padding:2px 8px;font-size:10px;font-weight:700">📗 ف2: ${fmt(s.a2)}</span>
+            <span style="background:#f3e5f5;color:#6A1B9A;border-radius:5px;padding:2px 8px;font-size:10px;font-weight:700">📕 ف3: ${fmt(s.a3)}</span>
+            <span style="border-radius:5px;padding:2px 8px;font-size:10px;font-weight:700;color:${men(s.annav).c};border:1px solid ${men(s.annav).c}">${men(s.annav).t}</span>
+          </div>
+        </div>`;
+      }).join('')}
+    </div>
+  `;
 }
 
-// ======= COMPARE =======
 function renderCompare(){
   const t = getT();
   const el = document.getElementById('compare-content');
   const data = state.classes.map(cls=>{
-    const avgs = tAvgs(t, cls.id);
-    const stus = tStu(t, cls.id);
-    const ca = avgs.length ? avgs.reduce((a,b)=>a+b,0)/avgs.length : null;
-    const rate = stus.length ? avgs.filter(a=>a>=10).length/stus.length*100 : 0;
-    return {cls, ca, rate, count:stus.length};
+    const avgs=tAvgs(t,cls.id);
+    const stus=tStu(t,cls.id);
+    const ca=avgs.length?avgs.reduce((a,b)=>a+b,0)/avgs.length:null;
+    const passed=avgs.filter(a=>a>=10).length;
+    const failed=avgs.filter(a=>a<10).length;
+    const exempt=stus.filter(s=>isFullyExempt(s.lname,s.fname,s.classId)).length;
+    const rate=stus.length?passed/stus.length*100:0;
+    const ranked=[...stus].filter(s=>!s.exempt&&avg(s.m,s.f,s.a)!==null).map(s=>({...s,av:avg(s.m,s.f,s.a)})).sort((a,b)=>b.av-a.av);
+    return {cls,ca,rate,count:stus.length,passed,failed,exempt,top:ranked[0],bot:ranked[ranked.length-1],mn:men(ca)};
   }).sort((a,b)=>(b.ca??-1)-(a.ca??-1));
 
-  el.innerHTML = data.map((d,i)=>{
-    const mn = men(d.ca);
-    return `<div class="comp-row">
-      <div class="comp-name">${i+1}. ${d.cls.name}<br><span style="font-size:10px;color:#888">${d.count} تلميذ | ${d.rate.toFixed(0)}% نجاح</span></div>
-      <div class="comp-bar-wrap"><div class="comp-bar" style="width:${d.rate}%;background:${mn.c}"></div></div>
-      <div class="comp-val" style="color:${mn.c}">${d.ca!==null?d.ca.toFixed(2):'--'}</div>
-    </div>`;
-  }).join('');
+  const TERM_LBL2=TERMS[t]?.label||'';
+  const totalStus=data.reduce((s,d)=>s+d.count,0);
+  const totalPass=data.reduce((s,d)=>s+d.passed,0);
+  const allCa=data.map(d=>d.ca).filter(x=>x!==null);
+  const globalAvg=allCa.length?allCa.reduce((a,b)=>a+b,0)/allCa.length:null;
+  const globalRate=totalStus?totalPass/totalStus*100:0;
+
+  el.innerHTML=`
+    <div class="card" style="background:linear-gradient(135deg,#1B5E20,#2E7D32);color:#fff;margin-bottom:12px">
+      <div style="font-size:13px;font-weight:900;margin-bottom:8px">📊 ملخص ${TERM_LBL2} — ${settings.year}</div>
+      <div style="font-size:11px;line-height:2;opacity:.95">
+        إجمالي التلاميذ: <b>${totalStus}</b> &nbsp;|&nbsp; ناجحون: <b>${totalPass}</b><br>
+        نسبة النجاح: <b>${globalRate.toFixed(1)}%</b> &nbsp;|&nbsp; المعدل العام: <b>${globalAvg!==null?globalAvg.toFixed(2):'--'}/20</b>
+      </div>
+    </div>
+    ${data.map((d,i)=>`
+    <div class="comp-row">${d.cls.name} (${d.count})</div>
+    <div style="margin-bottom:10px">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
+        <span style="font-size:12px;font-weight:700;flex:1">${i+1}. ${d.cls.name}</span>
+        <span style="font-size:15px;font-weight:900;color:${d.mn.c}">${d.ca!==null?d.ca.toFixed(2):'--'}</span>
+      </div>
+      <div class="comp-bar-wrap" style="margin-bottom:6px"><div class="comp-bar" style="width:${d.rate}%;background:${d.mn.c}"></div></div>
+      <div style="font-size:11px;background:#f9f9f9;border-radius:10px;padding:10px;border-right:4px solid ${d.mn.c}">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:6px">
+          <div style="background:#fff;border-radius:8px;padding:6px;text-align:center">
+            <div style="font-size:18px;font-weight:900;color:${d.mn.c}">${d.ca!==null?d.ca.toFixed(2):'--'}</div>
+            <div style="font-size:9px;color:#888">معدل القسم</div>
+          </div>
+          <div style="background:#fff;border-radius:8px;padding:6px;text-align:center">
+            <div style="font-size:18px;font-weight:900;color:#F9A825">${d.rate.toFixed(1)}%</div>
+            <div style="font-size:9px;color:#888">نسبة النجاح</div>
+          </div>
+          <div style="background:#fff;border-radius:8px;padding:6px;text-align:center">
+            <div style="font-size:13px;font-weight:900;color:#1565C0">${d.top?d.top.av.toFixed(2):'--'}</div>
+            <div style="font-size:9px;color:#888">🥇 أعلى معدل</div>
+          </div>
+          <div style="background:#fff;border-radius:8px;padding:6px;text-align:center">
+            <div style="font-size:13px;font-weight:900;color:var(--red)">${d.bot?d.bot.av.toFixed(2):'--'}</div>
+            <div style="font-size:9px;color:#888">📉 أدنى معدل</div>
+          </div>
+        </div>
+        <div style="color:#555;line-height:1.8;font-size:11px">
+          👥 <b>${d.count}</b> تلميذ &nbsp;|&nbsp; ✅ ناجح: <b style="color:#1565C0">${d.passed}</b> &nbsp;|&nbsp; ❌ راسب: <b style="color:var(--red)">${d.failed}</b> &nbsp;|&nbsp; 🚫 معفى: <b style="color:#E65100">${d.exempt}</b>
+          ${d.top?`<br>🥇 الأول: <b>${d.top.lname} ${d.top.fname}</b> (${d.top.av.toFixed(2)}/20)`:''}
+          ${d.bot&&d.bot.id!==d.top?.id?`<br>📉 الأخير: <b>${d.bot.lname} ${d.bot.fname}</b> (${d.bot.av.toFixed(2)}/20)`:''}
+        </div>
+      </div>
+    </div>`).join('')}
+  `;
 }
 
 // ======= CLASSES =======
@@ -1186,7 +1576,8 @@ function exportExcel(scope){
     });
     XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(rows), cls.name.slice(0,31));
   });
-  XLSX.writeFile(wb, 'نتائج_'+settings.year+'_'+new Date().toISOString().slice(0,10)+'.xlsx');
+  const ws_info=XLSX.utils.aoa_to_sheet([['EPS Pro v2.4 | Delbaz_Med 26'],['المؤسسة: '+settings.school],['الأستاذ: '+settings.teacher],['السنة: '+settings.year],['التاريخ: '+new Date().toLocaleDateString('ar-DZ')]]);XLSX.utils.book_append_sheet(wb,ws_info,'Delbaz_Med');
+XLSX.writeFile(wb,'EPS_Pro_'+settings.year+'_'+new Date().toISOString().slice(0,10)+'.xlsx');
   toast('✅ تم التصدير');
 }
 
@@ -1202,7 +1593,7 @@ function directPrint(){
   const cAvg = avgs.length ? avgs.reduce((a,b)=>a+b,0)/avgs.length : null;
   const rate = stus.length ? (passed/stus.length*100) : 0;
   const mn = men(cAvg);
-  const exempt = stus.filter(s=>s.exempt).length;
+  const exempt = stus.filter(s=>isFullyExempt(s.lname,s.fname,s.classId)).length;
   const TERM_LBL = TERMS[t]?.label||'';
 
   const rows = stus.map((s,i)=>{
