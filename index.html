@@ -381,7 +381,9 @@ body.dark .modal-c { color: #e0e0e0 !important; }
     <div style="display:flex;flex-direction:column;gap:10px">
       <button class="btn bp" onclick="exportExcel('class')">📊 تصدير القسم الحالي (Excel)</button>
       <button class="btn bb" onclick="exportExcel('all')">📊 تصدير كل الأقسام (Excel)</button>
-      <button class="btn by" onclick="directPrint()">🖨️ طباعة كشف PDF</button>
+      <button class="btn by" onclick="directPrint();closeMo('mExp')">🖨️ طباعة كشف الفصل (PDF)</button>
+      <button class="btn" onclick="printAllClasses();closeMo('mExp')" style="background:linear-gradient(135deg,#880E4F,#AD1457);color:#fff">🖨️ طباعة كشف جميع الأقسام (PDF)</button>
+      <button class="btn" onclick="printAnnualAll();closeMo('mExp')" style="background:linear-gradient(135deg,#E65100,#F57C00);color:#fff">🏆 طباعة السنوي لجميع الأقسام (PDF)</button>
     </div>
     <button class="btn" onclick="closeMo('mExp')" style="width:100%;background:#eee;color:#666;margin-top:10px">إغلاق</button>
   </div>
@@ -437,6 +439,15 @@ body.dark .modal-c { color: #e0e0e0 !important; }
     <div style="font-size:10px;color:#aaa;margin-top:12px">
       EPS Pro v2.4 | Delbaz_Med
     </div>
+  </div>
+</div>
+
+<!-- Modal: بطاقة التلميذ -->
+<div class="mo" id="mCard">
+  <div class="modal-c">
+    <div class="mh"></div>
+    <div id="card-content"></div>
+    <button onclick="closeMo('mCard')" style="width:100%;background:#eee;color:#333;border:none;border-radius:10px;padding:12px;font-family:Cairo,sans-serif;font-size:14px;cursor:pointer;margin-top:10px">إغلاق</button>
   </div>
 </div>
 <!-- Modal: تأكيد الحذف -->
@@ -513,13 +524,21 @@ body.dark .modal-c { color: #e0e0e0 !important; }
 
       <div class="guide-section" style="background:#e8f5e9;margin-bottom:8px">
         <b style="color:#1B5E20;font-size:13px">📤 التصدير والطباعة</b><br>
-        📊 <b>تصدير Excel</b> — القسم الحالي أو كل الأقسام (مع ورقة معلومات البرنامج)<br>
-        🖨️ <b>طباعة PDF</b> — كشف بالترتيب والمعدلات والإرشاد التربوي<br>
+        📊 <b>تصدير Excel</b> — القسم الحالي أو كل الأقسام<br>
+        🖨️ <b>طباعة كشف الفصل</b> — PDF للقسم الحالي مع الدرجات والمعدلات<br>
+        🖨️ <b>طباعة كشف جميع الأقسام</b> — PDF لكل الأقسام في ملف واحد<br>
+        🏆 <b>طباعة السنوي لجميع الأقسام</b> — PDF بالمعدل السنوي لكل الأقسام<br>
         💾 <b>نسخ احتياطي</b> — في الإعدادات — يحفظ كل البيانات كملف JSON<br>
         📤 <b>استعادة</b> — تحميل نسخة احتياطية سابقة<br>
         🚫 <b>قائمة المعفيين</b> — في الإعدادات — PDF مع إمضاءات الأستاذ والمستشار والناظر
       </div>
 
+      <div class="guide-section" style="background:#fce4ec;margin-bottom:8px">
+        <b style="color:#006064;font-size:13px">📋 بطاقة التلميذ</b><br>
+        • اضغط زر 📋 بجانب اسم التلميذ لعرض بطاقته الكاملة<br>
+        • تحتوي: تفاصيل كل فصل + المعدل السنوي + التقدير + الإرشاد<br>
+        • زر 💬 لمشاركة البطاقة مع الولي عبر واتساب<br>
+      </div>
       <div class="guide-section" style="background:#fce4ec;margin-bottom:8px">
         <b style="color:#880E4F;font-size:13px">📱 إرسال الرسائل</b><br>
         • اضغط زر 📱 بجانب اسم التلميذ<br>
@@ -665,13 +684,279 @@ function isFullyExempt(lname, fname, cid) {
 
 // معدل التلميذ من الفصول التي له فيها درجات
 function studentAnnAvg(lname, fname, cid) {
+  // القسمة على عدد الفصول التي فيها درجات فعلية (وليس معفى)
   const avgs = ['f1','f2','f3'].map(t=>{
     const s=(state[t]?.students||[]).find(x=>x.lname===lname&&x.fname===fname&&x.classId===cid);
-    return (s&&!s.exempt&&s.m!=null&&s.f!=null&&s.a!=null)?avg(s.m,s.f,s.a):null;
+    if(!s) return null;
+    if(s.exempt) return null; // معفى في هذا الفصل فقط
+    if(s.m==null||s.f==null||s.a==null) return null;
+    return avg(s.m,s.f,s.a);
   }).filter(x=>x!==null);
+  // إذا لا توجد درجات في أي فصل = null
   return avgs.length ? avgs.reduce((a,b)=>a+b,0)/avgs.length : null;
 }
 
+
+
+
+// ======= طباعة كل الأقسام =======
+function printAllClasses(){
+  const t = getT();
+  if(!state.classes.length){toast('لا توجد أقسام');return;}
+  const TERM_LBL = TERMS[t]?.label||'';
+  let allRows = '';
+
+  state.classes.forEach(cls=>{
+    const stus = tStu(t, cls.id);
+    if(!stus.length) return;
+    const avgs = tAvgs(t, cls.id);
+    const passed = avgs.filter(a=>a>=10).length;
+    const cAvg = avgs.length?avgs.reduce((a,b)=>a+b,0)/avgs.length:null;
+    const rate = stus.length?(passed/stus.length*100):0;
+    const mn = men(cAvg);
+    const exempt = stus.filter(s=>isFullyExempt(s.lname,s.fname,s.classId)).length;
+
+    allRows += `<tr style="background:#1B5E20"><td colspan="10" style="color:#fff;font-weight:900;font-size:10pt;text-align:right;padding:5px 8px">
+      🏫 ${cls.name} &nbsp;|&nbsp; ${stus.length} تلميذ &nbsp;|&nbsp; ناجح: ${passed} &nbsp;|&nbsp; نسبة النجاح: ${rate.toFixed(1)}% &nbsp;|&nbsp; المعدل: ${cAvg!=null?cAvg.toFixed(2):'--'}
+    </td></tr>`;
+
+    stus.forEach((s,i)=>{
+      const ex = isFullyExempt(s.lname,s.fname,s.classId)||s.exempt;
+      const a = ex?null:avg(s.m,s.f,s.a);
+      const mn2 = men(a);
+      const ir = irshad(a,ex);
+      const ico = s.gender==='ذكر'?'ذ':'أ';
+      if(ex){
+        allRows += `<tr><td>${i+1}</td><td>${ico}</td><td style="text-align:right">${s.lname} ${s.fname}</td><td colspan="7" style="color:#E65100;text-align:center;font-weight:700">معفى</td></tr>`;
+      } else {
+        allRows += `<tr><td>${i+1}</td><td>${ico}</td><td style="text-align:right">${s.lname} ${s.fname}</td><td>${s.m??'-'}</td><td>${s.f??'-'}</td><td>${s.a??'-'}</td><td>${s.a!=null?((s.a*2).toFixed(1)):''}</td><td style="font-weight:700;color:${mn2.c}">${a!=null?a.toFixed(2):'--'}</td><td style="color:${mn2.c}">${mn2.t}</td><td style="font-size:6pt;font-style:italic">${ir}</td></tr>`;
+      }
+    });
+  });
+
+  const w = window.open('','_blank');
+  if(!w){toast('❗ فعّل النوافذ المنبثقة');return;}
+  w.document.write(`<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="UTF-8">
+    <style>*{box-sizing:border-box;margin:0;padding:0}body{font-family:Arial,sans-serif;padding:7mm;font-size:8.5pt}
+    @page{size:A4;margin:7mm}
+    .wm{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) rotate(-35deg);font-size:60px;font-weight:900;color:rgba(27,94,32,.05);pointer-events:none;white-space:nowrap}
+    .hdr{text-align:center;border-bottom:3px solid #1B5E20;padding-bottom:8px;margin-bottom:10px}
+    table{width:100%;border-collapse:collapse;font-size:8pt;margin-bottom:10px}
+    th{background:#263238;color:#fff;padding:3px 4px;text-align:center}
+    td{padding:2px 4px;border:.5px solid #ddd;text-align:center}tr:nth-child(even) td{background:#f9f9f9}
+    .sigs{display:flex;justify-content:space-between;margin-top:14px;border-top:1px solid #ddd;padding-top:8px}
+    .sig{text-align:center;font-size:8px;min-width:80px}.sigl{border-top:1px solid #999;margin-top:16px;padding-top:3px;color:#888}
+    </style></head><body>
+    <div class="wm">Delbaz_Med 26</div>
+    <div class="hdr">
+      <div style="font-size:13px;font-weight:900;color:#1B5E20">${settings.school}</div>
+      <div style="font-size:9px;color:#555;margin-top:3px">كشف جميع الأقسام | ${TERM_LBL} | السنة: ${settings.year} | الأستاذ: Delbaz_Med</div>
+    </div>
+    <table>
+      <tr><th>#</th><th>ج</th><th style="text-align:right;min-width:120px">اللقب والاسم</th><th>م</th><th>ف</th><th>اخ/20</th><th>اخ/40</th><th>المعدل</th><th>التقدير</th><th>الإرشاد</th></tr>
+      ${allRows}
+    </table>
+    <div class="sigs">
+      <div class="sig"><div class="sigl">مدير المؤسسة</div></div>
+      <div class="sig"><div class="sigl">أستاذ التربية البدنية</div><div>Delbaz_Med</div></div>
+      <div class="sig"><div class="sigl">الناظر</div></div>
+    </div>
+    <div style="text-align:center;font-size:7pt;color:#ccc;margin-top:8px">EPS Pro v2.4 | Delbaz_Med 26</div>
+    </body></html>`);
+  w.document.close();
+  setTimeout(()=>w.print(),800);
+}
+
+// ======= طباعة السنوي لجميع الأقسام =======
+function printAnnualAll(){
+  if(!state.classes.length){toast('لا توجد أقسام');return;}
+  let allRows = '';
+
+  state.classes.forEach(cls=>{
+    // جمع التلاميذ بدون تكرار
+    const sm = new Map();
+    ['f1','f2','f3'].forEach(tm=>{
+      (state[tm]?.students||[]).filter(s=>s.classId===cls.id).forEach(s=>{
+        const k=s.lname+'|'+s.fname;
+        if(!sm.has(k)) sm.set(k,{...s});
+      });
+    });
+    const stus = [...sm.values()];
+    if(!stus.length) return;
+
+    const annAvgs = stus.map(s=>studentAnnAvg(s.lname,s.fname,s.classId)).filter(x=>x!==null);
+    const passed = annAvgs.filter(a=>a>=10).length;
+    const cAvg = annAvgs.length?annAvgs.reduce((a,b)=>a+b,0)/annAvgs.length:null;
+    const rate = stus.length?(passed/stus.length*100):0;
+
+    allRows += `<tr style="background:#E65100"><td colspan="8" style="color:#fff;font-weight:900;font-size:10pt;text-align:right;padding:5px 8px">
+      🏫 ${cls.name} &nbsp;|&nbsp; ${stus.length} تلميذ &nbsp;|&nbsp; ناجح: ${passed} &nbsp;|&nbsp; نسبة النجاح: ${rate.toFixed(1)}% &nbsp;|&nbsp; المعدل: ${cAvg!=null?cAvg.toFixed(2):'--'}
+    </td></tr>`;
+
+    const sorted = [...stus].sort((a,b)=>{
+      const aa=studentAnnAvg(a.lname,a.fname,a.classId)??-1;
+      const ba=studentAnnAvg(b.lname,b.fname,b.classId)??-1;
+      return ba-aa;
+    });
+
+    sorted.forEach((s,i)=>{
+      const fullEx = isFullyExempt(s.lname,s.fname,s.classId);
+      const a = studentAnnAvg(s.lname,s.fname,s.classId);
+      const mn2 = men(a);
+      const gfa = tm=>{
+        const ts=(state[tm]?.students||[]).find(x=>x.lname===s.lname&&x.fname===s.fname&&x.classId===s.classId);
+        return(!ts||ts.exempt||ts.m==null)?null:avg(ts.m,ts.f,ts.a);
+      };
+      const fmt = v=>v!=null?v.toFixed(2):'--';
+      const ico = s.gender==='ذكر'?'ذ':'أ';
+      if(fullEx){
+        allRows += `<tr><td>${i+1}</td><td>${ico}</td><td style="text-align:right">${s.lname} ${s.fname}</td><td colspan="5" style="color:#E65100;text-align:center;font-weight:700">معفى</td></tr>`;
+      } else {
+        allRows += `<tr><td>${i+1}</td><td>${ico}</td><td style="text-align:right">${s.lname} ${s.fname}</td><td>${fmt(gfa('f1'))}</td><td>${fmt(gfa('f2'))}</td><td>${fmt(gfa('f3'))}</td><td style="font-weight:700;color:${mn2.c}">${a!=null?a.toFixed(2):'--'}</td><td style="color:${mn2.c}">${mn2.t}</td></tr>`;
+      }
+    });
+  });
+
+  const w = window.open('','_blank');
+  if(!w){toast('❗ فعّل النوافذ المنبثقة');return;}
+  w.document.write(`<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="UTF-8">
+    <style>*{box-sizing:border-box;margin:0;padding:0}body{font-family:Arial,sans-serif;padding:7mm;font-size:8.5pt}
+    @page{size:A4;margin:7mm}
+    .wm{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) rotate(-35deg);font-size:60px;font-weight:900;color:rgba(27,94,32,.05);pointer-events:none;white-space:nowrap}
+    .hdr{text-align:center;border-bottom:3px solid #E65100;padding-bottom:8px;margin-bottom:10px}
+    table{width:100%;border-collapse:collapse;font-size:8pt;margin-bottom:10px}
+    th{background:#E65100;color:#fff;padding:3px 4px;text-align:center}
+    td{padding:2px 4px;border:.5px solid #ddd;text-align:center}tr:nth-child(even) td{background:#f9f9f9}
+    .sigs{display:flex;justify-content:space-between;margin-top:14px;border-top:1px solid #ddd;padding-top:8px}
+    .sig{text-align:center;font-size:8px;min-width:80px}.sigl{border-top:1px solid #999;margin-top:16px;padding-top:3px;color:#888}
+    </style></head><body>
+    <div class="wm">Delbaz_Med 26</div>
+    <div class="hdr">
+      <div style="font-size:13px;font-weight:900;color:#E65100">${settings.school}</div>
+      <div style="font-size:9px;color:#555;margin-top:3px">🏆 كشف المعدل السنوي — جميع الأقسام | السنة: ${settings.year} | الأستاذ: Delbaz_Med</div>
+    </div>
+    <table>
+      <tr><th>#</th><th>ج</th><th style="text-align:right;min-width:120px">اللقب والاسم</th><th>ف1</th><th>ف2</th><th>ف3</th><th>المعدل السنوي</th><th>التقدير</th></tr>
+      ${allRows}
+    </table>
+    <div class="sigs">
+      <div class="sig"><div class="sigl">مدير المؤسسة</div></div>
+      <div class="sig"><div class="sigl">أستاذ التربية البدنية</div><div>Delbaz_Med</div></div>
+      <div class="sig"><div class="sigl">الناظر</div></div>
+    </div>
+    <div style="text-align:center;font-size:7pt;color:#ccc;margin-top:8px">EPS Pro v2.4 | Delbaz_Med 26</div>
+    </body></html>`);
+  w.document.close();
+  setTimeout(()=>w.print(),800);
+}
+
+// ======= بطاقة التلميذ =======
+function showStudentCard(lname, fname, cid){
+  const cls = state.classes.find(c=>c.id===cid);
+  const clsName = cls ? cls.name : '';
+
+  // بيانات كل فصل
+  const terms = ['f1','f2','f3'];
+  const LABELS = {f1:'📘 الفصل الأول', f2:'📗 الفصل الثاني', f3:'📕 الفصل الثالث'};
+  const COLORS = {f1:'#1B5E20', f2:'#1565C0', f3:'#6A1B9A'};
+
+  let termsData = terms.map(t=>{
+    const s=(state[t]?.students||[]).find(x=>x.lname===lname&&x.fname===fname&&x.classId===cid);
+    if(!s) return {t, label:LABELS[t], color:COLORS[t], exists:false};
+    const a = s.exempt ? null : avg(s.m,s.f,s.a);
+    return {t, label:LABELS[t], color:COLORS[t], exists:true,
+      m:s.m, f:s.f, a:s.a, exempt:s.exempt,
+      avg:a, men:men(a), gender:s.gender, phone:s.phone,
+      absences:s.absences, behavior:s.behavior};
+  });
+
+  const annAvg = studentAnnAvg(lname, fname, cid);
+  const fullEx = isFullyExempt(lname, fname, cid);
+  const annMen = men(annAvg);
+  const ir = irshad(annAvg, fullEx);
+
+  // HTML البطاقة
+  const termsHtml = termsData.map(d=>{
+    if(!d.exists) return `<div style="background:#f5f5f5;border-radius:10px;padding:10px;margin-bottom:8px;opacity:.5">
+      <div style="font-size:12px;font-weight:700;color:${d.color}">${d.label}</div>
+      <div style="font-size:11px;color:#888">لا توجد بيانات</div>
+    </div>`;
+    if(d.exempt) return `<div style="background:#FFF3E0;border-radius:10px;padding:10px;margin-bottom:8px;border-right:4px solid #E65100">
+      <div style="font-size:12px;font-weight:700;color:#E65100">${d.label}</div>
+      <div style="font-size:13px;color:#E65100;font-weight:700;margin-top:4px">🚫 معفى من التقييم</div>
+    </div>`;
+    return `<div style="background:#f9f9f9;border-radius:10px;padding:10px;margin-bottom:8px;border-right:4px solid ${d.color}">
+      <div style="font-size:12px;font-weight:700;color:${d.color};margin-bottom:6px">${d.label}</div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px">
+        <span style="background:#e8f5e9;color:#1B5E20;border-radius:6px;padding:3px 10px;font-size:12px;font-weight:700">م: ${d.m??'-'}/20</span>
+        <span style="background:#e3f2fd;color:#1565C0;border-radius:6px;padding:3px 10px;font-size:12px;font-weight:700">ف: ${d.f??'-'}/20</span>
+        <span style="background:#f3e5f5;color:#6A1B9A;border-radius:6px;padding:3px 10px;font-size:12px;font-weight:700">اخ: ${d.a??'-'}/20</span>
+      </div>
+      <div style="display:flex;align-items:center;justify-content:space-between">
+        <span style="font-size:11px;color:#666">المعدل الفصلي</span>
+        <span style="font-size:18px;font-weight:900;color:${d.men.c}">${d.avg!=null?d.avg.toFixed(2):'--'} <span style="font-size:11px">${d.men.t}</span></span>
+      </div>
+    </div>`;
+  }).join('');
+
+  // المعلومات الشخصية
+  const s0 = termsData.find(d=>d.exists) || {};
+  const infoHtml = `<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;font-size:11px">
+    ${s0.gender?`<span style="background:#eee;border-radius:6px;padding:2px 8px">${s0.gender==='ذكر'?'👦':'👧'} ${s0.gender}</span>`:''}
+    ${s0.absences!=null?`<span style="background:#fff3e0;color:#E65100;border-radius:6px;padding:2px 8px">🏥 غيابات: ${s0.absences}</span>`:''}
+    ${s0.behavior!=null?`<span style="background:#e8f5e9;color:#1B5E20;border-radius:6px;padding:2px 8px">⭐ سلوك: ${s0.behavior}/10</span>`:''}
+    ${s0.phone?`<span style="background:#e3f2fd;color:#1565C0;border-radius:6px;padding:2px 8px">📞 ${s0.phone}</span>`:''}
+  </div>`;
+
+  const content = document.getElementById('card-content');
+  content.innerHTML = `
+    <div style="text-align:center;margin-bottom:14px">
+      <div style="font-size:32px">${s0.gender==='ذكر'?'👦':'👧'}</div>
+      <div style="font-size:16px;font-weight:900;margin-top:4px">${lname} ${fname}</div>
+      <div style="font-size:12px;color:#888;margin-top:2px">${clsName}</div>
+    </div>
+    ${infoHtml}
+    ${termsHtml}
+    <div style="background:linear-gradient(135deg,#E65100,#F57C00);border-radius:12px;padding:12px;color:#fff;text-align:center;margin-top:4px">
+      <div style="font-size:11px;opacity:.85;margin-bottom:4px">🏆 المعدل السنوي</div>
+      <div style="font-size:28px;font-weight:900">${fullEx?'معفى':annAvg!=null?annAvg.toFixed(2):'--'}</div>
+      ${!fullEx&&annAvg!=null?`<div style="font-size:12px;margin-top:4px;opacity:.9">${annMen.t}${ir?' | '+ir:''}</div>`:''}
+    </div>`;
+  // زر مشاركة واتساب
+  const annText = fullEx ? 'معفى من التقييم' :
+    annAvg!=null ? `المعدل السنوي: ${annAvg.toFixed(2)}/20 | ${annMen.t}${ir?' | '+ir:''}` : 'لا توجد بيانات كاملة';
+
+  const waLines = [
+    '📋 بطاقة التلميذ — EPS Pro',
+    settings.school + ' | ' + settings.year,
+    '━━━━━━━━━━━━━━━',
+    `التلميذ: ${lname} ${fname}`,
+    `القسم: ${clsName}`,
+    '━━━━━━━━━━━━━━━',
+    ...termsData.filter(d=>d.exists).map(d=>{
+      if(d.exempt) return `${d.label}: معفى`;
+      return `${d.label}: م:${d.m??'-'} ف:${d.f??'-'} اخ:${d.a??'-'} | معدل: ${d.avg!=null?d.avg.toFixed(2):'--'}`;
+    }),
+    '━━━━━━━━━━━━━━━',
+    annText,
+    '━━━━━━━━━━━━━━━',
+    `أستاذ التربية البدنية: ${settings.teacher}`
+  ];
+  const waMsg = waLines.join('\n');
+  const waPhone = (s0.phone||'').replace(/[^0-9]/g,'');
+  const waUrl = waPhone
+    ? `https://wa.me/${waPhone}?text=${encodeURIComponent(waMsg)}`
+    : `https://wa.me/?text=${encodeURIComponent(waMsg)}`;
+
+  // إضافة زر واتساب
+  const waBtn = document.createElement('button');
+  waBtn.onclick = () => window.open(waUrl, '_blank');
+  waBtn.style.cssText = 'width:100%;background:#25D366;color:#fff;border:none;border-radius:10px;padding:12px;font-family:Cairo,sans-serif;font-size:14px;font-weight:700;cursor:pointer;margin-bottom:8px;display:flex;align-items:center;justify-content:center;gap:8px';
+  waBtn.innerHTML = '💬 مشاركة البطاقة عبر واتساب' + (waPhone ? ` → ${s0.phone}` : '');
+  content.appendChild(waBtn);
+
+  openMo('mCard');
+}
 
 // ======= DELETE MODAL =======
 let delTarget = null;
@@ -944,10 +1229,16 @@ function toggleBulkSel(id){
   renderStuList();
 }
 function selectAllBulk(){
-  const stus = tStu(getT(), state.curCls);
-  if(bulkSel.size === stus.length) bulkSel.clear();
-  else stus.forEach(s => bulkSel.add(s.id));
-  document.getElementById('bulk-count').textContent = 'محدد: ' + bulkSel.size;
+  // نجمع التلاميذ المعروضين حالياً
+  const visibleItems = document.querySelectorAll('#stu-list .si');
+  const visibleIds = [...visibleItems].filter(el=>el.style.display!=='none').map(el=>el.dataset.id).filter(Boolean);
+  if(visibleIds.length > 0 && bulkSel.size === visibleIds.length){
+    bulkSel.clear();
+  } else {
+    visibleIds.forEach(id => bulkSel.add(id));
+  }
+  const cnt = document.getElementById('bulk-count');
+  if(cnt) cnt.textContent = 'محدد: ' + bulkSel.size;
   renderStuList();
 }
 function bulkDelete(){
@@ -1028,26 +1319,26 @@ function renderHome(){
   `;
 
   // تنبيهات
-  const notifs = [];
+  const notifs=[];
   state.classes.forEach(cls=>{
-    const stus = tStu(t, cls.id);
-    const empty = stus.filter(s=>!s.exempt&&(s.m==null||s.f==null||s.a==null));
+    const stus=tStu(t,cls.id);
+    const empty=stus.filter(s=>!s.exempt&&(s.m==null||s.f==null||s.a==null));
     if(empty.length) notifs.push(`<div class="notif">⚠️ ${cls.name}: ${empty.length} تلميذ بدون درجات</div>`);
   });
-  const nc = document.getElementById('h-notif-card');
-  if(notifs.length){ nc.style.display=''; document.getElementById('h-notifs').innerHTML=notifs.join(''); }
+  const nc=document.getElementById('h-notif-card');
+  if(notifs.length){nc.style.display='';document.getElementById('h-notifs').innerHTML=notifs.join('');}
   else nc.style.display='none';
 
   // قائمة الأقسام
-  const listEl = document.getElementById('h-list');
-  if(!state.classes.length){ listEl.innerHTML='<div style="color:#aaa;text-align:center;padding:20px">لا توجد أقسام</div>'; return; }
-  listEl.innerHTML = state.classes.map(cls=>{
-    const avgs = tAvgs(t, cls.id);
-    const stus = tStu(t, cls.id);
-    const ca = avgs.length ? (avgs.reduce((a,b)=>a+b,0)/avgs.length) : null;
-    const pass = avgs.filter(a=>a>=10).length;
-    const rate = stus.length ? (pass/stus.length*100) : 0;
-    const mn = men(ca);
+  const listEl=document.getElementById('h-list');
+  if(!state.classes.length){listEl.innerHTML='<div style="color:#aaa;text-align:center;padding:20px">لا توجد أقسام</div>';return;}
+  listEl.innerHTML=state.classes.map(cls=>{
+    const avgs=tAvgs(t,cls.id);
+    const stus=tStu(t,cls.id);
+    const ca=avgs.length?avgs.reduce((a,b)=>a+b,0)/avgs.length:null;
+    const pass=avgs.filter(a=>a>=10).length;
+    const rate=stus.length?(pass/stus.length*100):0;
+    const mn=men(ca);
     return `<div class="comp-row" onclick="state.curCls='${cls.id}';showPage('students')" style="cursor:pointer">
       <div class="comp-name">${cls.name}<br><span style="font-size:10px;color:#888">${stus.length} تلميذ | ${pass} ناجح | ${rate.toFixed(0)}%</span></div>
       <div class="comp-bar-wrap"><div class="comp-bar" style="width:${rate}%;background:${mn.c}"></div></div>
@@ -1055,6 +1346,8 @@ function renderHome(){
     </div>`;
   }).join('');
 }
+
+
 
 // ======= STUDENTS =======
 function renderStudents(){
@@ -1099,7 +1392,13 @@ function renderStuList(){
       };
       const a1=gta('f1'), a2=gta('f2'), a3=gta('f3');
       const fullEx=isFullyExempt(s.lname,s.fname,s.classId);
-      a = fullEx ? null : (((a1??0)+(a2??0)+(a3??0))/3 || null);
+      // القسمة على عدد الفصول التي فيها درجات فعلية
+      if(fullEx){
+        a = null;
+      } else {
+        const validAvgs = [a1,a2,a3].filter(x=>x!==null);
+        a = validAvgs.length ? validAvgs.reduce((x,y)=>x+y,0)/validAvgs.length : null;
+      }
       if(fullEx){
         dispContent=`<span style="font-size:11px;color:#E65100;font-weight:700;background:#FFE0B2;padding:2px 7px;border-radius:5px">🚫 معفى</span>`;
       } else {
@@ -1136,6 +1435,7 @@ function renderStuList(){
       </div>
       <div style="display:flex;align-items:center;gap:4px">
         <div class="sa ${(isAnn?isFullyExempt(s.lname,s.fname,s.classId):s.exempt)?'sa-ex':mn.cl}">${(isAnn?isFullyExempt(s.lname,s.fname,s.classId):s.exempt)?'معفى':(a!==null?a.toFixed(2):'--')}</div>
+        ${!bulkMode?`<button onclick="showStudentCard('${s.lname}','${s.fname}','${s.classId}')" style="background:none;border:none;font-size:16px;cursor:pointer;padding:2px" title="بطاقة التلميذ">📋</button>`:''}
         ${!bulkMode?`<button class="sms-btn" onclick="sendMsg('${s.id}')" title="إرسال رسالة">📱</button>`:''};
         ${!bulkMode?`<button class="sdel" onclick="delStu('${s.id}')">🗑️</button>`:''};
       </div>
@@ -1656,69 +1956,112 @@ function exportExcel(scope){
     XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(rows), cls.name.slice(0,31));
   });
   const ws_info=XLSX.utils.aoa_to_sheet([['EPS Pro v2.4 | Delbaz_Med 26'],['المؤسسة: '+settings.school],['الأستاذ: '+settings.teacher],['السنة: '+settings.year],['التاريخ: '+new Date().toLocaleDateString('ar-DZ')]]);XLSX.utils.book_append_sheet(wb,ws_info,'Delbaz_Med');
-XLSX.writeFile(wb,'EPS_Pro_'+settings.year+'_'+new Date().toISOString().slice(0,10)+'.xlsx');
+var xlsxName = 'كشف_'+settings.year+'_'+new Date().toISOString().slice(0,10)+'.xlsx';
+  XLSX.writeFile(wb, xlsxName);
+  toast('✅ تم حفظ الملف: '+xlsxName);
   toast('✅ تم التصدير');
 }
 
 // ======= PRINT =======
 function directPrint(){
   const t = getT();
+  const isAnn = state.activeTerm === 'ann';
   if(!state.curCls){ toast('❗ اختر قسماً أولاً'); return; }
   const cls = state.classes.find(c=>c.id===state.curCls);
   if(!cls) return;
-  const stus = tStu(t, state.curCls);
-  const avgs = tAvgs(t, state.curCls);
-  const passed = avgs.filter(a=>a>=10).length;
-  const cAvg = avgs.length ? avgs.reduce((a,b)=>a+b,0)/avgs.length : null;
+  const TERM_LBL = isAnn ? 'المعدل السنوي 🏆' : (TERMS[t]?.label||'');
+
+  // جمع التلاميذ بدون تكرار في السنوي
+  let stus;
+  if(isAnn){
+    const sm = new Map();
+    ['f1','f2','f3'].forEach(tm=>{
+      (state[tm]?.students||[]).filter(s=>s.classId===state.curCls).forEach(s=>{
+        const k = s.lname+'|'+s.fname;
+        if(!sm.has(k)) sm.set(k,{...s});
+      });
+    });
+    stus = [...sm.values()];
+  } else {
+    stus = tStu(t, state.curCls);
+  }
+
+  // دوال مساعدة
+  const getSA = s => isAnn ? studentAnnAvg(s.lname,s.fname,s.classId) : (s.exempt?null:avg(s.m,s.f,s.a));
+  const isSE = s => isAnn ? isFullyExempt(s.lname,s.fname,s.classId) : s.exempt;
+
+  // إحصائيات
+  const allAvgs = stus.map(s=>getSA(s)).filter(x=>x!==null);
+  const passed = allAvgs.filter(a=>a>=10).length;
+  const cAvg = allAvgs.length ? allAvgs.reduce((a,b)=>a+b,0)/allAvgs.length : null;
   const rate = stus.length ? (passed/stus.length*100) : 0;
   const mn = men(cAvg);
-  const exempt = stus.filter(s=>isFullyExempt(s.lname,s.fname,s.classId)).length;
-  const TERM_LBL = TERMS[t]?.label||'';
+  const exempt = stus.filter(s=>isSE(s)).length;
 
+  // صفوف الجدول
   const rows = stus.map((s,i)=>{
-    if(s.exempt) return `<tr><td>${i+1}</td><td>${s.gender==='ذكر'?'ذ':'أ'}</td><td style="text-align:right">${s.lname} ${s.fname}</td><td colspan="7" style="color:#E65100;text-align:center;font-weight:700">معفى</td></tr>`;
-    const a = avg(s.m,s.f,s.a); const mn2=men(a); const ir=irshad(a,false);
-    return `<tr><td>${i+1}</td><td>${s.gender==='ذكر'?'ذ':'أ'}</td><td style="text-align:right">${s.lname} ${s.fname}</td><td>${s.m??'-'}</td><td>${s.f??'-'}</td><td>${s.a??'-'}</td><td>${s.a!=null?((s.a*2).toFixed(1)):''}</td><td style="font-weight:700;color:${mn2.c}">${a!==null?a.toFixed(2):'--'}</td><td style="color:${mn2.c}">${mn2.t}</td><td style="font-size:6.5pt;font-style:italic;color:#555">${ir}</td></tr>`;
+    const ex = isSE(s);
+    const a = getSA(s);
+    const mn2 = men(a);
+    const ico = s.gender==='ذكر'?'👦':'👧';
+    if(ex) return `<tr><td>${i+1}</td><td>${ico}</td><td style="text-align:right">${s.lname} ${s.fname}</td><td colspan="${isAnn?5:7}" style="color:#E65100;text-align:center;font-weight:700">معفى</td></tr>`;
+    if(isAnn){
+      const gfa = tm => {
+        const ts=(state[tm]?.students||[]).find(x=>x.lname===s.lname&&x.fname===s.fname&&x.classId===s.classId);
+        return(!ts||ts.exempt||ts.m==null||ts.f==null||ts.a==null)?null:avg(ts.m,ts.f,ts.a);
+      };
+      const fmt = v => v!=null?v.toFixed(2):'--';
+      return `<tr><td>${i+1}</td><td>${ico}</td><td style="text-align:right">${s.lname} ${s.fname}</td><td>${fmt(gfa('f1'))}</td><td>${fmt(gfa('f2'))}</td><td>${fmt(gfa('f3'))}</td><td style="font-weight:700;color:${mn2.c}">${a!=null?a.toFixed(2):'--'}</td><td style="color:${mn2.c}">${mn2.t}</td></tr>`;
+    }
+    const ir = typeof irshad==='function'?irshad(a,false):'';
+    return `<tr><td>${i+1}</td><td>${ico}</td><td style="text-align:right">${s.lname} ${s.fname}</td><td>${s.m??'-'}</td><td>${s.f??'-'}</td><td>${s.a??'-'}</td><td>${s.a!=null?((s.a*2).toFixed(1)):''}</td><td style="font-weight:700;color:${mn2.c}">${a!=null?a.toFixed(2):'--'}</td><td style="color:${mn2.c}">${mn2.t}</td><td style="font-size:6.5pt;font-style:italic;color:#555">${ir}</td></tr>`;
   }).join('');
 
+  const thead = isAnn
+    ? `<tr><th>#</th><th>ج</th><th style="text-align:right;min-width:120px">اللقب والاسم</th><th>ف1</th><th>ف2</th><th>ف3</th><th>المعدل السنوي</th><th>التقدير</th></tr>`
+    : `<tr><th>#</th><th>ج</th><th style="text-align:right;min-width:120px">اللقب والاسم</th><th>م</th><th>ف</th><th>اخ/20</th><th>اخ/40</th><th>المعدل</th><th>التقدير</th><th>الإرشاد</th></tr>`;
+
   const w = window.open('','_blank');
-  if(!w){ toast('❗ فعّل النوافذ المنبثقة'); return; }
+  if(!w){ toast('❗ فعّل النوافذ المنبثقة في المتصفح'); return; }
   w.document.write(`<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="UTF-8">
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
     <style>*{box-sizing:border-box;margin:0;padding:0}body{font-family:Cairo,sans-serif;padding:7mm;font-size:9pt}
-    @page{size:A4;margin:7mm}.hdr{text-align:center;border-bottom:3px solid #1B5E20;padding-bottom:8px;margin-bottom:8px}
+    @page{size:A4;margin:7mm}@media print{body{padding:0}}
+    .wm{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) rotate(-35deg);font-size:60px;font-weight:900;color:rgba(27,94,32,.05);pointer-events:none;white-space:nowrap;z-index:-1}
+    .hdr{text-align:center;border-bottom:3px solid #1B5E20;padding-bottom:8px;margin-bottom:8px}
     .hs{font-size:13px;font-weight:900;color:#1B5E20}.hi{font-size:9px;color:#555;margin-top:3px}
     .stats{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin:8px 0}
     .sb{border:1.5px solid #1B5E20;border-radius:7px;padding:4px 9px;text-align:center;min-width:70px}
     .sv{font-size:14px;font-weight:900;color:#1B5E20}.sl{font-size:7px;color:#666}
-    table{width:100%;border-collapse:collapse;font-size:7.5pt}th{background:#1B5E20;color:#fff;padding:3px 4px;text-align:center}
+    table{width:100%;border-collapse:collapse;font-size:8pt}
+    th{background:#1B5E20;color:#fff;padding:3px 4px;text-align:center}
     td{padding:2px 4px;border:.5px solid #ddd;text-align:center}tr:nth-child(even) td{background:#f9f9f9}
     .sigs{display:flex;justify-content:space-between;margin-top:12px;border-top:1px solid #ddd;padding-top:8px}
     .sig{text-align:center;font-size:8px;min-width:80px}.sigl{border-top:1px solid #999;margin-top:16px;padding-top:3px;color:#888}
     </style></head><body>
+    <div class="wm">Delbaz_Med 26</div>
     <div class="hdr"><div class="hs">${settings.school}</div>
     <div class="hi">القسم: <b>${cls.name}</b> | ${TERM_LBL} | السنة: ${settings.year} | الأستاذ: ${settings.teacher}</div></div>
     <div class="stats">
       <div class="sb"><div class="sv">${stus.length}</div><div class="sl">إجمالي</div></div>
       <div class="sb"><div class="sv" style="color:#E65100">${exempt}</div><div class="sl">معفيون</div></div>
       <div class="sb"><div class="sv">${passed}</div><div class="sl">ناجحون</div></div>
-      <div class="sb"><div class="sv" style="color:var(--red)">${stus.length-exempt-passed}</div><div class="sl">راسبون</div></div>
+      <div class="sb"><div class="sv" style="color:#C62828">${stus.length-exempt-passed}</div><div class="sl">راسبون</div></div>
       <div class="sb"><div class="sv">${rate.toFixed(1)}%</div><div class="sl">النجاح</div></div>
-      <div class="sb"><div class="sv" style="color:${mn.c}">${cAvg!==null?cAvg.toFixed(2):'--'}</div><div class="sl">المعدل</div></div>
+      <div class="sb"><div class="sv" style="color:${mn.c}">${cAvg!=null?cAvg.toFixed(2):'--'}</div><div class="sl">المعدل</div></div>
     </div>
-    <table><tr><th>#</th><th>ج</th><th style="text-align:right;min-width:120px">اللقب والاسم</th>
-    <th>م</th><th>ف</th><th>اخ/20</th><th>اخ/40</th><th>المعدل</th><th>التقدير</th><th>الإرشاد</th></tr>
-    ${rows}</table>
+    <table>${thead}${rows}</table>
     <div class="sigs">
       <div class="sig"><div class="sigl">مدير المؤسسة</div></div>
-      <div class="sig"><div class="sigl">أستاذ التربية البدنية</div><div>${settings.teacher}</div></div>
-      <div class="sig"><div class="sigl">المستشار التربوي</div></div>
-    </div></body></html>`);
+      <div class="sig"><div class="sigl">أستاذ التربية البدنية</div><div>Delbaz_Med</div></div>
+      <div class="sig"><div class="sigl">الناظر</div></div>
+    </div>
+    <div style="text-align:center;font-size:7pt;color:#ccc;margin-top:8px">EPS Pro v2.4 | Delbaz_Med 26</div>
+    </body></html>`);
   w.document.close();
   setTimeout(()=>w.print(), 800);
 }
 
-// ======= GUIDE =======
 function downloadGuide(){
   const body = document.getElementById('guide-body');
   const blob = new Blob([`<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="UTF-8"><title>دليل EPS Pro</title><style>body{font-family:Cairo,Arial,sans-serif;padding:20px;max-width:700px;margin:auto;line-height:2}b{color:#1B5E20}.guide-section{border-radius:10px;padding:12px;margin-bottom:10px}</style></head><body><h2 style="color:#1B5E20">📖 دليل المستخدم — EPS Pro</h2>${body.innerHTML}</body></html>`],{type:'text/html;charset=utf-8'});
