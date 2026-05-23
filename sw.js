@@ -1,32 +1,29 @@
-const CACHE = 'eps-pro-v2';
-const ASSETS = [
-  'index.html',
-  'manifest.json',
-  'icone-192.png',
-  'icone-512.png',
-  'icône-touch-apple.png'
-];
+// Smart EPS Service Worker - Network First Strategy
+const CACHE = 'smart-eps-v4';
 
 self.addEventListener('install', e => {
-  e.waitUntil(
-    caches.open(CACHE)
-      .then(c => c.addAll(ASSETS))
-      .then(() => self.skipWaiting())
-  );
+  self.skipWaiting(); // activate immediately
 });
 
 self.addEventListener('activate', e => {
   e.waitUntil(
     caches.keys().then(keys =>
-      Promise.all(keys.filter(k => k !== CACHE).map(k => caches.delete(k)))
-    ).then(() => self.clients.claim())
+      Promise.all(keys.map(k => caches.delete(k))) // delete ALL old caches
+    )
   );
+  self.clients.claim();
 });
 
+// Network First - always try network, fallback to cache
 self.addEventListener('fetch', e => {
+  if (e.request.method !== 'GET') return;
   e.respondWith(
-    caches.match(e.request).then(r => {
-      return r || fetch(e.request).catch(() => caches.match('index.html'));
-    })
+    fetch(e.request)
+      .then(resp => {
+        const clone = resp.clone();
+        caches.open(CACHE).then(cache => cache.put(e.request, clone));
+        return resp;
+      })
+      .catch(() => caches.match(e.request))
   );
 });
