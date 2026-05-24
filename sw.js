@@ -1,31 +1,29 @@
-// Smart EPS Service Worker - Network First + Update Notification
-const CACHE = 'smart-eps-v10';
-const APP_VERSION = '2.1';
+// Smart EPS Service Worker - Network First Strategy
+const CACHE = 'smart-eps-v8';
 
 self.addEventListener('install', e => {
-  self.skipWaiting();
+  self.skipWaiting(); // activate immediately
 });
 
 self.addEventListener('activate', e => {
   e.waitUntil(
     caches.keys().then(keys =>
-      Promise.all(keys.filter(k => k !== CACHE).map(k => caches.delete(k)))
+      Promise.all(keys.map(k => caches.delete(k))) // delete ALL old caches
     )
   );
   self.clients.claim();
-  // Notify all open clients of update
-  self.clients.matchAll().then(clients => {
-    clients.forEach(client => client.postMessage({type:'UPDATE_AVAILABLE',version:APP_VERSION}));
-  });
 });
 
+// Network First - always try network, fallback to cache
 self.addEventListener('fetch', e => {
-  if(e.request.method !== 'GET') return;
+  if (e.request.method !== 'GET') return;
   e.respondWith(
-    fetch(e.request).then(resp => {
-      const clone = resp.clone();
-      caches.open(CACHE).then(cache => cache.put(e.request, clone));
-      return resp;
-    }).catch(() => caches.match(e.request))
+    fetch(e.request)
+      .then(resp => {
+        const clone = resp.clone();
+        caches.open(CACHE).then(cache => cache.put(e.request, clone));
+        return resp;
+      })
+      .catch(() => caches.match(e.request))
   );
 });
