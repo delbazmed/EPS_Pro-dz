@@ -369,9 +369,10 @@ body{max-width:480px;margin:0 auto;display:flex;flex-direction:column;-webkit-fo
 .sw4-pbtn:active{transform:scale(.97)}
 .sw4-pk-sheet{position:absolute;inset:0;z-index:200;display:none;flex-direction:column;background:linear-gradient(160deg,#09091f,#0d0d2e);border-radius:0}
 .sw4-pk-sheet.open{display:flex}
-.sw4-pk-srch{width:100%;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);border-radius:12px;color:#fff;padding:10px 14px;font-family:var(--ff);font-size:13px;font-weight:600;box-sizing:border-box}
-.sw4-pk-srch::placeholder{color:rgba(255,255,255,.25)}
-.sw4-pk-srch:focus{outline:none;border-color:rgba(78,165,255,.4);background:rgba(78,165,255,.07)}
+.sw4-pk-srch{display:none}
+.sw4-pk-filter{display:flex;gap:6px;flex-wrap:wrap;padding:2px 0}
+.sw4-pk-fbtn{padding:5px 12px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:20px;color:rgba(255,255,255,.6);font-size:11px;font-weight:700;cursor:pointer;transition:all .15s;touch-action:manipulation}
+.sw4-pk-fbtn.on{background:rgba(78,165,255,.2);border-color:rgba(78,165,255,.4);color:#4ea5ff}
 .sw4-pk-item{display:flex;align-items:center;gap:10px;padding:11px 16px;border-bottom:1px solid rgba(255,255,255,.04);cursor:pointer;transition:background .12s;touch-action:manipulation}
 .sw4-pk-item:active{background:rgba(78,165,255,.1)}
 .sw4-pk-item.on{background:rgba(78,165,255,.08);border-color:rgba(78,165,255,.15)}
@@ -383,6 +384,21 @@ body{max-width:480px;margin:0 auto;display:flex;flex-direction:column;-webkit-fo
 .sw4-lnum{font-size:9px;font-weight:900;color:rgba(255,255,255,.3);letter-spacing:2px;text-transform:uppercase}
 .sw4-sc{font-family:var(--fn);font-size:22px;font-weight:900;color:rgba(255,255,255,.2);min-height:24px;transition:color .3s,text-shadow .3s}
 .sw4-sti{font-size:10px;color:rgba(255,255,255,.35);font-weight:600;text-align:center;min-height:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:100%}
+
+/* ── Pedagogical Card System ── */
+.pcard-wrap{display:flex;gap:3px;align-items:center;flex-shrink:0}
+.pcard{width:26px;height:26px;border-radius:50%;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:13px;transition:transform .15s,box-shadow .15s;touch-action:manipulation;flex-shrink:0}
+.pcard:active{transform:scale(.85)}
+.pcard.pc-g{background:rgba(0,217,126,.15);color:#00d97e;box-shadow:0 0 0 1.5px rgba(0,217,126,.3)}
+.pcard.pc-y{background:rgba(245,185,50,.15);color:#f5b932;box-shadow:0 0 0 1.5px rgba(245,185,50,.3)}
+.pcard.pc-r{background:rgba(255,89,89,.15);color:#ff5959;box-shadow:0 0 0 1.5px rgba(255,89,89,.3)}
+.pcard.pc-g:hover,.pcard.pc-g:active{background:rgba(0,217,126,.3);box-shadow:0 0 8px rgba(0,217,126,.4)}
+.pcard.pc-y:hover,.pcard.pc-y:active{background:rgba(245,185,50,.3);box-shadow:0 0 8px rgba(245,185,50,.4)}
+.pcard.pc-r:hover,.pcard.pc-r:active{background:rgba(255,89,89,.3);box-shadow:0 0 8px rgba(255,89,89,.4)}
+/* ── Captain System ── */
+.srow-wrap.captain{border:1.5px solid rgba(0,217,126,.5);border-radius:var(--r);background:rgba(0,217,126,.04);box-shadow:0 0 12px rgba(0,217,126,.12)}
+.cap-btn{width:26px;height:26px;border-radius:50%;background:rgba(218,165,32,.12);border:1.5px solid rgba(218,165,32,.25);color:#daa520;font-size:13px;cursor:pointer;transition:all .15s;touch-action:manipulation;flex-shrink:0}
+.cap-btn.on{background:rgba(218,165,32,.25);border-color:#daa520;box-shadow:0 0 8px rgba(218,165,32,.35)}
 </style>
 </head>
 <body>
@@ -600,9 +616,7 @@ body{max-width:480px;margin:0 auto;display:flex;flex-direction:column;-webkit-fo
       <div style="font-size:12px;color:var(--tx2);font-weight:500;margin-bottom:16px;line-height:1.7;background:var(--p3);padding:12px;border-radius:var(--r)">📌 حدد النشاط الفردي والجماعي لكل فصل دراسي. سيُطبَّق تلقائياً على جميع الأقسام عند التقييم.</div>
       <div id="acts-body-inline"></div>
       <div style="margin-top:16px;display:flex;flex-direction:column;gap:8px">
-        <button class="btn btn-g btn-fw" onclick="saveActSelInline()"><svg><use href="#i-chk"/></svg>حفظ الأنشطة</button>
-        <button class="btn btn-gh btn-fw" onclick="openExemptionList()" style="background:rgba(232,121,249,.12);border-color:rgba(232,121,249,.3);color:var(--pnk)">📋 قائمة المعفيين</button>
-      </div>
+        <button class="btn btn-g btn-fw" onclick="saveActSelInline()"><svg><use href="#i-chk"/></svg>حفظ الأنشطة</button></div>
     </div>
     <div class="sp28"></div>
   </div>
@@ -758,6 +772,7 @@ body{max-width:480px;margin:0 auto;display:flex;flex-direction:column;-webkit-fo
         <div class="bkrow">
           <button class="btn btn-g" style="flex:1" onclick="doBackup()"><svg><use href="#i-bk"/></svg>تنزيل نسخة</button>
           <button class="btn btn-gh" style="flex:1" onclick="doRestore()"><svg><use href="#i-rst"/></svg>استعادة</button>
+        <button class="btn btn-fw" onclick="openExemptionList()" style="background:rgba(232,121,249,.1);border:1px solid rgba(232,121,249,.3);color:var(--pnk);margin-top:4px">📋 قائمة المعفيين</button>
         </div>
       </div>
     </div>
@@ -858,7 +873,7 @@ body{max-width:480px;margin:0 auto;display:flex;flex-direction:column;-webkit-fo
 </div>
 
 <!-- QR CODE OVERLAY -->
-<div class="ov" id="ov-qr" style="display:none">
+<div class="ov" id="ov-qr" class="ov">
   <div class="ov-box" style="max-width:340px">
     <div class="ov-hd"><span>🔳 QR Code — القسم</span><button onclick="closeOv('ov-qr')" class="ov-cl">✕</button></div>
     <div style="text-align:center;padding:20px 16px">
@@ -959,8 +974,10 @@ body{max-width:480px;margin:0 auto;display:flex;flex-direction:column;-webkit-fo
         </div>
         <button onclick="closeSW4Picker()" style="width:34px;height:34px;background:rgba(255,89,89,.1);border:1px solid rgba(255,89,89,.2);border-radius:10px;color:#ff5959;font-size:16px;font-weight:900;cursor:pointer;flex-shrink:0">✕</button>
       </div>
-      <div style="padding:10px 14px;flex-shrink:0">
-        <input id="sw4-pk-srch" class="sw4-pk-srch" type="text" placeholder="🔍 بحث بالاسم..." oninput="sw4PkFilter()">
+      <div style="padding:8px 14px;flex-shrink:0">
+        <div class="sw4-pk-filter" id="sw4-pk-filter">
+          <button class="sw4-pk-fbtn on" onclick="sw4PkFilterLetter(null,this)">الكل</button>
+        </div>
       </div>
       <div id="sw4-pk-list" style="flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch"></div>
     </div>
@@ -1006,7 +1023,7 @@ let D=LD();
 function GC(id){return D.classes.find(c=>c.id===id);}
 function GS(id){return D.students.find(s=>s.id===id);}
 function GSC(cid){return D.students.filter(s=>s.classId===cid);}
-function initStu(s){if(!s.terms)s.terms={};['t1','t2','t3'].forEach(k=>{if(!s.terms[k])s.terms[k]={exempted:false,actF:null,actJ:null,mc:{ses:[0,0,0,0,0,0,0],discipline:0,participation:0,creativity:0,mcEntered:false},fard:{tr:[],jg:null},test:{tr:[],jg:null}};else if(s.terms[k].mc&&s.terms[k].mc.mcEntered===undefined)s.terms[k].mc.mcEntered=false;});}
+function initStu(s){if(!s.terms)s.terms={};['t1','t2','t3'].forEach(k=>{if(!s.terms[k])s.terms[k]={exempted:false,actF:null,actJ:null,mc:{ses:[2,2,2,2,2,2,2],discipline:2,participation:0,creativity:0,mcEntered:false},fard:{tr:[],jg:null},test:{tr:[],jg:null}};else{var _mc=s.terms[k].mc;if(_mc.mcEntered===undefined)_mc.mcEntered=false;if(_mc.discipline===undefined||_mc.discipline===null)_mc.discipline=2;if(_mc.ses&&_mc.ses.length&&_mc.ses.every(function(v){return v===0;}))_mc.ses=[2,2,2,2,2,2,2];}});}
 function uid(){return '_'+Date.now()+'_'+Math.random().toString(36).slice(2,6);}
 function calcMCRaw(t){const behSum=(parseFloat(t.mc.discipline)||0)+(parseFloat(t.mc.participation)||0)+(parseFloat(t.mc.creativity)||0);return Math.min(20,t.mc.ses.reduce((a,b)=>a+b,0)+behSum);}
 function calcMC(t){if(!t.mc.mcEntered)return null;return calcMCRaw(t);}
@@ -1142,6 +1159,12 @@ function rHome(){
             '<div class="sme">'+(s.gender==='male'?'ذكر 👦':'أنثى 👧')+(s.phone?' · '+s.phone:'')+'</div>'+
           '</div>'+
           '<div style="display:flex;align-items:center;margin-left:4px">'+scoreHtml+'</div>'+
+          '<button class="cap-btn'+(s.captain?' on':'')+'" onclick="event.stopPropagation();toggleCaptain(\''+s.id+'\')" title="تعيين قائد فوج">'+(s.captain?'👑':'○')+'</button>'+
+          '<div class="pcard-wrap">'+
+            '<button class="pcard pc-g" onclick="event.stopPropagation();stuCard(\''+s.id+'\',\'g\')" title="بطاقة خضراء">🟢</button>'+
+            '<button class="pcard pc-y" onclick="event.stopPropagation();stuCard(\''+s.id+'\',\'y\')" title="بطاقة صفراء">🟡</button>'+
+            '<button class="pcard pc-r" onclick="event.stopPropagation();stuCard(\''+s.id+'\',\'r\')" title="بطاقة حمراء">🔴</button>'+
+          '</div>'+
           '<div style="display:flex;flex-direction:column;gap:2px;margin:0 4px">'+
             '<button class="ord-btn" onclick="event.stopPropagation();stuMoveUp(\''+s.id+'\')" '+(sIdx===0?'disabled':'')+'>'+(sIdx===0?'⋯':'▲')+'</button>'+
             '<button class="ord-btn" onclick="event.stopPropagation();stuMoveDown(\''+s.id+'\')" '+(sIdx===clsStus.length-1?'disabled':'')+'>'+(sIdx===clsStus.length-1?'⋯':'▼')+'</button>'+
@@ -1569,398 +1592,129 @@ document.querySelectorAll('.ov').forEach(ov=>{ov.addEventListener('click',functi
 // USER GUIDE
 function openGuide(){
   const t=D.settings.teacher||'الأستاذ';const sch=D.settings.school||'الثانوية';
-  const guideHTML=`<!DOCTYPE html><html dir="rtl" lang="ar"><head><meta charset="UTF-8">
+  const html=`<!DOCTYPE html><html dir="rtl" lang="ar"><head><meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>دليل Smart_Sport — Delbaz_Med</title>
+<title>دليل Smart EPS</title>
 <style>
-:root{--g:#00875a;--g2:#00d97e;--blu:#1a5fd4;--gold:#d4900a;--red:#c0392b;--pnk:#9b30d9}
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Segoe UI',Arial,sans-serif;direction:rtl;color:#1a1a2e;background:#f5f7ff;font-size:13px;line-height:1.75}
-/* ── TOP BAR ── */
-.topbar{position:sticky;top:0;z-index:100;background:#fff;border-bottom:1px solid #e0e4f0;padding:10px 24px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 2px 12px rgba(0,0,0,.06)}
-.topbar h2{font-size:15px;color:var(--g);font-weight:800}
-.topbar-btns{display:flex;gap:8px}
-.btn-pdf{padding:9px 20px;background:var(--g);color:#fff;border:none;border-radius:8px;font-weight:700;cursor:pointer;font-size:13px;display:flex;align-items:center;gap:6px}
-.btn-cls{padding:9px 16px;background:#f0f0f0;border:none;border-radius:8px;font-weight:700;cursor:pointer;font-size:13px}
-/* ── HERO ── */
-.hero{background:linear-gradient(135deg,#003d24,#006e42,#00a65e);color:#fff;padding:40px 32px;text-align:center;position:relative;overflow:hidden}
-.hero::before{content:'';position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")}
-.hero h1{font-size:30px;font-weight:900;letter-spacing:.5px;margin-bottom:8px;position:relative}
-.hero p{font-size:14px;opacity:.85;position:relative}
-.hero-badges{display:flex;justify-content:center;gap:10px;margin-top:16px;flex-wrap:wrap;position:relative}
-.hbadge{background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.3);border-radius:20px;padding:5px 14px;font-size:12px;font-weight:700;backdrop-filter:blur(4px)}
-/* ── TOC ── */
-.toc{background:#fff;margin:20px 24px;border-radius:12px;border:1px solid #e0e4f0;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.04)}
-.toc-title{background:linear-gradient(90deg,#003d24,#006e42);color:#fff;padding:12px 18px;font-size:13px;font-weight:800}
-.toc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:0}
-.toc-item{padding:10px 16px;border-bottom:1px solid #f0f0f0;border-left:1px solid #f0f0f0;font-size:12px;font-weight:600;color:#1a5fd4;cursor:pointer;transition:background .15s;text-decoration:none;display:block}
-.toc-item:hover{background:#f0f7ff}
-/* ── SECTIONS ── */
-.content{padding:0 24px 60px}
-.section{background:#fff;border-radius:14px;border:1px solid #e0e4f0;margin-bottom:20px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.04)}
-.sec-hdr{display:flex;align-items:center;gap:12px;padding:16px 20px;background:linear-gradient(90deg,rgba(0,135,90,.08),transparent)}
-.sec-icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
-.sec-hdr h2{font-size:16px;font-weight:800;color:#003d24}
-.sec-body{padding:16px 20px}
-/* ── STEPS ── */
-.steps{counter-reset:step}
-.step{counter-increment:step;display:flex;gap:12px;margin-bottom:14px;align-items:flex-start}
-.step::before{content:counter(step);width:26px;height:26px;border-radius:50%;background:var(--g);color:#fff;font-weight:800;font-size:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
-.step-body{flex:1}
-.step-body strong{display:block;font-size:13px;margin-bottom:3px;color:#1a1a2e}
-.step-body p{font-size:12px;color:#555;margin:0}
-/* ── GRID CARDS ── */
-.card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px}
-.card{border:1px solid #e0e4f0;border-radius:10px;padding:14px;background:#fafbff}
-.card-icon{font-size:22px;margin-bottom:6px}
-.card-title{font-size:12px;font-weight:800;color:#1a1a2e;margin-bottom:4px}
-.card-desc{font-size:11px;color:#666;line-height:1.5}
-/* ── TABLE ── */
-table{width:100%;border-collapse:collapse;margin:12px 0;font-size:12px}
-th{background:#003d24;color:var(--g2);padding:9px 12px;text-align:right;font-weight:700}
-td{border:1px solid #e0e4f0;padding:8px 12px}
-tr:nth-child(even) td{background:#f8fff8}
-/* ── BADGE ── */
-.badge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700}
-.badge-g{background:#e8fff4;color:var(--g);border:1px solid #b2f0d8}
-.badge-b{background:#eff5ff;color:var(--blu);border:1px solid #c0d8ff}
-.badge-gold{background:#fffbee;color:var(--gold);border:1px solid #ffe58f}
-.badge-r{background:#fff0f0;color:var(--red);border:1px solid #ffc0c0}
-/* ── CALLOUTS ── */
-.tip{background:#f0fff8;border:1px solid #b2f0d8;border-radius:8px;padding:10px 14px;font-size:12px;margin:10px 0;display:flex;gap:8px}
-.warn{background:#fff8e1;border:1px solid #ffe082;border-radius:8px;padding:10px 14px;font-size:12px;margin:10px 0;display:flex;gap:8px}
-.info{background:#eff5ff;border:1px solid #c0d8ff;border-radius:8px;padding:10px 14px;font-size:12px;margin:10px 0;display:flex;gap:8px}
-.callout-icon{font-size:16px;flex-shrink:0}
-/* ── FORMULA ── */
-.formula{background:linear-gradient(135deg,#003d24,#006e42);color:#fff;border-radius:10px;padding:14px 20px;text-align:center;font-size:15px;font-weight:700;letter-spacing:.3px;margin:12px 0}
-/* ── SCALE TABLE ── */
-.scale-row{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid #f0f0f0}
-.scale-sym{font-size:18px;font-weight:900;width:36px;text-align:center}
-.scale-bar{height:8px;border-radius:4px;flex:1}
-.scale-val{font-size:12px;font-weight:700;width:50px;text-align:center}
-/* ── FOOTER ── */
-.footer{text-align:center;padding:24px;color:#999;font-size:11px;border-top:1px solid #eee}
-.footer strong{color:var(--g)}
-/* ── PRINT ── */
-@media print{
-  .topbar,.no-print{display:none!important}
-  .section{break-inside:avoid;box-shadow:none;border:1px solid #ccc}
-  .hero{-webkit-print-color-adjust:exact;print-color-adjust:exact}
-  body{background:#fff}
-}
-<\/style><\/head><body>
+body{font-family:'Segoe UI',Arial,sans-serif;direction:rtl;background:#f5f7ff;color:#1a1a2e;font-size:13px;line-height:1.8}
+.bar{position:sticky;top:0;background:#0a1f0e;color:#fff;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;z-index:100}
+.bar h1{font-size:16px;font-weight:900;color:#00d97e}
+.bar small{color:rgba(255,255,255,.5);font-size:10px}
+.btn-pr{padding:6px 14px;background:#00d97e;border:none;border-radius:8px;color:#0a1f0e;font-weight:800;cursor:pointer;font-size:12px}
+.sec{padding:18px 16px;border-bottom:2px solid #e8ecff}
+.sec-ttl{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.ic{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
+.sec-ttl h2{font-size:15px;font-weight:900;color:#1a1a2e}
+p{margin-bottom:8px;color:#444}
+.steps{counter-reset:s;margin:10px 0}
+.step{counter-increment:s;display:flex;gap:10px;margin-bottom:8px;align-items:flex-start}
+.step::before{content:counter(s);width:22px;height:22px;background:#00875a;color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:11px;flex-shrink:0;margin-top:1px}
+.badge{display:inline-block;padding:2px 8px;border-radius:6px;font-weight:800;font-size:11px}
+.bg{background:#eaffef;color:#00875a}.bb{background:#e8f0ff;color:#1a5fd4}
+.br{background:#fff0f0;color:#c0392b}.bo{background:#fff8e6;color:#d4900a}
+.tip{background:#fffbe6;border-right:4px solid #d4900a;padding:10px 12px;border-radius:0 10px 10px 0;margin:10px 0;font-size:12px}
+.key{display:inline-block;padding:2px 8px;background:#1a1a2e;color:#00d97e;border-radius:6px;font-family:monospace;font-size:12px;font-weight:700}
+table{width:100%;border-collapse:collapse;margin:10px 0;font-size:12px}
+th{background:#0a1f0e;color:#00d97e;padding:8px;text-align:center}
+td{border:1px solid #e0e4f0;padding:7px 8px;text-align:center}
+tr:nth-child(even)td{background:#f9faff}
+</style>
+</head><body>
+<div class="bar"><div><h1>📘 دليل Smart EPS</h1><small>${sch} · ${t}</small></div>
+<button class="btn-pr" onclick="window.print()">🖨️ طباعة</button></div>
 
-<div class="topbar no-print">
-  <span class="topbar h2">📱 دليل Smart_Sport</span>
-  <div class="topbar-btns">
-    <button class="btn-pdf" onclick="window.print()">🖨️ طباعة / حفظ PDF</button>
-    <button class="btn-cls" onclick="window.close()">✕ إغلاق</button>
-  </div>
+<div class="sec"><div class="sec-ttl"><div class="ic" style="background:#eaffef">🏠</div><h2>الشاشة الرئيسية</h2></div>
+<p>تعرض شريط الأقسام أعلاه مع كروت الفصول الثلاثة + إحصائيات القسم السنوية.</p>
+<div class="steps">
+<div class="step">اضغط <span class="badge bg">＋</span> لإضافة قسم جديد مع اسمه ومستواه</div>
+<div class="step">اضغط <span class="badge bb">⋮⋮⋮</span> لعرض كل الأقسام في شبكة كاملة (عند وجود 4+ أقسام)</div>
+<div class="step">اضغط على كرت أي فصل للدخول إليه وإدارة تلاميذه</div>
+<div class="step">زر <span class="badge bg">🔳 QR</span> بجانب كل قسم يولّد QR بمعلومات القسم</div>
+</div></div>
+
+<div class="sec"><div class="sec-ttl"><div class="ic" style="background:#e8f0ff">👤</div><h2>إدارة التلاميذ</h2></div>
+<div class="steps">
+<div class="step">من الشاشة الرئيسية → اضغط على اسم أي تلميذ للدخول لملفه</div>
+<div class="step">اختر الفصل: <span class="badge bb">الفصل 1</span> <span class="badge bo">الفصل 2</span> <span class="badge br">الفصل 3</span></div>
+<div class="step">اضغط <span class="badge bg">م.مستمرة</span> لإدخال نقاط الحصص والانضباط</div>
+<div class="step">اضغط <span class="badge bo">الفرض</span> أو <span class="badge bg">الاختبار</span> للتنقيط</div>
+<div class="step">تبويب <span class="badge bg">السنوي</span> يعرض المعدل السنوي + كشف كامل</div>
 </div>
+<div class="tip">⚠️ نقاط م.م لا تظهر حتى تضغط <strong>💾 حفظ</strong> داخل شاشة المراقبة المستمرة</div></div>
 
-<!-- HERO -->
-<div class="hero">
-  <h1>📱 Smart_Sport</h1>
-  <p>دليل الاستخدام الشامل — تطبيق إدارة نقاط التربية البدنية والرياضية</p>
-  <div class="hero-badges">
-    <span class="hbadge">🏫 ${sch}</span>
-    <span class="hbadge">👨‍🏫 أ. ${t}</span>
-    <span class="hbadge">🗓️ الإصدار: Mai 26</span>
-    <span class="hbadge">👨‍💻 Delbaz_Med</span>
-  </div>
+<div class="sec"><div class="sec-ttl"><div class="ic" style="background:#fff0f0">⏱️</div><h2>كرونو 4 حارات — محرك الصوت المزدوج</h2></div>
+<p><strong>المرحلة 1 — انطلاق بالصافرة:</strong></p>
+<div class="steps">
+<div class="step">اضغط <span class="badge bo">🎤 انطلاق بالصافرة</span> وامنح إذن الميكروفون</div>
+<div class="step">النظام يرصد ترددات 3-4 kHz لمدة 150ms متواصلة</div>
+<div class="step">عند رصد الصافرة → انطلاق فوري بدقة microsecond</div>
 </div>
+<p style="margin-top:10px"><strong>المرحلة 2 — إيقاف بالصوت (فرنسي):</strong></p>
+<table><tr><th>الحارة</th><th>الكلمة الفرنسية</th><th>البدائل</th></tr>
+<tr><td>1</td><td><strong>un</strong></td><td>une, one</td></tr>
+<tr><td>2</td><td><strong>deux</strong></td><td>deu, de</td></tr>
+<tr><td>3</td><td><strong>trois</strong></td><td>troi, twa</td></tr>
+<tr><td>4</td><td><strong>quatre</strong></td><td>katr, kat</td></tr>
+</table>
+<p style="margin-top:10px"><strong>المرحلة 3 — مفاتيح الصوت الفيزيائية:</strong></p>
+<table><tr><th>المفتاح</th><th>الحارة</th></tr>
+<tr><td><span class="key">🔊 Volume+</span></td><td>الحارة 1</td></tr>
+<tr><td><span class="key">🔉 Volume-</span></td><td>الحارة 2</td></tr>
+</table>
+<p style="margin-top:10px"><strong>المرحلة 4 — اللمس المباشر:</strong> اضغط مباشرة على بطاقة الحارة لإيقافها فوراً.</p>
+<div class="tip">💡 اختر التلاميذ أولاً من الحارات ← ابحث بالحرف الأول (بدون لوحة مفاتيح) ← انطلق</div></div>
 
-<!-- TOC -->
-<div class="toc">
-  <div class="toc-title">📑 محتويات الدليل</div>
-  <div class="toc-grid">
-    <a class="toc-item" href="#s1">⚙️ الإعداد الأولي</a>
-    <a class="toc-item" href="#s2">🏫 إدارة الأقسام</a>
-    <a class="toc-item" href="#s3">👥 إضافة التلاميذ</a>
-    <a class="toc-item" href="#s4">🎯 أنشطة الفصول</a>
-    <a class="toc-item" href="#s5">📋 المراقبة المستمرة</a>
-    <a class="toc-item" href="#s6">🏅 الفرض والاختبار</a>
-    <a class="toc-item" href="#s7">⏱️ الكرونومتر</a>
-    <a class="toc-item" href="#s8">📊 المعدلات والتقدير</a>
-    <a class="toc-item" href="#s9">📋 الكشوف والتقارير</a>
-    <a class="toc-item" href="#s10">🪪 بطاقة التلميذ</a>
-    <a class="toc-item" href="#s11">⚖️ سلم التنقيط</a>
-    <a class="toc-item" href="#s12">💬 الإرسال للأولياء</a>
-    <a class="toc-item" href="#s13">🔳 QR Code</a>
-    <a class="toc-item" href="#s14">📷 مسح الكاميرا</a>
-    <a class="toc-item" href="#s15">↩️ التراجع والنسخ</a>
-    <a class="toc-item" href="#s16">🗄️ الأرشيف</a>
-  </div>
+<div class="sec"><div class="sec-ttl"><div class="ic" style="background:#fff8e6">📄</div><h2>كشوف PDF والطباعة</h2></div>
+<div class="steps">
+<div class="step">كشف فصل: من ملف التلميذ → الفصل → <span class="badge bb">📄 كشف الفصل</span></div>
+<div class="step">كشف سنوي: تبويب السنوي → <span class="badge bg">📊 كشف سنوي</span></div>
+<div class="step">كل الأقسام: شاشة الأنشطة → زر <span class="badge br">🗄️</span> → كشوف PDF كاملة</div>
+<div class="step">كل صفحة تحتوي: اسم الثانوية + جدول النقاط + إمضاء <strong>دلباز محمد</strong> + مستشار + ناظر</div>
+</div></div>
+
+<div class="sec"><div class="sec-ttl"><div class="ic" style="background:#f5f0ff">📋</div><h2>قائمة المعفيين</h2></div>
+<p>من شاشة الأنشطة → زر <span class="badge bg">📋 المعفيون</span> → تفتح شاشة كاملة تعرض:</p>
+<div class="steps">
+<div class="step">كل الأقسام مجمعة مع اسم القسم والمستوى</div>
+<div class="step">كل تلميذ مع الفصول التي أُعفي منها كشارات ملونة</div>
+<div class="step">زر <span class="badge bg">🖨️ PDF</span> يصدر قائمة رسمية بالإمضاءات الثلاثة</div>
+</div></div>
+
+<div class="sec"><div class="sec-ttl"><div class="ic" style="background:#fff0f0">🏆</div><h2>شهادة التفوق الرقمية</h2></div>
+<p>في تبويب <strong>السنوي</strong> لأي تلميذ — إذا حقق أحد الشروط:</p>
+<table><tr><th>الشرط</th><th>المعيار</th></tr>
+<tr><td>تفوق دراسي</td><td>معدل سنوي ≥ 18/20</td></tr>
+<tr><td>تفوق فصلي</td><td>معدل فصل ≥ 18/20</td></tr>
+<tr><td>حضور كامل</td><td>لا إعفاء + ناجح</td></tr>
+<tr><td>أداء رياضي</td><td>علامة فرض ≥ 18/20</td></tr>
+</table>
+<p style="margin-top:8px">يظهر زر <span class="badge bo">🏆 إصدار شهادة التفوق</span> تلقائياً → تنزيل PNG أو مشاركة واتساب</p></div>
+
+<div class="sec"><div class="sec-ttl"><div class="ic" style="background:#eaffef">💾</div><h2>النسخ الاحتياطي والأرشيف</h2></div>
+<div class="steps">
+<div class="step"><strong>نسخة JSON تلقائية:</strong> تُحفظ عند كل عملية حفظ</div>
+<div class="step"><strong>تصدير يدوي:</strong> الإعدادات → 💾 حفظ احتياطي JSON</div>
+<div class="step"><strong>أرشيف السنة:</strong> الأنشطة → 🗄️ → PDF كامل لكل الكشوف</div>
+<div class="step"><strong>استعادة:</strong> الإعدادات → 📂 استعادة من ملف JSON</div>
 </div>
+<div class="tip">⚠️ عند تغيير الهاتف — صدّر نسخة JSON مسبقاً</div></div>
 
-<div class="content">
+<div class="sec"><div class="sec-ttl"><div class="ic" style="background:#e8f0ff">⚙️</div><h2>الإعدادات</h2></div>
+<div class="steps">
+<div class="step">اسم الأستاذ، المؤسسة، الموسم الدراسي</div>
+<div class="step">سلم التنقيط لكل نشاط (قابل للتعديل)</div>
+<div class="step">الوضع الليلي/النهاري: زر 🌙/🌞 في الشاشة الرئيسية</div>
+<div class="step">دليل المستخدم: زر 📘 في الإعدادات</div>
+</div></div>
 
-<!-- ①  إعداد أولي -->
-<div class="section" id="s1">
-  <div class="sec-hdr"><div class="sec-icon" style="background:#e8fff4">⚙️</div><h2>الإعداد الأولي</h2></div>
-  <div class="sec-body">
-    <div class="steps">
-      <div class="step"><div class="step-body"><strong>افتح ⚙️ الإعدادات من شريط التنقل السفلي</strong><p>أدخل اسم الأستاذ · اسم الثانوية · الموسم الدراسي · ثم اضغط 💾 حفظ</p></div></div>
-      <div class="step"><div class="step-body"><strong>حدّد أنشطة الفصول الثلاثة من شاشة 🎯 الأنشطة</strong><p>لكل فصل: نشاط فردي + نشاط جماعي — ستُطبَّق تلقائياً على كل الأقسام</p></div></div>
-      <div class="step"><div class="step-body"><strong>أنشئ الأقسام واستورد التلاميذ</strong><p>اضغط + في شريط الأقسام — ثم أضف التلاميذ يدوياً أو بـ Excel أو بالكاميرا</p></div></div>
-    </div>
-    <div class="tip"><span class="callout-icon">💡</span><span>البيانات تُحفظ تلقائياً في ذاكرة الهاتف — لا حاجة لضغط حفظ بعد كل إدخال.</span></div>
-  </div>
+<div style="text-align:center;padding:24px 16px;background:#0a1f0e;color:rgba(255,255,255,.5);font-size:11px">
+Smart EPS v4 · دلباز محمد · ثانوية سماحي بوعمامة · 2025-2026
 </div>
-
-<!-- ②  أقسام -->
-<div class="section" id="s2">
-  <div class="sec-hdr"><div class="sec-icon" style="background:#e8fff4">🏫</div><h2>إدارة الأقسام</h2></div>
-  <div class="sec-body">
-    <div class="card-grid">
-      <div class="card"><div class="card-icon">➕</div><div class="card-title">إضافة قسم</div><div class="card-desc">اضغط + في شريط الأقسام · أدخل الاسم والمستوى (1ث / 2ث / 3ث)</div></div>
-      <div class="card"><div class="card-icon">✏️</div><div class="card-title">تعديل القسم</div><div class="card-desc">اضغط زر تعديل داخل القسم — يمكن تغيير الاسم والمستوى</div></div>
-      <div class="card"><div class="card-icon">↔️</div><div class="card-title">إعادة ترتيب</div><div class="card-desc">اسحب تبويب القسم يساراً أو يميناً لتغيير ترتيبه</div></div>
-      <div class="card"><div class="card-icon">🔳</div><div class="card-title">QR Code القسم</div><div class="card-desc">اضغط 🔳 QR داخل القسم لتوليد كود خاص بمعلوماته</div></div>
-    </div>
-    <div class="warn"><span class="callout-icon">⚠️</span><span>حذف القسم يحذف جميع تلاميذه ونقاطهم — تأكد قبل الحذف.</span></div>
-  </div>
-</div>
-
-<!-- ③  تلاميذ -->
-<div class="section" id="s3">
-  <div class="sec-hdr"><div class="sec-icon" style="background:#eff5ff">👥</div><h2>إضافة التلاميذ</h2></div>
-  <div class="sec-body">
-    <div class="card-grid" style="margin-bottom:16px">
-      <div class="card">
-        <div class="card-icon">✍️</div><div class="card-title">إضافة يدوي</div>
-        <div class="card-desc">اضغط <span class="badge badge-g">+ إضافة يدوي</span> — أدخل الاسم · الجنس · هاتف الولي (اختياري)</div>
-      </div>
-      <div class="card">
-        <div class="card-icon">📊</div><div class="card-title">استيراد Excel</div>
-        <div class="card-desc">ملف .xlsx بالأعمدة: اللقب · الاسم · الجنس · الهاتف — أو الاسم الكامل في عمود واحد</div>
-      </div>
-      <div class="card">
-        <div class="card-icon">📷</div><div class="card-title">مسح بالكاميرا (OCR)</div>
-        <div class="card-desc">صوّر القائمة الورقية — التطبيق يقرأ الأسماء تلقائياً ويعرضها للمراجعة</div>
-      </div>
-    </div>
-    <div class="info"><span class="callout-icon">ℹ️</span><span><strong>تنسيق Excel:</strong> السطر الأول يُتجاهل إذا احتوى رأس عمود (اسم / لقب). الجنس: «ذكر» أو «أنثى» أو m/f.</span></div>
-    <div class="tip"><span class="callout-icon">💡</span><span>أزرار ▲▼ بجانب كل تلميذ لتغيير ترتيبه داخل القسم. <strong>🔍 البحث</strong> يعمل لحظياً بالاسم. <strong>الفلتر</strong>: كل / ناجح / راسب / معفى.</span></div>
-  </div>
-</div>
-
-<!-- ④  أنشطة -->
-<div class="section" id="s4">
-  <div class="sec-hdr"><div class="sec-icon" style="background:#fff8e1">🎯</div><h2>أنشطة الفصول الدراسية</h2></div>
-  <div class="sec-body">
-    <p style="margin-bottom:12px">من شاشة <span class="badge badge-gold">🎯 الأنشطة</span> في شريط التنقل السفلي — حدد لكل فصل نشاطين:</p>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">
-      <div style="background:#f0fff8;border:1px solid #b2f0d8;border-radius:10px;padding:12px">
-        <div style="font-weight:800;font-size:12px;color:var(--g);margin-bottom:8px">🏃 الأنشطة الفردية</div>
-        <ul style="padding-right:16px;font-size:12px;color:#444;line-height:2">
-          <li>جري سريع 60م (3 محاولات)</li><li>الوثب الطويل (3 محاولات)</li>
-          <li>دفع الجلة (3 محاولات)</li><li>نصف الطويل (محاولة واحدة)</li>
-          <li>الوثب الثلاثي (3 محاولات)</li><li>التتابع (محاولة واحدة)</li>
-        </ul>
-      </div>
-      <div style="background:#fff8e1;border:1px solid #ffe082;border-radius:10px;padding:12px">
-        <div style="font-weight:800;font-size:12px;color:var(--gold);margin-bottom:8px">🏐 الأنشطة الجماعية</div>
-        <ul style="padding-right:16px;font-size:12px;color:#444;line-height:2">
-          <li>كرة الطائرة</li><li>كرة اليد</li><li>كرة السلة</li>
-        </ul>
-        <div style="font-size:11px;color:#888;margin-top:8px">سلم موحد D→A2 لكل الأنشطة الجماعية</div>
-      </div>
-    </div>
-    <div class="tip"><span class="callout-icon">💡</span><span>قائمة المعفيين: اضغط 📋 في رأس شاشة الأنشطة لتوليد وثيقة PDF رسمية بكل المعفيين مع توقيع 3 أطراف.</span></div>
-  </div>
-</div>
-
-<!-- ⑤  م.م -->
-<div class="section" id="s5">
-  <div class="sec-hdr"><div class="sec-icon" style="background:#eff5ff">📋</div><h2>المراقبة المستمرة</h2></div>
-  <div class="sec-body">
-    <table>
-      <tr><th>العنصر</th><th>الحد الأقصى</th><th>طريقة الإدخال</th></tr>
-      <tr><td>7 حصص الحضور</td><td>14 نقطة</td><td>اضغط الزر لتدوير: ✓ حاضر (2) ← A غائب (0) ← M مرض (1)</td></tr>
-      <tr><td>الانضباط</td><td>2 نقطة</td><td>أزرار − و + بخطوة 0.25</td></tr>
-      <tr><td>المشاركة</td><td>2 نقطة</td><td>أزرار − و + بخطوة 0.25</td></tr>
-      <tr><td>الإبداع</td><td>2 نقطة</td><td>أزرار − و + بخطوة 0.25</td></tr>
-    </table>
-    <div class="formula">المجموع = حضور/14 + انضباط/2 + مشاركة/2 + إبداع/2 = /20</div>
-    <div class="tip"><span class="callout-icon">💡</span><span>بعد الحفظ يمكن إرسال نتيجة م.م عبر واتساب 💬 من زر الإرسال بجانب زر الحفظ (إذا كان للتلميذ رقم هاتف).</span></div>
-  </div>
-</div>
-
-<!-- ⑥  فرض -->
-<div class="section" id="s6">
-  <div class="sec-hdr"><div class="sec-icon" style="background:#fff8e1">🏅</div><h2>الفرض والاختبار</h2></div>
-  <div class="sec-body">
-    <div class="steps">
-      <div class="step"><div class="step-body"><strong>النشاط الفردي — أدخل المحاولات</strong><p>يظهر النشاط المبرمج مُحدداً تلقائياً · أدخل القيم · الأفضل يُميَّز بالأخضر ويُعتمد للنقطة · الحساب فوري</p></div></div>
-      <div class="step"><div class="step-body"><strong>النشاط الجماعي — اختر المستوى</strong><p>اضغط على الرمز المناسب (D / C / B / A مع درجاتها) · لإلغاء الاختيار اضغط زر ✕ الأحمر</p></div></div>
-      <div class="step"><div class="step-body"><strong>اضغط 💾 حفظ النقطة</strong><p>تُحسب النقطة النهائية = (فردي + جماعي) ÷ 2 · إذا نشاط واحد فقط تُحتسب مباشرة</p></div></div>
-    </div>
-    <table style="margin-top:12px">
-      <tr><th>رمز الجماعي</th><th>النقطة /20</th><th>التقدير</th></tr>
-      <tr><td>D / D1 / D2</td><td>10 — 12</td><td>مقبول</td></tr>
-      <tr><td>C / C1 / C2</td><td>13 — 15</td><td>متوسط — حسن</td></tr>
-      <tr><td>B / B1 / B2</td><td>16 — 18</td><td>جيد جداً</td></tr>
-      <tr><td>A / A1 / A2</td><td>18 — 20</td><td>ممتاز — نخبوي</td></tr>
-    </table>
-    <div class="warn"><span class="callout-icon">⚠️</span><span>قيمة خارج السلم تُعطي تنبيهاً فورياً — النقطة تُحتسب 0 تلقائياً.</span></div>
-  </div>
-</div>
-
-<!-- ⑦  كرونومتر -->
-<div class="section" id="s7">
-  <div class="sec-hdr"><div class="sec-icon" style="background:#e8fff4">⏱️</div><h2>الكرونومتر الذكي المدمج</h2></div>
-  <div class="sec-body">
-    <div class="card-grid">
-      <div class="card"><div class="card-icon">▶️</div><div class="card-title">يظهر تلقائياً</div><div class="card-desc">فقط للأنشطة الزمنية (60م / نصف الطويل / التتابع)</div></div>
-      <div class="card"><div class="card-icon">⏹️</div><div class="card-title">تسجيل فوري</div><div class="card-desc">عند الإيقاف يُنزَّل التوقيت مباشرة في خانة المحاولة</div></div>
-      <div class="card"><div class="card-icon">📊</div><div class="card-title">حساب لحظي</div><div class="card-desc">النقطة تُحتسب فوراً حسب الجنس والمستوى دون أي جداول</div></div>
-      <div class="card"><div class="card-icon">🔄</div><div class="card-title">تلقائي</div><div class="card-desc">ينتقل للمحاولة التالية تلقائياً بعد كل إيقاف</div></div>
-    </div>
-    <div class="info"><span class="callout-icon">ℹ️</span><span>استخدم زر ↺ لإعادة الضبط بين التلاميذ.</span></div>
-  </div>
-</div>
-
-<!-- ⑧  معدلات -->
-<div class="section" id="s8">
-  <div class="sec-hdr"><div class="sec-icon" style="background:#f5f0ff">📊</div><h2>المعدلات والتقدير</h2></div>
-  <div class="sec-body">
-    <div class="formula">المعدل الفصلي = ( م.م × 1 + الفرض × 1 + الاختبار × 2 ) ÷ 4</div>
-    <div class="formula" style="background:linear-gradient(135deg,#1a3d8f,#2e5fd4);margin-top:8px">المعدل السنوي = متوسط الفصول النشطة (غير المعفاة)</div>
-    <table style="margin-top:14px">
-      <tr><th>التقدير</th><th>النطاق /20</th><th>الإرشادات</th></tr>
-      <tr><td><span style="color:var(--red);font-weight:700">دون المتوسط</span></td><td>أقل من 10</td><td>عليك بمضاعفة جهودك</td></tr>
-      <tr><td><span style="color:var(--gold);font-weight:700">حسن</span></td><td>10 — 12.99</td><td>حاول أكثر</td></tr>
-      <tr><td><span style="color:var(--blu);font-weight:700">جيد</span></td><td>13 — 14.99</td><td>أحسنت، واصل</td></tr>
-      <tr><td><span style="color:var(--g);font-weight:700">جيد جداً</span></td><td>15 — 16.99</td><td>ممتاز، واصل</td></tr>
-      <tr><td><span style="color:var(--pnk);font-weight:700">ممتاز</span></td><td>17 وأكثر</td><td>ممتاز، واصل</td></tr>
-    </table>
-    <div class="tip"><span class="callout-icon">💡</span><span><strong>الإعفاء:</strong> فعّل مفتاح الإعفاء في صفحة التلميذ عند الفصل المعنيّ — لا تُحتسب نقاط ذلك الفصل في المعدل.</span></div>
-  </div>
-</div>
-
-<!-- ⑨  كشوف -->
-<div class="section" id="s9">
-  <div class="sec-hdr"><div class="sec-icon" style="background:#e8fff4">📋</div><h2>كشوف النقاط والتقارير</h2></div>
-  <div class="sec-body">
-    <p style="margin-bottom:12px">جميع الكشوف متاحة من شاشة <span class="badge badge-g">⚖️ سلم التنقيط</span> في شريط التنقل السفلي:</p>
-    <table>
-      <tr><th>نوع الكشف</th><th>المحتوى</th><th>الصيغة</th></tr>
-      <tr><td>كشف الفصل — القسم الحالي</td><td>م.م · الفرض · الاختبار · المعدل · التقدير · الإرشادات</td><td>PDF</td></tr>
-      <tr><td>كشوف الفصول — كل الأقسام</td><td>كل قسم في صفحة مستقلة</td><td>PDF</td></tr>
-      <tr><td>كشوف الفصول — كل الأقسام</td><td>كل قسم في ورقة Excel</td><td>Excel</td></tr>
-      <tr><td>كشف السنوي — القسم الحالي</td><td>ف1 · ف2 · ف3 · المعدل السنوي · التقدير · الإرشادات</td><td>PDF</td></tr>
-      <tr><td>كشف السنوي — كل الأقسام</td><td>كل قسم في صفحة مستقلة</td><td>PDF + Excel</td></tr>
-    </table>
-    <div class="info"><span class="callout-icon">ℹ️</span><span>كل كشف يحتوي: اسم الثانوية · الموسم · توقيع الأستاذ Delbaz_Med · خانة الناظر · علامة مائية.</span></div>
-  </div>
-</div>
-
-<!-- ⑩  بطاقة -->
-<div class="section" id="s10">
-  <div class="sec-hdr"><div class="sec-icon" style="background:#eff5ff">🪪</div><h2>بطاقة نتائج التلميذ</h2></div>
-  <div class="sec-body">
-    <div class="steps">
-      <div class="step"><div class="step-body"><strong>افتح صفحة التلميذ ← تبويب 📊 سنوي</strong></div></div>
-      <div class="step"><div class="step-body"><strong>اضغط 🪪 بطاقة النتائج</strong><p>أو من قائمة التلاميذ اضغط زر 🪪 بطاقة تحت اسمه</p></div></div>
-      <div class="step"><div class="step-body"><strong>في النافذة المفتوحة: اضغط 🖨️ طباعة</strong><p>البطاقة تحتوي: كل الفصول + المعدل السنوي + التقدير + توقيع الأستاذ + مستشار التربية</p></div></div>
-    </div>
-  </div>
-</div>
-
-<!-- ⑪  سلم -->
-<div class="section" id="s11">
-  <div class="sec-hdr"><div class="sec-icon" style="background:#e8fff4">⚖️</div><h2>سلم التنقيط</h2></div>
-  <div class="sec-body">
-    <div class="steps">
-      <div class="step"><div class="step-body"><strong>اختر النشاط من القائمة المنسدلة</strong></div></div>
-      <div class="step"><div class="step-body"><strong>حدد المستوى (1ث / 2ث / 3ث) والجنس</strong></div></div>
-      <div class="step"><div class="step-body"><strong>عدّل القيم: أفضل أداء (20 نق) وأدنى أداء (0 نق)</strong><p>السلم يحتسب تلقائياً بالتناسب بين الحدين</p></div></div>
-      <div class="step"><div class="step-body"><strong>صدّر: PDF أو Word</strong><p>الملف يحتوي السلمين الفردي والجماعي</p></div></div>
-    </div>
-    <div class="tip"><span class="callout-icon">💡</span><span>سلم الأنشطة الجماعية موحّد لجميع الرياضات (D / C / B / A) — لا يحتاج تعديلاً.</span></div>
-  </div>
-</div>
-
-<!-- ⑫  إرسال -->
-<div class="section" id="s12">
-  <div class="sec-hdr"><div class="sec-icon" style="background:#e8fff4">💬</div><h2>الإرسال للأولياء (واتساب / SMS)</h2></div>
-  <div class="sec-body">
-    <div class="card-grid">
-      <div class="card"><div class="card-icon">💬</div><div class="card-title">من م.م</div><div class="card-desc">زر واتساب بجانب زر الحفظ — يُرسل تفاصيل المراقبة المستمرة</div></div>
-      <div class="card"><div class="card-icon">💬</div><div class="card-title">من الفرض/الاختبار</div><div class="card-desc">زر واتساب بجانب زر الحفظ — يُرسل تفاصيل النقطة</div></div>
-      <div class="card"><div class="card-icon">💬</div><div class="card-title">من التبويب السنوي</div><div class="card-desc">إرسال المعدل السنوي أو معدل فصل محدد</div></div>
-    </div>
-    <div class="info"><span class="callout-icon">ℹ️</span><span>أزرار الإرسال تظهر فقط للتلاميذ الذين أُدخل لهم رقم هاتف ولي الأمر.</span></div>
-  </div>
-</div>
-
-<!-- ⑬  QR -->
-<div class="section" id="s13">
-  <div class="sec-hdr"><div class="sec-icon" style="background:#eff5ff">🔳</div><h2>QR Code</h2></div>
-  <div class="sec-body">
-    <p>كل قسم له كود QR خاص يحتوي: اسم الثانوية · الموسم · اسم القسم · المستوى · عدد التلاميذ.</p>
-    <div class="steps" style="margin-top:12px">
-      <div class="step"><div class="step-body"><strong>افتح القسم المطلوب من الرئيسية</strong></div></div>
-      <div class="step"><div class="step-body"><strong>اضغط زر 🔳 QR بجانب زر التعديل</strong></div></div>
-      <div class="step"><div class="step-body"><strong>اضغط 💾 لتنزيل الكود كصورة PNG</strong></div></div>
-    </div>
-  </div>
-</div>
-
-<!-- ⑭  OCR -->
-<div class="section" id="s14">
-  <div class="sec-hdr"><div class="sec-icon" style="background:#fff8e1">📷</div><h2>مسح القوائم بالكاميرا (OCR)</h2></div>
-  <div class="sec-body">
-    <div class="steps">
-      <div class="step"><div class="step-body"><strong>حدد القسم المطلوب أولاً</strong></div></div>
-      <div class="step"><div class="step-body"><strong>اضغط 📷 في رأس شاشة الأنشطة</strong></div></div>
-      <div class="step"><div class="step-body"><strong>اختر: 📷 الكاميرا أو 🖼️ من المعرض</strong><p>الأفضل: صوّر القائمة ثم اختر الصورة من المعرض للحصول على دقة أعلى</p></div></div>
-      <div class="step"><div class="step-body"><strong>راجع الأسماء المكتشفة ← اضغط ✅ استيراد</strong><p>يمكن تعديل أي اسم قبل الاستيراد · إلغاء تحديد الأسماء غير المطلوبة</p></div></div>
-    </div>
-    <div class="warn"><span class="callout-icon">⚠️</span><span>يتطلب اتصالاً بالإنترنت للتحميل الأول · الكاميرا تعمل فقط عبر HTTPS (موقع netlify) وليس من ملف محلي.</span></div>
-  </div>
-</div>
-
-<!-- ⑮  تراجع ونسخ -->
-<div class="section" id="s15">
-  <div class="sec-hdr"><div class="sec-icon" style="background:#fff8e1">↩️</div><h2>التراجع والنسخ الاحتياطية</h2></div>
-  <div class="sec-body">
-    <div class="card-grid">
-      <div class="card"><div class="card-icon">↩️</div><div class="card-title">زر التراجع</div><div class="card-desc">دائماً في الهيدر — يتراجع عن آخر عملية (إضافة / تعديل / حذف / حفظ) — يعرض عداداً بعدد العمليات المتاحة</div></div>
-      <div class="card"><div class="card-icon">💾</div><div class="card-title">نسخة احتياطية تلقائية</div><div class="card-desc">تُحفظ تلقائياً عند كل عملية حفظ — استعدها من الإعدادات</div></div>
-      <div class="card"><div class="card-icon">📤</div><div class="card-title">تصدير يدوي</div><div class="card-desc">من الإعدادات → 💾 تصدير نسخة احتياطية — ملف JSON قابل للاستعادة في أي وقت</div></div>
-    </div>
-    <div class="warn"><span class="callout-icon">⚠️</span><span>عند تغيير الهاتف أو مسح بيانات المتصفح — احرص على تصدير نسخة JSON مسبقاً!</span></div>
-  </div>
-</div>
-
-<!-- ⑯  أرشيف -->
-<div class="section" id="s16">
-  <div class="sec-hdr"><div class="sec-icon" style="background:#f5f0ff">🗄️</div><h2>أرشيف نهاية السنة</h2></div>
-  <div class="sec-body">
-    <p style="margin-bottom:12px">من الإعدادات → اضغط <span class="badge badge-b">🗄️ أرشيف نهاية السنة</span></p>
-    <div class="steps">
-      <div class="step"><div class="step-body"><strong>أدخل عنواناً للأرشيف</strong><p>مثال: نتائج نهاية العام 2025-2026</p></div></div>
-      <div class="step"><div class="step-body"><strong>اضغط 💾 حفظ الأرشيف</strong><p>يُصدَّر ملف Excel بكل الأقسام — كل قسم في ورقة مستقلة يحتوي المعدلات السنوية والتقديرات والإرشادات</p></div></div>
-    </div>
-    <div class="tip"><span class="callout-icon">💡</span><span>احفظ الأرشيف في نهاية كل سنة دراسية قبل البدء بتهيئة التطبيق للسنة الجديدة.</span></div>
-  </div>
-</div>
-
-</div><!-- end content -->
-
-<div class="footer">
-  <p><strong>Smart_Sport</strong> — تطبيق إدارة نقاط التربية البدنية والرياضية</p>
-  <p style="margin-top:6px">المطوّر: <strong>Delbaz_Med</strong> &nbsp;·&nbsp; الإصدار: <strong>Mai 26</strong> &nbsp;·&nbsp; ${sch} &nbsp;·&nbsp; أ. ${t}</p>
-  <p style="margin-top:4px;color:#bbb">Delbaz_EPS · DZ · 2026</p>
-</div>
-
-<\/body><\/html>`;
-  const ov=document.getElementById('ov-iframe');
-  document.getElementById('ov-iframe-title').textContent='📖 دليل الاستخدام — Smart_Sport';
-  ov.style.display='flex';
-  document.getElementById('pdfFrame').srcdoc=guideHTML;
+</body></html>`;
+  const w=window.open('','_blank','width=420,height=700');
+  if(w){w.document.write(html);w.document.close();}
+  else{const b=document.createElement('a');b.href='data:text/html;charset=utf-8,'+encodeURIComponent(html);b.download='دليل_Smart_EPS.html';b.click();}
 }
 // ANNUAL TAB
 function rAnnualTab(){
@@ -3022,6 +2776,7 @@ function openQR(clsId){
     if(pb){pb.dataset.cid=cid;}
     openOv('ov-qr');
     setTimeout(function(){
+      var qc=document.getElementById("qr-canvas");if(qc)qc.innerHTML="";
       if(typeof QRCode==='undefined'){
         canvas.innerHTML='<div style="padding:30px;color:#c00;font-size:11px">مكتبة QR غير محملة</div>';
         return;
@@ -3556,88 +3311,59 @@ function sw4ResetState(){
   }
 }
 
-function closeExemptionList(){var o=document.getElementById('ov-exl');if(o){o.style.display='none';}}
-function printExemptionList(){
-  var sch=D.settings.school||'الثانوية';
-  var yr=D.settings.year||'\u2014';
-  // Collect exemption data (ALL classes)
-  var rows=[];
-  D.classes.forEach(function(cls){
-    var stus=D.students.filter(function(s){return s.classId===cls.id;});
-    stus.forEach(function(s){
-      initStu(s);
-      var terms=[];
-      if(s.terms.t1.exempted)terms.push('الفصل 1');
-      if(s.terms.t2.exempted)terms.push('الفصل 2');
-      if(s.terms.t3.exempted)terms.push('الفصل 3');
-      if(terms.length){
-        rows.push({
-          name:s.name,
-          gender:s.gender==='male'?'ذكر':'أنثى',
-          cls:cls.name+' ('+LVL[cls.level]+')',
-          terms:terms.join(' / ')
-        });
-      }
-    });
-  });
-  if(!rows.length){toast('معلومة','لا يوجد معفيون','su');return;}
-  // Build HTML  
-  var tbody='';
-  rows.forEach(function(r,i){
-    tbody+='<tr><td>'+(i+1)+'</td><td style="text-align:right">'+r.name+'</td><td>'+r.gender+'</td><td>'+r.cls+'</td><td style="font-weight:700;color:#c0392b">'+r.terms+'</td></tr>';
-  });
-  var html='<div class="page"><div class="watermark">'+sch+'</div>'+
-    '<div style="text-align:center;border-bottom:2px solid #c0392b;padding-bottom:8px;margin-bottom:14px"><div style="font-size:14px;font-weight:800;color:#c0392b">'+sch+'</div><div style="font-size:11px;color:#555;margin-top:2px">السنة الدراسية: '+yr+'</div></div>'+
-    '<h1 style="color:#c0392b">قائمة التلاميذ المعفيين</h1>'+
-    '<h2>مادة التربية البدنية والرياضية</h2>'+
-    '<div class="info-row" style="margin-bottom:14px"><span><strong>عدد المعفيين:</strong> '+rows.length+'</span><span><strong>التاريخ:</strong> '+new Date().toLocaleDateString('ar-DZ')+'</span></div>'+
-    '<table><thead><tr><th style="background:#c0392b">الرقم</th><th style="background:#c0392b">الاسم واللقب</th><th style="background:#c0392b">الجنس</th><th style="background:#c0392b">القسم</th><th style="background:#c0392b">الإعفاء</th></tr></thead><tbody>'+tbody+'</tbody></table>'+
-    '<div class="footer">'+
-    '<div class="sig-box"><div>أستاذ التربية البدنية والرياضية</div><div class="sig-line"></div><div style="font-weight:700">دلباز محمد</div></div>'+
-    '<div class="sig-box"><div>مستشار التربية</div><div class="sig-line"></div><div style="color:#555">التوقيع والختم</div></div>'+
-    '<div class="sig-box"><div>الناظر</div><div class="sig-line"></div><div style="color:#555">التوقيع والختم</div></div>'+
-    '</div></div>';
-  openGradeSheetPDF(html,'قائمة المعفيين \u2014 '+sch);
-}
-
-function openExemptionList(){
-  var scope=D.classes;
   var groups=[];
-  scope.forEach(function(cls){
-    var stus=D.students.filter(function(s){return s.classId===cls.id;});
-    var clsRows=[];
-    stus.forEach(function(s){
+  D.classes.forEach(function(cls){
+    var rows=[];
+    D.students.filter(function(s){return s.classId===cls.id;}).forEach(function(s){
       initStu(s);
       var terms=[];
       ['t1','t2','t3'].forEach(function(tk){if(s.terms[tk].exempted)terms.push(TLB[tk]);});
-      if(terms.length)clsRows.push({name:s.name,gender:s.gender,terms:terms});
+      if(terms.length)rows.push({name:s.name,gender:s.gender,terms:terms});
     });
-    if(clsRows.length)groups.push({cls:cls,rows:clsRows});
+    if(rows.length)groups.push({cls:cls,rows:rows});
   });
-  var totalCount=0;groups.forEach(function(g){totalCount+=g.rows.length;});
-  var scopeLabel='كل الأقسام';
-  var bodyHTML='';
-  if(!totalCount){
-    bodyHTML='<div style="text-align:center;padding:40px 20px"><div style="font-size:48px;margin-bottom:12px">\u2705</div><div style="color:var(--tx2);font-size:14px;font-weight:700">لا يوجد معفيون</div><div style="color:var(--tx3);font-size:11px;margin-top:6px">في النطاق المحدد</div></div>';
+  var total=0;groups.forEach(function(g){total+=g.rows.length;});
+
+  // Build full-screen overlay (independent of any other overlay)
+  var overlay=document.createElement('div');
+  overlay.id='exl-overlay';
+  overlay.style.cssText='position:fixed;inset:0;z-index:99999;background:var(--bg);display:flex;flex-direction:column;opacity:0;transition:opacity .25s;font-family:var(--ff)';
+  overlay.innerHTML=
+    '<div style="display:flex;align-items:center;gap:10px;padding:14px 16px;border-bottom:1px solid var(--ln);flex-shrink:0;background:var(--p1)">'+
+    '<button onclick="closeExemptionList()" style="width:36px;height:36px;background:var(--rb);border:none;border-radius:10px;color:var(--red);font-size:18px;cursor:pointer;font-weight:900;flex-shrink:0">&#x2190;</button>'+
+    '<div style="flex:1"><div style="font-size:14px;font-weight:900;color:var(--tx)">📋 المعفيون</div>'+
+    '<div style="font-size:10px;color:var(--tx3);font-weight:600">'+total+' حالة إعفاء — كل الأقسام</div></div>'+
+    '<button onclick="printExemptionList()" style="padding:8px 12px;background:rgba(0,217,126,.1);border:1px solid rgba(0,217,126,.3);border-radius:10px;color:var(--g);font-size:12px;font-weight:800;cursor:pointer">🖨️ PDF</button>'+
+    '</div>'+
+    '<div id="exl-body" style="flex:1;overflow-y:auto;padding:14px;-webkit-overflow-scrolling:touch"></div>';
+
+  var body_html='';
+  if(!total){
+    body_html='<div style="text-align:center;padding:60px 20px"><div style="font-size:60px;margin-bottom:16px">✅</div>'+
+      '<div style="font-size:16px;font-weight:800;color:var(--tx)">لا يوجد معفيون</div>'+
+      '<div style="font-size:12px;color:var(--tx3);margin-top:8px">في كل الأقسام المسجلة</div></div>';
   }else{
     groups.forEach(function(g){
-      bodyHTML+='<div style="margin-bottom:14px"><div style="font-size:11px;font-weight:900;color:var(--g);background:var(--p3);padding:8px 12px;border-radius:8px;margin-bottom:6px;display:flex;justify-content:space-between;align-items:center"><span>'+g.cls.name+' \u00b7 '+LVL[g.cls.level]+'</span><span style="background:var(--gb);color:var(--gold);padding:2px 8px;border-radius:6px;font-size:10px">'+g.rows.length+'</span></div>';
+      body_html+='<div style="margin-bottom:18px">'+
+        '<div style="display:flex;align-items:center;justify-content:space-between;background:var(--gb);padding:8px 14px;border-radius:10px;margin-bottom:8px">'+
+        '<span style="font-size:12px;font-weight:900;color:var(--g)">'+g.cls.name+' · '+LVL[g.cls.level]+'</span>'+
+        '<span style="background:var(--p3);color:var(--gold);padding:2px 10px;border-radius:6px;font-size:10px;font-weight:800">'+g.rows.length+'</span></div>';
       g.rows.forEach(function(r){
-        var emoji=r.gender==='male'?'\ud83d\udc66':'\ud83d\udc67';
-        var color=r.gender==='male'?'var(--blu)':'var(--pnk)';
-        var bg=r.gender==='male'?'rgba(78,165,255,.1)':'rgba(232,121,249,.1)';
-        var termsHTML=r.terms.map(function(t){return '<span style="background:'+bg+';color:'+color+';padding:2px 8px;border-radius:6px;font-size:10px;font-weight:700">'+t+'</span>';}).join(' ');
-        bodyHTML+='<div style="display:flex;align-items:center;gap:10px;padding:10px 8px;border-bottom:1px solid var(--ln)"><div style="width:36px;height:36px;border-radius:50%;background:'+bg+';display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0">'+emoji+'</div><div style="flex:1;min-width:0"><div style="font-size:13px;font-weight:800;color:var(--tx);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+r.name+'</div><div style="display:flex;gap:4px;margin-top:4px;flex-wrap:wrap">'+termsHTML+'</div></div></div>';
+        var m=r.gender==='male';
+        var clr=m?'var(--blu)':'var(--pnk)';
+        var bg=m?'rgba(78,165,255,.08)':'rgba(232,121,249,.08)';
+        var badges=r.terms.map(function(t){return '<span style="background:'+bg+';color:'+clr+';padding:2px 10px;border-radius:6px;font-size:11px;font-weight:700">'+t+'</span>';}).join(' ');
+        body_html+=
+          '<div style="display:flex;align-items:center;gap:12px;padding:12px 10px;border-bottom:1px solid var(--ln)">'+
+          '<div style="width:38px;height:38px;border-radius:50%;background:'+bg+';display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0">'+(m?'👦':'👧')+'</div>'+
+          '<div style="flex:1;min-width:0">'+
+          '<div style="font-size:13px;font-weight:800;color:var(--tx);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+r.name+'</div>'+
+          '<div style="display:flex;gap:4px;margin-top:5px;flex-wrap:wrap">'+badges+'</div></div></div>';
       });
-      bodyHTML+='</div>';
+      body_html+='</div>';
     });
   }
-  var ov=document.getElementById('ov-exl');
-  if(!ov){ov=document.createElement('div');ov.id='ov-exl';document.body.appendChild(ov);}
-  ov.onclick=function(e){if(e.target===ov)closeExemptionList();};
-  ov.innerHTML='<div onclick="event.stopPropagation()" style="background:var(--p1);border-radius:20px 20px 0 0;width:100%;max-width:480px;max-height:75vh;display:flex;flex-direction:column;overflow:hidden"><div style="padding:14px 16px;border-bottom:1px solid var(--ln);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;background:var(--p2)"><div style="display:flex;align-items:center;gap:8px"><span style="font-size:18px">\ud83d\udccb</span><div><div style="font-size:13px;font-weight:900;color:var(--tx)">المعفيون \u2014 '+scopeLabel+'</div><div style="font-size:10px;color:var(--tx3);font-weight:600;margin-top:1px">'+totalCount+' حالة إعفاء</div></div></div><div style="display:flex;gap:6px"><button onclick="printExemptionList()" title="تحميل وطباعة PDF" style="width:34px;height:34px;background:rgba(0,217,126,.12);border:1px solid rgba(0,217,126,.3);border-radius:9px;color:var(--g);font-size:14px;cursor:pointer;font-weight:900">🖨️</button><button onclick="closeExemptionList()" style="width:34px;height:34px;background:var(--rb);border:1px solid rgba(255,89,89,.3);border-radius:9px;color:var(--red);font-size:16px;cursor:pointer;font-weight:900">&#x2715;</button></div></div><div style="overflow-y:auto;flex:1;padding:12px 14px;-webkit-overflow-scrolling:touch">'+bodyHTML+'</div></div></div>';
-  ov.style.cssText='display:flex;position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:10000;justify-content:center;align-items:flex-end;backdrop-filter:blur(12px)';
-}
+
 
 
 // ═══════════════════════════════════════════════════════
@@ -3931,7 +3657,203 @@ function closeClassGrid(){var o=document.getElementById('ov-cls-grid');if(o)o.st
 function selectClassFromGrid(cid){S.cid=cid;closeClassGrid();rHome();setTimeout(function(){var act=document.querySelector('.ctab.on');if(act&&act.scrollIntoView)act.scrollIntoView({behavior:'smooth',block:'nearest',inline:'center'});},50);}
 
 
+
+// ── Volume Key Hardware Buttons (Lane 0=VolumeUp, Lane 1=VolumeDown) ──
+(function(){
+  var _lastVol={key:null,time:0};
+  document.addEventListener('keydown',function(e){
+    if(!SW4.running)return;
+    var lane=-1;
+    if(e.code==='AudioVolumeUp'||e.key==='AudioVolumeUp'||e.code==='VolumeUp'){lane=0;}
+    else if(e.code==='AudioVolumeDown'||e.key==='AudioVolumeDown'||e.code==='VolumeDown'){lane=1;}
+    if(lane===-1)return;
+    e.preventDefault();e.stopPropagation();
+    // Anti-double
+    var now=performance.now();
+    if(_lastVol.key===lane&&now-_lastVol.time<500)return;
+    _lastVol={key:lane,time:now};
+    sw4StopLane(lane);
+    toast('🔒','حارة '+(lane+1)+' مسجلة (مفتاح الصوت)','su',1200);
+  },{passive:false});
+
+  // Also intercept volume on touchstart to prevent OS overlay
+  document.addEventListener('touchstart',function(e){},{ passive:true });
+})();
+
+
+
+
+// ─── Pedagogical Card System ───────────────────────────────
+function stuCard(sid,color){
+  var stu=GS(sid);if(!stu)return;
+  initStu(stu);
+  var tk=S.term||'t1';
+  var mc=stu.terms[tk].mc;
+  if(color==='g'){
+    // Green: +0.5 participation, max=2, starts at 0
+    var cur=parseFloat(mc.participation)||0;
+    if(cur>=2){toast('🟢',stu.name+' — المشاركة وصلت الحد الأقصى 2','wa',1500);return;}
+    mc.participation=Math.min(2,cur+0.5);
+    toast('🟢 بطاقة خضراء',stu.name+' — مشاركة: '+mc.participation+'/2','su',1500);
+  }else if(color==='y'){
+    // Yellow: -0.5 discipline, default=2, min=0
+    if(!mc._discInit){mc.discipline=parseFloat(mc.discipline)||0;if(!mc.discipline&&mc.discipline!==0)mc.discipline=2;}
+    var curD=parseFloat(mc.discipline)||0;
+    if(curD<=0){toast('🟡',stu.name+' — الانضباط وصل الصفر','wa',1500);return;}
+    mc.discipline=Math.max(0,curD-0.5);
+    toast('🟡 بطاقة صفراء',stu.name+' — انضباط: '+mc.discipline+'/2','wa',1500);
+  }else if(color==='r'){
+    // Red: mark current active session as Absent (0), discipline -2
+    var sesArr=mc.ses;
+    // Find first non-absent session index (value != 0)
+    var sesIdx=sesArr.findIndex(function(v){return v!==0;});
+    if(sesIdx>=0)sesArr[sesIdx]=0; // mark as absent (A)
+    mc.discipline=Math.max(0,(parseFloat(mc.discipline)||2)-2);
+    toast('🔴 غياب + عقوبة',stu.name+' — تسجيل غائب + انضباط −2','er',2500);
+  }
+  snapshot('بطاقة سلوك');SD();
+  // Refresh MC screen if open
+  if(S.sid===sid&&document.getElementById('mc-sub'))rMC();
+}
+
+// ─── Captaincy Role Allocator ──────────────────────────────
+function toggleCaptain(sid){
+  var stu=GS(sid);if(!stu)return;
+  initStu(stu);
+  var tk=S.term||'t1';
+  var mc=stu.terms[tk].mc;
+  var becoming=!stu.captain;
+  if(becoming&&S.cid){
+    D.students.filter(function(s){return s.classId===S.cid&&s.id!==sid;}).forEach(function(s){
+      if(s.captain){s.captain=false;initStu(s);s.terms[tk].mc.creativity=Math.max(0,(parseFloat(s.terms[tk].mc.creativity)||0)-1);}
+    });
+  }
+  stu.captain=becoming;
+  if(becoming){
+    mc.creativity=Math.min(2,(parseFloat(mc.creativity)||0)+1);
+    toast('👑 قائد الفوج',stu.name+' — إبداع +1','su',2000);
+    openCaptainSheet(sid);
+  }else{
+    mc.creativity=Math.max(0,(parseFloat(mc.creativity)||0)-1);
+    toast('○ إلغاء القيادة',stu.name,'wa',1500);
+  }
+  snapshot('قائد فوج');SD();rHome();
+}
+
+function closeCaptainSheet(){var o=document.getElementById('captain-sheet');if(o)o.remove();}
+function openCaptainSheet(sid){
+  var stu=GS(sid);var cls=GC(stu.classId);if(!stu||!cls)return;
+  var old=document.getElementById('captain-sheet');if(old)old.remove();
+  var ov=document.createElement('div');
+  ov.id='captain-sheet';
+  ov.style.cssText='position:fixed;inset:0;z-index:9500;background:rgba(0,0,0,.8);display:flex;justify-content:center;align-items:flex-end;backdrop-filter:blur(8px)';
+  ov.onclick=function(e){if(e.target===ov)ov.remove();};
+  ov.innerHTML=
+    '<div style="background:var(--p1);border-radius:20px 20px 0 0;width:100%;max-width:480px;max-height:70vh;display:flex;flex-direction:column;overflow:hidden">'+
+    '<div style="padding:14px 16px;border-bottom:1px solid var(--ln);display:flex;align-items:center;gap:10px;background:rgba(218,165,32,.08)">'+
+    '<span style="font-size:24px">👑</span>'+
+    '<div style="flex:1"><div style="font-size:14px;font-weight:900;color:var(--gold)">بطاقة مهام القائد</div>'+
+    '<div style="font-size:11px;color:var(--tx3)">'+stu.name+' · '+cls.name+'</div></div>'+
+    '<button onclick="closeCaptainSheet()" style="width:34px;height:34px;background:var(--rb);border:none;border-radius:9px;color:var(--red);font-size:16px;cursor:pointer;font-weight:900">✕</button>'+
+    '</div>'+
+    '<div style="overflow-y:auto;flex:1;padding:16px">'+
+    '<div style="display:flex;flex-direction:column;gap:10px">'+
+    '<div style="background:var(--p2);border-radius:12px;padding:12px 14px;border-right:3px solid var(--g)">'+
+      '<div style="font-size:11px;font-weight:900;color:var(--g);margin-bottom:6px">🏃 قيادة الإحماء</div>'+
+      '<div style="font-size:12px;color:var(--tx2)">يقود '+stu.name+' الإحماء الديناميكي 7 دقائق قبل الحصة</div></div>'+
+    '<div style="background:var(--p2);border-radius:12px;padding:12px 14px;border-right:3px solid var(--blu)">'+
+      '<div style="font-size:11px;font-weight:900;color:var(--blu);margin-bottom:6px">⏱️ إدارة الوقت</div>'+
+      '<div style="font-size:12px;color:var(--tx2)">مسؤول عن توقيت المحطات وإبلاغ الأستاذ</div></div>'+
+    '<div style="background:var(--p2);border-radius:12px;padding:12px 14px;border-right:3px solid var(--gold)">'+
+      '<div style="font-size:11px;font-weight:900;color:var(--gold);margin-bottom:6px">📋 تسجيل الأداء</div>'+
+      '<div style="font-size:12px;color:var(--tx2)">يسجل نتائج المحطات الفرعية ويبلغ الأستاذ</div></div>'+
+    '<div style="background:rgba(218,165,32,.08);border-radius:12px;padding:10px 14px;border:1px solid rgba(218,165,32,.2)">'+
+      '<div style="font-size:11px;font-weight:900;color:var(--gold)">🏆 المكافأة التلقائية</div>'+
+      '<div style="font-size:12px;color:var(--tx2);margin-top:4px">تمت إضافة <strong>+1 إبداع</strong> للمراقبة المستمرة</div>'+
+    '</div></div></div></div>';
+  document.body.appendChild(ov);
+}
+
+// ── Volume Key Hardware Buttons ──────────────────────────────
+(function(){
+  var _lv={k:-1,t:0};
+  document.addEventListener('keydown',function(e){
+    if(!SW4.running)return;
+    var lane=-1;
+    if(e.code==='AudioVolumeUp'||e.key==='AudioVolumeUp')lane=0;
+    else if(e.code==='AudioVolumeDown'||e.key==='AudioVolumeDown')lane=1;
+    if(lane===-1)return;
+    e.preventDefault();e.stopPropagation();
+    var now=performance.now();
+    if(_lv.k===lane&&now-_lv.t<500)return;
+    _lv={k:lane,t:now};
+    sw4StopLane(lane);
+    toast('🔒','حارة '+(lane+1)+'  مفتاح الصوت','su',1200);
+  },{passive:false});
+})();
+
+
+function openExemptionList(){
+  var sch=D.settings.school||'الثانوية';
+  var yr=D.settings.year||'—';
+  var rows=[];
+  D.classes.forEach(function(cls){
+    D.students.filter(function(s){return s.classId===cls.id;}).forEach(function(s){
+      initStu(s);
+      var exT1=s.terms.t1.exempted,exT2=s.terms.t2.exempted,exT3=s.terms.t3.exempted;
+      if(!exT1&&!exT2&&!exT3)return;
+      var allEx=exT1&&exT2&&exT3;
+      var note=allEx?'معفى':'معفى جزئياً';
+      var terms=[];
+      if(exT1)terms.push('ف1');if(exT2)terms.push('ف2');if(exT3)terms.push('ف3');
+      rows.push({
+        name:s.name,gender:s.gender==='male'?'ذكر':'أنثى',
+        cls:cls.name,level:LVL[cls.level],
+        note:note,terms:terms,allEx:allEx
+      });
+    });
+  });
+
+  var tbody='';
+  rows.forEach(function(r,i){
+    var clr=r.allEx?'#c0392b':'#d4900a';
+    tbody+='<tr><td>'+(i+1)+'</td>'+
+      '<td style="text-align:right;font-weight:700">'+r.name+'</td>'+
+      '<td>'+(r.gender==='ذكر'?'👦':'👧')+' '+r.gender+'</td>'+
+      '<td>'+r.cls+'<br><small style="color:#777">'+r.level+'</small></td>'+
+      '<td><span style="color:#555;font-size:10px">'+r.terms.join(', ')+'</span></td>'+
+      '<td style="font-weight:800;color:'+clr+'">'+r.note+'</td></tr>';
+  });
+
+  var html='<div class="page"><div class="watermark">'+sch+'</div>'+
+    '<div style="text-align:center;border-bottom:2px solid #c0392b;padding-bottom:8px;margin-bottom:14px">'+
+    '<div style="font-size:14px;font-weight:800;color:#c0392b">'+sch+'</div>'+
+    '<div style="font-size:11px;color:#555;margin-top:2px">السنة الدراسية: '+yr+'</div></div>'+
+    '<h1>قائمة التلاميذ المعفيين</h1>'+
+    '<h2>مادة التربية البدنية والرياضية</h2>'+
+    '<div class="info-row" style="margin-bottom:14px"><span>العدد: <strong>'+rows.length+'</strong></span></div>'+
+    '<table><thead><tr>'+
+    '<th style="background:#c0392b">رقم</th>'+
+    '<th style="background:#c0392b">الاسم واللقب</th>'+
+    '<th style="background:#c0392b">الجنس</th>'+
+    '<th style="background:#c0392b">القسم</th>'+
+    '<th style="background:#c0392b">الفصل(ات)</th>'+
+    '<th style="background:#c0392b">الملاحظة</th>'+
+    '</tr></thead><tbody>'+tbody+'</tbody></table>'+
+    '<div class="footer">'+
+    '<div class="sig-box"><div>أستاذ التربية البدنية والرياضية</div><div class="sig-line"></div><div style="font-weight:700">دلباز محمد</div></div>'+
+    '<div class="sig-box"><div>مستشار التربية</div><div class="sig-line"></div><div style="color:#555">التوقيع والختم</div></div>'+
+    '<div class="sig-box"><div>الناظر</div><div class="sig-line"></div><div style="color:#555">التوقيع والختم</div></div>'+
+    '</div></div>';
+
+  if(!rows.length){
+    toast('معلومة','لا يوجد معفيون في كل الأقسام','su',2000);return;
+  }
+  openGradeSheetPDF(html,'قائمة المعفيين — '+sch);
+}
+
 render('home');
+
 
 </script>
 <script>
