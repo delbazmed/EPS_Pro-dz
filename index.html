@@ -399,17 +399,6 @@ body{max-width:480px;margin:0 auto;display:flex;flex-direction:column;-webkit-fo
 .srow-wrap.captain{border:1.5px solid rgba(0,217,126,.5);border-radius:var(--r);background:rgba(0,217,126,.04);box-shadow:0 0 12px rgba(0,217,126,.12)}
 .cap-btn{width:26px;height:26px;border-radius:50%;background:rgba(218,165,32,.12);border:1.5px solid rgba(218,165,32,.25);color:#daa520;font-size:13px;cursor:pointer;transition:all .15s;touch-action:manipulation;flex-shrink:0}
 .cap-btn.on{background:rgba(218,165,32,.25);border-color:#daa520;box-shadow:0 0 8px rgba(218,165,32,.35)}
-.cap-btn.eq{background:rgba(243,156,18,.2);border-color:#f39c12;color:#f39c12;box-shadow:0 0 8px rgba(243,156,18,.3)}
-.role-menu{position:fixed;z-index:10000;background:var(--p1);border:1px solid var(--ln);border-radius:14px;box-shadow:0 8px 30px rgba(0,0,0,.4);min-width:200px;overflow:hidden;animation:oI .15s ease}
-.role-item{padding:13px 16px;display:flex;align-items:center;gap:10px;cursor:pointer;transition:background .12s;border-bottom:1px solid var(--ln);touch-action:manipulation}
-.role-item:last-child{border-bottom:none}
-.role-item:active{background:var(--p3)}
-.role-item .ri-icon{font-size:20px;width:28px;text-align:center}
-.role-item .ri-label{font-size:13px;font-weight:800;color:var(--tx)}
-.role-item .ri-sub{font-size:10px;color:var(--tx3);font-weight:600;margin-top:1px}
-
-.sc-act-btn:active{transform:scale(.94);}
-.sc-act-btn.on{box-shadow:0 0 0 3px #fff,0 0 0 5px var(--g);}
 </style>
 </head>
 <body>
@@ -718,9 +707,20 @@ body{max-width:480px;margin:0 auto;display:flex;flex-direction:column;-webkit-fo
     <!-- ═══════════ سلم التنقيط ═══════════ -->
     <div class="sdsec">
       <div class="ey" style="margin-bottom:10px">⚖️ تعديل سلم التنقيط</div>
-      <div id="sc-sel" style="display:none"></div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:6px">
-        <div style="color:var(--tx3);font-size:10px;font-weight:800;letter-spacing:.5px;grid-column:1/-1;padding:2px 0">🏃 الأنشطة الفردية</div><button onclick="onScSelCard('sprint60',this)" data-act="sprint60" class="sc-act-btn" style="padding:14px 10px;background:linear-gradient(135deg,#00c851,#00d97e);border:none;border-radius:12px;color:#fff;font-weight:800;font-size:12px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;touch-action:manipulation;transition:transform .12s,box-shadow .12s"><span style="font-size:22px">🏃</span><span>جري 60م</span></button><button onclick="onScSelCard('longJump',this)" data-act="longJump" class="sc-act-btn" style="padding:14px 10px;background:linear-gradient(135deg,#4ea5ff,#2563eb);border:none;border-radius:12px;color:#fff;font-weight:800;font-size:12px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;touch-action:manipulation;transition:transform .12s,box-shadow .12s"><span style="font-size:22px">🦘</span><span>وثب طويل</span></button><button onclick="onScSelCard('shotPut',this)" data-act="shotPut" class="sc-act-btn" style="padding:14px 10px;background:linear-gradient(135deg,#888,#555);border:none;border-radius:12px;color:#fff;font-weight:800;font-size:12px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;touch-action:manipulation;transition:transform .12s,box-shadow .12s"><span style="font-size:22px">⚫</span><span>دفع جلة</span></button><button onclick="onScSelCard('midDist',this)" data-act="midDist" class="sc-act-btn" style="padding:14px 10px;background:linear-gradient(135deg,#f39c12,#e67e22);border:none;border-radius:12px;color:#fff;font-weight:800;font-size:12px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;touch-action:manipulation;transition:transform .12s,box-shadow .12s"><span style="font-size:22px">🏃</span><span>جري متوسط</span></button><button onclick="onScSelCard('tripleJump',this)" data-act="tripleJump" class="sc-act-btn" style="padding:14px 10px;background:linear-gradient(135deg,#8b5cf6,#6d28d9);border:none;border-radius:12px;color:#fff;font-weight:800;font-size:12px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;touch-action:manipulation;transition:transform .12s,box-shadow .12s"><span style="font-size:22px">🦘</span><span>وثب ثلاثي</span></button><button onclick="onScSelCard('relay',this)" data-act="relay" class="sc-act-btn" style="padding:14px 10px;background:linear-gradient(135deg,#ec4899,#db2777);border:none;border-radius:12px;color:#fff;font-weight:800;font-size:12px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;touch-action:manipulation;transition:transform .12s,box-shadow .12s"><span style="font-size:22px">🤝</span><span>تتابع</span></button><div style="color:var(--tx3);font-size:10px;font-weight:800;letter-spacing:.5px;grid-column:1/-1;padding:6px 0 2px">🏐 الأنشطة الجماعية</div><button onclick="onScSelCard('volleyball',this)" data-act="volleyball" class="sc-act-btn" style="padding:14px 10px;background:linear-gradient(135deg,#f59e0b,#d97706);border:none;border-radius:12px;color:#fff;font-weight:800;font-size:12px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;touch-action:manipulation;transition:transform .12s,box-shadow .12s"><span style="font-size:22px">🏐</span><span>كرة طائرة</span></button><button onclick="onScSelCard('basketball',this)" data-act="basketball" class="sc-act-btn" style="padding:14px 10px;background:linear-gradient(135deg,#f97316,#ea580c);border:none;border-radius:12px;color:#fff;font-weight:800;font-size:12px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;touch-action:manipulation;transition:transform .12s,box-shadow .12s"><span style="font-size:22px">🏀</span><span>كرة سلة</span></button><button onclick="onScSelCard('handball',this)" data-act="handball" class="sc-act-btn" style="padding:14px 10px;background:linear-gradient(135deg,#3b82f6,#1d4ed8);border:none;border-radius:12px;color:#fff;font-weight:800;font-size:12px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;touch-action:manipulation;transition:transform .12s,box-shadow .12s"><span style="font-size:22px">🤾</span><span>كرة يد</span></button><button onclick="onScSelCard('football',this)" data-act="football" class="sc-act-btn" style="padding:14px 10px;background:linear-gradient(135deg,#10b981,#059669);border:none;border-radius:12px;color:#fff;font-weight:800;font-size:12px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;touch-action:manipulation;transition:transform .12s,box-shadow .12s"><span style="font-size:22px">⚽</span><span>كرة قدم</span></button></div>
+      <select class="sdrop" id="sc-sel" onchange="onScSel()">
+        <option value="">— اختر نشاطاً —</option>
+        <optgroup label="الأنشطة الفردية">
+          <option value="sprint60">🏃 جري سريع 60م</option>
+          <option value="longJump">🦘 الوثب الطويل</option>
+          <option value="shotPut">⚫ دفع الجلة</option>
+          <option value="midDist">🏅 نصف الطويل</option>
+          <option value="tripleJump">🔀 الوثب الثلاثي</option>
+          <option value="relay">🔄 التتابع</option>
+        </optgroup>
+        <optgroup label="الأنشطة الجماعية">
+          <option value="collective">🏐 الألعاب الجماعية</option>
+        </optgroup>
+      </select>
     </div>
     <div id="sc-ind" style="display:none">
       <div class="sced">
@@ -872,6 +872,10 @@ body{max-width:480px;margin:0 auto;display:flex;flex-direction:column;-webkit-fo
   </div>
 </div>
 
+<!-- QR CODE OVERLAY -->
+<div class="ov" id="ov-qr" class="ov">
+  <div class="ov-box" style="max-width:340px">
+    <div class="ov-hd"><span>🔳 QR Code — القسم</span><button onclick="closeOv('ov-qr')" class="ov-cl">✕</button></div>
     <div style="text-align:center;padding:20px 16px">
       <div id="qr-canvas" style="display:inline-block;margin:0 auto 14px;border-radius:12px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,.3)"></div>
       <div id="qr-info" style="font-size:13px;font-weight:800;color:var(--tx);margin-bottom:4px"></div>
@@ -1155,12 +1159,12 @@ function rHome(){
             '<div class="sme">'+(s.gender==='male'?'ذكر 👦':'أنثى 👧')+(s.phone?' · '+s.phone:'')+'</div>'+
           '</div>'+
           '<div style="display:flex;align-items:center;margin-left:4px">'+scoreHtml+'</div>'+
-          (!isAllEx(s)?'<button class="cap-btn'+(s.captain?' on':s.equipment?' eq':'')+'" onclick="event.stopPropagation();openRoleMenu(\''+s.id+'\',this)" title="تعيين دور">'+(s.captain?'👑':s.equipment?'🎒':'○')+'</button>'+
+          '<button class="cap-btn'+(s.captain?' on':'')+'" onclick="event.stopPropagation();toggleCaptain(\''+s.id+'\')" title="تعيين قائد فوج">'+(s.captain?'👑':'○')+'</button>'+
           '<div class="pcard-wrap">'+
-            '<button class="pcard pc-g" onclick="event.stopPropagation();stuCard(\''+s.id+'\',\'g\')" title="مشاركة +0.25">🟢</button>'+
-            '<button class="pcard pc-y" onclick="event.stopPropagation();stuCard(\''+s.id+'\',\'y\')" title="انضباط -0.25">🟡</button>'+
-            '<button class="pcard pc-r" onclick="event.stopPropagation();stuCard(\''+s.id+'\',\'r\')" title="تسجيل غياب">🔴</button>'+
-          '</div>':'')+
+            '<button class="pcard pc-g" onclick="event.stopPropagation();stuCard(\''+s.id+'\',\'g\')" title="بطاقة خضراء">🟢</button>'+
+            '<button class="pcard pc-y" onclick="event.stopPropagation();stuCard(\''+s.id+'\',\'y\')" title="بطاقة صفراء">🟡</button>'+
+            '<button class="pcard pc-r" onclick="event.stopPropagation();stuCard(\''+s.id+'\',\'r\')" title="بطاقة حمراء">🔴</button>'+
+          '</div>'+
           '<div style="display:flex;flex-direction:column;gap:2px;margin:0 4px">'+
             '<button class="ord-btn" onclick="event.stopPropagation();stuMoveUp(\''+s.id+'\')" '+(sIdx===0?'disabled':'')+'>'+(sIdx===0?'⋯':'▲')+'</button>'+
             '<button class="ord-btn" onclick="event.stopPropagation();stuMoveDown(\''+s.id+'\')" '+(sIdx===clsStus.length-1?'disabled':'')+'>'+(sIdx===clsStus.length-1?'⋯':'▼')+'</button>'+
@@ -1171,6 +1175,8 @@ function rHome(){
           '<button class="sact-btn" onclick="openMC(\''+s.id+'\',\'t1\');nav(\'s-mc\')" title="م.مستمرة" style="color:var(--blu)">📋<span>م.م</span></button>'+
           '<button class="sact-btn" onclick="openEval(\''+s.id+'\',\'t1\',\'fard\');nav(\'s-ev\')" title="الفرض" style="color:var(--gold)">📝<span>فرض</span></button>'+
           '<button class="sact-btn" onclick="openEval(\''+s.id+'\',\'t1\',\'test\');nav(\'s-ev\')" title="الاختبار" style="color:var(--g)">✏️<span>اختبار</span></button>'+
+
+          ''+
         '</div>'+
       '</div>';
     });
@@ -1702,35 +1708,8 @@ tr:nth-child(even)td{background:#f9faff}
 <div class="step">دليل المستخدم: زر 📘 في الإعدادات</div>
 </div></div>
 
-<div class="sec"><div class="sec-ttl"><div class="ic" style="background:#fef9e7">🃏</div><h2>نظام البطاقات السلوكية</h2></div>
-<p>في صف كل تلميذ — 3 أزرار ملونة (مخفية للمعفيين):</p>
-<table><tr><th>البطاقة</th><th>الأثر</th><th>الملاحظة</th></tr>
-<tr><td>🟢 خضراء</td><td>مشاركة +0.25</td><td>تصل 2 كحد أقصى</td></tr>
-<tr><td>🟡 صفراء</td><td>انضباط -0.25</td><td>تبدأ من 2، تصل 0</td></tr>
-<tr><td>🔴 حمراء</td><td>تسجيل غياب (A)</td><td>في أول خانة حصة متاحة</td></tr>
-</table>
-<div class="tip">💡 الانضباط يبدأ بـ 2/2 افتراضياً لكل تلميذ</div></div>
-
-<div class="sec"><div class="sec-ttl"><div class="ic" style="background:#fef5e4">👑</div><h2>نظام القيادة والمسؤوليات</h2></div>
-<p>زران ظاهران أمام كل تلميذ (مخفيان للمعفيين):</p>
-<table><tr><th>الزر</th><th>الدور</th><th>المكافأة</th></tr>
-<tr><td>👑 / ○</td><td>قائد الفوج (إحماء + وقت + تسجيل)</td><td>+1 إبداع تلقائياً</td></tr>
-<tr><td>🎒 / ▣</td><td>مسؤول الوسائل (إحضار + إعادة + جرد)</td><td>+1 إبداع تلقائياً</td></tr>
-</table>
-<p style="margin-top:8px">عند التعيين: تفتح بطاقة مهام المسؤوليات التفصيلية تلقائياً</p>
-<div class="tip">⚠️ قائد واحد فقط + مسؤول وسائل واحد فقط لكل قسم في نفس الوقت</div></div>
-
-<div class="sec"><div class="sec-ttl"><div class="ic" style="background:#e8f8f5">🔄</div><h2>تحديث التطبيق</h2></div>
-<p>عند نشر تحديث جديد على Netlify:</p>
-<div class="steps">
-<div class="step">يظهر شريط أخضر تلقائياً في أسفل الشاشة: <span class="badge bg">🔄 تحديث جديد متاح!</span></div>
-<div class="step">اضغط على الشريط لتطبيق التحديث فوراً</div>
-<div class="step">إذا لم يظهر: أغلق التطبيق وأعد فتحه</div>
-</div>
-<p style="margin-top:8px">لإبلاغ أصدقائك: أرسل لهم رسالة يفتحون فيها التطبيق ويضغطون على الشريط الأخضر</p></div>
-
 <div style="text-align:center;padding:24px 16px;background:#0a1f0e;color:rgba(255,255,255,.5);font-size:11px">
-Smart EPS v5 · دلباز محمد · ثانوية سماحي بوعمامة · 2025-2026
+Smart EPS v4 · دلباز محمد · ثانوية سماحي بوعمامة · 2025-2026
 </div>
 </body></html>`;
   const w=window.open('','_blank','width=420,height=700');
@@ -1765,85 +1744,12 @@ function clearGrade(){const s=GS(S.sid);const t=s.terms[S.term];t[S.etype].jg=nu
 
 // ACTS SCREEN
 function rActs(){
-  var acts=D.settings.acts;
-  var indActs=Object.entries(AF);
-  var teamActs=Object.entries(AJ);
-  
-  function makeCards(list,prefix,tk,current){
-    var gradients={
-      sprint60:'linear-gradient(135deg,#00c851,#00d97e)',
-      longJump:'linear-gradient(135deg,#4ea5ff,#2563eb)',
-      shotPut:'linear-gradient(135deg,#888,#555)',
-      midDist:'linear-gradient(135deg,#f39c12,#e67e22)',
-      tripleJump:'linear-gradient(135deg,#8b5cf6,#6d28d9)',
-      relay:'linear-gradient(135deg,#ec4899,#db2777)',
-      volleyball:'linear-gradient(135deg,#f59e0b,#d97706)',
-      basketball:'linear-gradient(135deg,#f97316,#ea580c)',
-      handball:'linear-gradient(135deg,#3b82f6,#1d4ed8)',
-      football:'linear-gradient(135deg,#10b981,#059669)'
-    };
-    return list.map(function(entry){
-      var k=entry[0],a=entry[1];
-      var on=(current===k);
-      var gr=gradients[k]||'linear-gradient(135deg,#555,#333)';
-      return '<button onclick="selAct(\''+tk+'\',\''+prefix+'\',\''+k+'\',this)" '+
-        'data-tk="'+tk+'" data-type="'+prefix+'" data-act="'+k+'" '+
-        'style="padding:12px 6px;background:'+(on?gr:'var(--p3)')+';border:'+(on?'2px solid rgba(255,255,255,.4)':'1.5px solid var(--ln)')+';border-radius:12px;color:'+(on?'#fff':'var(--tx3)')+';font-weight:800;font-size:11px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px;touch-action:manipulation;transition:all .15s;box-shadow:'+(on?'0 4px 14px rgba(0,0,0,.3)':'none')+'">'+
-        '<span style="font-size:20px">'+a.ic+'</span><span style="text-align:center;line-height:1.3">'+a.n+'</span></button>';
-    }).join('');
-  }
-
-  var html=['t1','t2','t3'].map(function(tk){
-    var termColors={t1:'var(--blu)',t2:'var(--gold)',t3:'var(--red)'};
-    return '<div style="background:var(--p2);border:1px solid var(--ln);border-radius:16px;padding:14px;margin-bottom:12px">'+
-      '<div style="font-size:13px;font-weight:900;color:'+termColors[tk]+';margin-bottom:10px;display:flex;align-items:center;gap:6px">'+
-      '<span style="width:8px;height:8px;border-radius:50%;background:'+termColors[tk]+';display:inline-block"></span>'+TLB[tk]+'</div>'+
-      '<div style="font-size:10px;color:var(--g);font-weight:800;margin-bottom:6px;letter-spacing:.5px">🏃 الفردي</div>'+
-      '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:10px" id="acts-ind-'+tk+'">'+
-      makeCards(indActs,'f',tk,acts[tk].f)+
-      '</div>'+
-      '<div style="font-size:10px;color:var(--blu);font-weight:800;margin-bottom:6px;letter-spacing:.5px">🏐 الجماعي</div>'+
-      '<div style="display:grid;grid-template-columns:repeat(2,1fr);gap:6px" id="acts-team-'+tk+'">'+
-      makeCards(teamActs,'j',tk,acts[tk].j)+
-      '</div></div>';
-  }).join('');
-  document.getElementById('acts-body-inline').innerHTML=html;
+  const acts=D.settings.acts;
+  const fO=Object.entries(AF).map(([k,a])=>'<option value="'+k+'">'+a.ic+' '+a.n+'</option>').join('');
+  const jO=Object.entries(AJ).map(([k,a])=>'<option value="'+k+'">'+a.ic+' '+a.n+'</option>').join('');
+  document.getElementById('acts-body-inline').innerHTML=['t1','t2','t3'].map(tk=>'<div class="ast" style="margin-bottom:12px"><div class="astt">'+TLB[tk]+'</div><div class="asr"><select class="ass" id="asli-f-'+tk+'"><option value="">— نشاط فردي —</option>'+fO+'</select><select class="ass" id="asli-j-'+tk+'"><option value="">— نشاط جماعي —</option>'+jO+'</select></div></div>').join('');
+  ['t1','t2','t3'].forEach(tk=>{const f=document.getElementById('asli-f-'+tk);const j=document.getElementById('asli-j-'+tk);if(f&&acts[tk].f)f.value=acts[tk].f;if(j&&acts[tk].j)j.value=acts[tk].j;});
 }
-
-function selAct(tk,type,val,btn){
-  // Update data
-  D.settings.acts[tk][type]=val;
-  // Update card visuals for this group
-  var gradients={
-    sprint60:'linear-gradient(135deg,#00c851,#00d97e)',
-    longJump:'linear-gradient(135deg,#4ea5ff,#2563eb)',
-    shotPut:'linear-gradient(135deg,#888,#555)',
-    midDist:'linear-gradient(135deg,#f39c12,#e67e22)',
-    tripleJump:'linear-gradient(135deg,#8b5cf6,#6d28d9)',
-    relay:'linear-gradient(135deg,#ec4899,#db2777)',
-    volleyball:'linear-gradient(135deg,#f59e0b,#d97706)',
-    basketball:'linear-gradient(135deg,#f97316,#ea580c)',
-    handball:'linear-gradient(135deg,#3b82f6,#1d4ed8)',
-    football:'linear-gradient(135deg,#10b981,#059669)'
-  };
-  var container=btn.parentElement;
-  container.querySelectorAll('button').forEach(function(b){
-    var k=b.dataset.act;
-    var isOn=(b===btn);
-    var gr=gradients[k]||'linear-gradient(135deg,#555,#333)';
-    b.style.background=isOn?gr:'var(--p3)';
-    b.style.color=isOn?'#fff':'var(--tx3)';
-    b.style.border=isOn?'2px solid rgba(255,255,255,.4)':'1.5px solid var(--ln)';
-    b.style.boxShadow=isOn?'0 4px 14px rgba(0,0,0,.3)':'none';
-  });
-  toast('✅',TLB[tk]+' — تم اختيار '+(val),'su',1000);
-}
-
-function saveActSelInline(){
-  snapshot('أنشطة');SD();
-  toast('✅ تم الحفظ','الأنشطة محفوظة لكل الأقسام','su',2000);
-}
-
 function saveActSelInline(){
   ['t1','t2','t3'].forEach(tk=>{const f=document.getElementById('asli-f-'+tk)?.value||null;const j=document.getElementById('asli-j-'+tk)?.value||null;D.settings.acts[tk]={f,j};});
   SD();toast('تم الحفظ','تم حفظ أنشطة الفصول الثلاثة');
@@ -2620,13 +2526,13 @@ function emergencyRestore(inp){
 // ══════════════════════════════════════════════════════════════
 
 var WHISTLE={
-  ctx:null,stream:null,analyser:null,source:null,
+  ctx:null,stream:null,analyser:null,source:null,filter:null,
   active:false,rafId:null,
-  peakStartTime:null,
-  SUSTAIN_MS:80,
-  THRESHOLD:30,   // simple amplitude threshold (0-255)
-  minBin:0,maxBin:0,
-  _f:0
+  peakStartTime:null,      // when peak first detected
+  SUSTAIN_MS:150,          // must sustain 150ms
+  PEAK_THRESHOLD:85,       // amplitude 0-255
+  SNR_MIN:30,              // peak must exceed noise by this
+  minBin:0,maxBin:0
 };
 
 var VOICE={
@@ -2654,30 +2560,33 @@ function sw4ToggleWhistle(){
       WHISTLE.stream=stream;
       var AC=window.AudioContext||window.webkitAudioContext;
       WHISTLE.ctx=new AC();
-      // Resume AudioContext - critical for mobile Chrome
-      WHISTLE.ctx.resume().then(function(){
-        console.log('AudioContext state:',WHISTLE.ctx.state);
-      }).catch(function(e){console.warn('Resume failed:',e);});
       WHISTLE.source=WHISTLE.ctx.createMediaStreamSource(stream);
 
-      // Simple analyser - no bandpass filter (more reliable on mobile)
-      WHISTLE.analyser=WHISTLE.ctx.createAnalyser();
-      WHISTLE.analyser.fftSize=1024;
-      WHISTLE.analyser.smoothingTimeConstant=0.2;
-      WHISTLE.source.connect(WHISTLE.analyser);
-      // DO NOT connect to destination (stays silent)
+      // Strict bandpass: center=3500Hz, Q=6 (tight)
+      WHISTLE.filter=WHISTLE.ctx.createBiquadFilter();
+      WHISTLE.filter.type='bandpass';
+      WHISTLE.filter.frequency.value=3500;
+      WHISTLE.filter.Q.value=6;
 
-      // Compute frequency bins for 2-5 kHz (whistle range)
+      // High-res analyser
+      WHISTLE.analyser=WHISTLE.ctx.createAnalyser();
+      WHISTLE.analyser.fftSize=2048;
+      WHISTLE.analyser.smoothingTimeConstant=0.1;
+
+      // source → bandpass → analyser (silent - no destination)
+      WHISTLE.source.connect(WHISTLE.filter);
+      WHISTLE.filter.connect(WHISTLE.analyser);
+
+      // Compute 3-4 kHz bins
       var sr=WHISTLE.ctx.sampleRate;
       var binHz=sr/WHISTLE.analyser.fftSize;
-      WHISTLE.minBin=Math.floor(2000/binHz);
-      WHISTLE.maxBin=Math.ceil(5000/binHz);
+      WHISTLE.minBin=Math.floor(3000/binHz);
+      WHISTLE.maxBin=Math.ceil(4000/binHz);
       WHISTLE.active=true;
       WHISTLE.peakStartTime=null;
-      WHISTLE._f=0;
 
-      if(btn){btn.disabled=false;btn.innerHTML='🎙️ ينصت للصافرة...';btn.style.background='linear-gradient(135deg,#e67e22,#d35400)';}
-      sw4ShowWhistleStatus('🎙️ جاهز — العتبة: '+WHISTLE.THRESHOLD+' — أنفخ في الصافرة');
+      if(btn){btn.disabled=false;btn.innerHTML='🎙️ ينصت للصافرة (اضغط للإلغاء)';btn.style.background='linear-gradient(135deg,#e67e22,#d35400)';}
+      sw4ShowWhistleStatus('🎙️ انصت... أنفخ بقوة 150ms+ في الصافرة');
       WHISTLE.rafId=requestAnimationFrame(sw4WhistleLoop);
     }catch(err){
       console.error('Whistle setup:',err);
@@ -2686,26 +2595,7 @@ function sw4ToggleWhistle(){
     }
   }).catch(function(err){
     if(btn){btn.disabled=false;btn.innerHTML='🎤 انطلاق بالصافرة';}
-    console.error('Mic access error:',err);
-    if(err.name==='NotAllowedError'||err.name==='PermissionDeniedError'){
-      // Show detailed guide
-      var msg=document.createElement('div');
-      msg.style.cssText='position:fixed;inset:0;z-index:99999;background:rgba(0,0,0,.9);display:flex;justify-content:center;align-items:center;padding:20px;font-family:var(--ff)';
-      msg.innerHTML='<div style="background:var(--p1);border-radius:16px;padding:20px;max-width:340px;text-align:center">'
-        +'<div style="font-size:36px;margin-bottom:12px">🎤</div>'
-        +'<div style="font-size:14px;font-weight:900;color:var(--red);margin-bottom:10px">الميكروفون مرفوض</div>'
-        +'<div style="font-size:12px;color:var(--tx2);line-height:1.8;margin-bottom:16px">'
-        +'<strong>Chrome أندرويد:</strong><br>'
-        +'اضغط على 🔒 في شريط العنوان<br>'
-        +'← الإذونات ← الميكروفون ← سماح<br><br>'
-        +'ثم أغلق وأعد فتح التطبيق'
-        +'</div>'
-        +'<button onclick="this.parentElement.parentElement.remove()" style="width:100%;padding:11px;background:var(--g);border:none;border-radius:10px;color:#fff;font-weight:900;cursor:pointer;font-size:13px;font-family:var(--ff)">حسناً</button>'
-        +'</div>';
-      document.body.appendChild(msg);
-    }else{
-      toast('خطأ','تعذر الوصول للميكروفون: '+err.name,'er',3000);
-    }
+    toast('مرفوض','السماح للميكروفون مطلوب','er');
   });
 }
 
@@ -2714,34 +2604,38 @@ function sw4WhistleLoop(){
   var buf=new Uint8Array(WHISTLE.analyser.frequencyBinCount);
   WHISTLE.analyser.getByteFrequencyData(buf);
 
-  // Find peak amplitude in whistle frequency range (2-5 kHz)
+  // Peak in 3-4kHz band
   var peak=0;
-  for(var i=WHISTLE.minBin;i<=WHISTLE.maxBin;i++){
-    if(buf[i]>peak)peak=buf[i];
-  }
+  for(var i=WHISTLE.minBin;i<=WHISTLE.maxBin;i++){if(buf[i]>peak)peak=buf[i];}
 
-  // Simple threshold check - no complex SNR
-  var isWhistle=(peak>=WHISTLE.THRESHOLD);
+  // Average noise OUTSIDE whistle band (below 2kHz + above 5kHz)
+  var noise=0,nc=0;
+  var maxNoiseBin=Math.floor(2000/(WHISTLE.ctx.sampleRate/WHISTLE.analyser.fftSize));
+  var minNoiseBinHi=Math.ceil(5000/(WHISTLE.ctx.sampleRate/WHISTLE.analyser.fftSize));
+  for(var j=0;j<maxNoiseBin;j++){noise+=buf[j];nc++;}
+  for(var k=minNoiseBinHi;k<buf.length;k++){noise+=buf[k];nc++;}
+  if(nc>0)noise/=nc;
+
+  var snr=peak-noise;
+  var isWhistle=(peak>=WHISTLE.PEAK_THRESHOLD&&snr>=WHISTLE.SNR_MIN);
   var now=performance.now();
 
   if(isWhistle){
     if(!WHISTLE.peakStartTime)WHISTLE.peakStartTime=now;
     var sustained=now-WHISTLE.peakStartTime;
-    WHISTLE._f++;
-    if(WHISTLE._f%4===0){
+    // Visual bar
+    if(!WHISTLE._f)WHISTLE._f=0;WHISTLE._f++;
+    if(WHISTLE._f%3===0){
       var pct=Math.min(100,Math.round((sustained/WHISTLE.SUSTAIN_MS)*100));
-      sw4ShowWhistleStatus('🔊 '+pct+'% ← صافرة رُصدت ('+peak+')');
+      sw4ShowWhistleStatus('🔊 صافرة رُصدت... '+pct+'%');
     }
+    // Sustained 150ms = fire!
     if(sustained>=WHISTLE.SUSTAIN_MS){
-      sw4WhistleFired(now-sustained);
+      sw4WhistleFired(now-sustained); // use START of sustained peak
       return;
     }
   }else{
-    if(WHISTLE.peakStartTime)WHISTLE.peakStartTime=null;
-    WHISTLE._f++;
-    if(WHISTLE._f%8===0){
-      sw4ShowWhistleStatus('🎙️ ينصت... ('+peak+') — أنفخ في الصافرة');
-    }
+    WHISTLE.peakStartTime=null; // reset if drops below threshold
   }
 
   WHISTLE.rafId=requestAnimationFrame(sw4WhistleLoop);
@@ -2761,6 +2655,7 @@ function sw4StopWhistle(keepStream){
   WHISTLE.active=false;WHISTLE.peakStartTime=null;WHISTLE._f=0;
   if(WHISTLE.rafId){cancelAnimationFrame(WHISTLE.rafId);WHISTLE.rafId=null;}
   try{if(WHISTLE.source)WHISTLE.source.disconnect();}catch(e){}
+  try{if(WHISTLE.filter)WHISTLE.filter.disconnect();}catch(e){}
   try{if(WHISTLE.analyser)WHISTLE.analyser.disconnect();}catch(e){}
   if(!keepStream){
     try{if(WHISTLE.stream)WHISTLE.stream.getTracks().forEach(function(t){t.stop();});}catch(e){}
@@ -2888,12 +2783,13 @@ function openQR(clsId){
       }
       try{
         // Readable Arabic text card - scanners display this directly
-        // ASCII-only payload to avoid QR overflow
-        var payload='EPS|'+
-          (D.settings.year||'').replace(/[^0-9-]/g,'')+
-          '|'+cls.name.length+'stu'+stus.length+
-          '|M'+males+'F'+females;
-        new QRCode(canvas,{text:payload,width:220,height:220,colorDark:'#111111',colorLight:'#ffffff',correctLevel:QRCode.CorrectLevel.L});
+        var payload=
+          'الثانوية: '+(D.settings.school||'-')+'\n'+
+          'القسم: '+cls.name+' - '+LVL[cls.level]+'\n'+
+          'التلاميذ: '+stus.length+' (ذكور '+males+'/إناث '+females+')\n'+
+          'الموسم: '+(D.settings.year||'-')+'\n'+
+          'الأستاذ: دلباز محمد';
+        new QRCode(canvas,{text:payload,width:260,height:260,colorDark:'#111111',colorLight:'#ffffff',correctLevel:QRCode.CorrectLevel.L,typeNumber:20});
       }catch(err){
         canvas.innerHTML='<div style="padding:30px;color:#c00;font-size:11px">خطأ في توليد QR</div>';
         console.error('QR error:',err);
@@ -2904,9 +2800,63 @@ function openQR(clsId){
     toast('خطأ','تعذر فتح نافذة QR','er');
   }
 }
-
-
-
+function exportClassInfoPDF(){
+  var btn=document.getElementById('qr-pdf-btn');
+  var cid=btn?btn.dataset.cid:S.cid;
+  var cls=GC(cid);
+  if(!cls){toast('تنبيه','لا يوجد قسم','wa');return;}
+  var stus=D.students.filter(function(s){return s.classId===cid;});
+  var males=stus.filter(function(s){return s.gender==='male';}).length;
+  var females=stus.length-males;
+  var sch=D.settings.school||'الثانوية';
+  var yr=D.settings.year||'—';
+  // Build student list
+  var stuRows='';
+  stus.forEach(function(s,i){
+    stuRows+='<tr><td>'+(i+1)+'</td><td style="text-align:right">'+s.name+'</td><td>'+(s.gender==='male'?'ذكر':'أنثى')+'</td></tr>';
+  });
+  var html='<div class="page"><div class="watermark">'+sch+'</div>'+
+    '<div style="text-align:center;border-bottom:2px solid #1a6b3a;padding-bottom:8px;margin-bottom:14px">'+
+    '<div style="font-size:14px;font-weight:800;color:#1a6b3a">'+sch+'</div>'+
+    '<div style="font-size:11px;color:#555;margin-top:2px">السنة الدراسية: '+yr+'</div></div>'+
+    '<h1>بطاقة معلومات القسم</h1>'+
+    '<h2>مادة التربية البدنية والرياضية</h2>'+
+    '<div style="background:#f5f5f5;padding:14px;border-radius:8px;margin-bottom:20px">'+
+    '<table style="width:100%;border:none;margin:0">'+
+    '<tr><td style="border:none;padding:6px 8px;font-weight:700;width:35%">القسم</td><td style="border:none;padding:6px 8px">'+cls.name+'</td></tr>'+
+    '<tr><td style="border:none;padding:6px 8px;font-weight:700">المستوى</td><td style="border:none;padding:6px 8px">'+LVL[cls.level]+'</td></tr>'+
+    '<tr><td style="border:none;padding:6px 8px;font-weight:700">عدد التلاميذ</td><td style="border:none;padding:6px 8px">'+stus.length+'</td></tr>'+
+    '<tr><td style="border:none;padding:6px 8px;font-weight:700">ذكور</td><td style="border:none;padding:6px 8px">'+males+'</td></tr>'+
+    '<tr><td style="border:none;padding:6px 8px;font-weight:700">إناث</td><td style="border:none;padding:6px 8px">'+females+'</td></tr>'+
+    '</table></div>'+
+    '<h2 style="text-align:right;margin:18px 0 8px">قائمة التلاميذ</h2>'+
+    '<table><thead><tr><th>الرقم</th><th>الاسم واللقب</th><th>الجنس</th></tr></thead><tbody>'+stuRows+'</tbody></table>'+
+    '<div class="footer">'+
+    '<div class="sig-box"><div>أستاذ التربية البدنية والرياضية</div><div class="sig-line"></div><div style="font-weight:700">دلباز محمد</div></div>'+
+    '<div class="sig-box"><div>مستشار التربية</div><div class="sig-line"></div><div style="color:#555">التوقيع والختم</div></div>'+
+    '<div class="sig-box"><div>الناظر</div><div class="sig-line"></div><div style="color:#555">التوقيع والختم</div></div>'+
+    '</div></div>';
+  openGradeSheetPDF(html,'بطاقة معلومات القسم — '+cls.name);
+}
+function downloadQR(){
+  const img=document.querySelector('#qr-canvas img');const cvs=document.querySelector('#qr-canvas canvas');
+  const src=img?img.src:cvs?cvs.toDataURL('image/png'):null;
+  if(!src){toast('تنبيه','لا يوجد QR','wa');return;}
+  const a=document.createElement('a');a.download='QR_SmartSport_'+Date.now()+'.png';a.href=src;a.click();
+}
+function shareClassData(){
+  const btn=document.getElementById('qr-share-btn');const cid=btn?.dataset.cid||S.cid;
+  const cls=GC(cid);if(!cls){toast('تنبيه','لا يوجد قسم','wa');return;}
+  const stus=D.students.filter(s=>s.classId===cid);
+  const blob=new Blob([JSON.stringify({settings:D.settings,scales:D.scales,classes:[cls],students:stus})],{type:'application/json'});
+  const file=new File([blob],'SmartSport_'+cls.name+'_'+D.settings.year+'.json',{type:'application/json'});
+  if(navigator.share&&navigator.canShare&&navigator.canShare({files:[file]})){
+    navigator.share({files:[file],title:'SmartSport — '+cls.name,text:'بيانات قسم '+cls.name}).catch(()=>{});
+  }else{
+    const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=file.name;a.click();
+    setTimeout(()=>URL.revokeObjectURL(url),1000);toast('تم','تم تنزيل ملف بيانات القسم','su');
+  }
+}
 
 // SW4 — 4-Lane Parallel Sprint Stopwatch Engine
 // Delbaz_EPS · Mai 2026
@@ -2972,9 +2922,63 @@ function openQR(clsId){
     toast('خطأ','تعذر فتح نافذة QR','er');
   }
 }
-
-
-
+function exportClassInfoPDF(){
+  var btn=document.getElementById('qr-pdf-btn');
+  var cid=btn?btn.dataset.cid:S.cid;
+  var cls=GC(cid);
+  if(!cls){toast('تنبيه','لا يوجد قسم','wa');return;}
+  var stus=D.students.filter(function(s){return s.classId===cid;});
+  var males=stus.filter(function(s){return s.gender==='male';}).length;
+  var females=stus.length-males;
+  var sch=D.settings.school||'الثانوية';
+  var yr=D.settings.year||'—';
+  // Build student list
+  var stuRows='';
+  stus.forEach(function(s,i){
+    stuRows+='<tr><td>'+(i+1)+'</td><td style="text-align:right">'+s.name+'</td><td>'+(s.gender==='male'?'ذكر':'أنثى')+'</td></tr>';
+  });
+  var html='<div class="page"><div class="watermark">'+sch+'</div>'+
+    '<div style="text-align:center;border-bottom:2px solid #1a6b3a;padding-bottom:8px;margin-bottom:14px">'+
+    '<div style="font-size:14px;font-weight:800;color:#1a6b3a">'+sch+'</div>'+
+    '<div style="font-size:11px;color:#555;margin-top:2px">السنة الدراسية: '+yr+'</div></div>'+
+    '<h1>بطاقة معلومات القسم</h1>'+
+    '<h2>مادة التربية البدنية والرياضية</h2>'+
+    '<div style="background:#f5f5f5;padding:14px;border-radius:8px;margin-bottom:20px">'+
+    '<table style="width:100%;border:none;margin:0">'+
+    '<tr><td style="border:none;padding:6px 8px;font-weight:700;width:35%">القسم</td><td style="border:none;padding:6px 8px">'+cls.name+'</td></tr>'+
+    '<tr><td style="border:none;padding:6px 8px;font-weight:700">المستوى</td><td style="border:none;padding:6px 8px">'+LVL[cls.level]+'</td></tr>'+
+    '<tr><td style="border:none;padding:6px 8px;font-weight:700">عدد التلاميذ</td><td style="border:none;padding:6px 8px">'+stus.length+'</td></tr>'+
+    '<tr><td style="border:none;padding:6px 8px;font-weight:700">ذكور</td><td style="border:none;padding:6px 8px">'+males+'</td></tr>'+
+    '<tr><td style="border:none;padding:6px 8px;font-weight:700">إناث</td><td style="border:none;padding:6px 8px">'+females+'</td></tr>'+
+    '</table></div>'+
+    '<h2 style="text-align:right;margin:18px 0 8px">قائمة التلاميذ</h2>'+
+    '<table><thead><tr><th>الرقم</th><th>الاسم واللقب</th><th>الجنس</th></tr></thead><tbody>'+stuRows+'</tbody></table>'+
+    '<div class="footer">'+
+    '<div class="sig-box"><div>أستاذ التربية البدنية والرياضية</div><div class="sig-line"></div><div style="font-weight:700">دلباز محمد</div></div>'+
+    '<div class="sig-box"><div>مستشار التربية</div><div class="sig-line"></div><div style="color:#555">التوقيع والختم</div></div>'+
+    '<div class="sig-box"><div>الناظر</div><div class="sig-line"></div><div style="color:#555">التوقيع والختم</div></div>'+
+    '</div></div>';
+  openGradeSheetPDF(html,'بطاقة معلومات القسم — '+cls.name);
+}
+function downloadQR(){
+  const img=document.querySelector('#qr-canvas img');const cvs=document.querySelector('#qr-canvas canvas');
+  const src=img?img.src:cvs?cvs.toDataURL('image/png'):null;
+  if(!src){toast('تنبيه','لا يوجد QR','wa');return;}
+  const a=document.createElement('a');a.download='QR_SmartSport_'+Date.now()+'.png';a.href=src;a.click();
+}
+function shareClassData(){
+  const btn=document.getElementById('qr-share-btn');const cid=btn?.dataset.cid||S.cid;
+  const cls=GC(cid);if(!cls){toast('تنبيه','لا يوجد قسم','wa');return;}
+  const stus=D.students.filter(s=>s.classId===cid);
+  const blob=new Blob([JSON.stringify({settings:D.settings,scales:D.scales,classes:[cls],students:stus})],{type:'application/json'});
+  const file=new File([blob],'SmartSport_'+cls.name+'_'+D.settings.year+'.json',{type:'application/json'});
+  if(navigator.share&&navigator.canShare&&navigator.canShare({files:[file]})){
+    navigator.share({files:[file],title:'SmartSport — '+cls.name,text:'بيانات قسم '+cls.name}).catch(()=>{});
+  }else{
+    const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=file.name;a.click();
+    setTimeout(()=>URL.revokeObjectURL(url),1000);toast('تم','تم تنزيل ملف بيانات القسم','su');
+  }
+}
 
 // SW4 — 4-Lane Parallel Sprint Stopwatch Engine
 // Delbaz_EPS · Mai 2026
@@ -3685,105 +3689,109 @@ function stuCard(sid,color){
   initStu(stu);
   var tk=S.term||'t1';
   var mc=stu.terms[tk].mc;
-  // Ensure discipline starts at 2 for existing students
-  if(mc.discipline===0&&!mc._discSet)mc.discipline=2;
   if(color==='g'){
-    var cur=Math.round((parseFloat(mc.participation)||0)*100)/100;
-    if(cur>=2){toast('🟢',stu.name+' — المشاركة وصلت الحد الأقصى 2/2','wa',1500);return;}
-    mc.participation=Math.min(2,Math.round((cur+0.25)*100)/100);
-    toast('🟢 مشاركة',stu.name+' +0.25 ← '+mc.participation+'/2','su',1200);
+    // Green: +0.5 participation, max=2, starts at 0
+    var cur=parseFloat(mc.participation)||0;
+    if(cur>=2){toast('🟢',stu.name+' — المشاركة وصلت الحد الأقصى 2','wa',1500);return;}
+    mc.participation=Math.min(2,cur+0.5);
+    toast('🟢 بطاقة خضراء',stu.name+' — مشاركة: '+mc.participation+'/2','su',1500);
   }else if(color==='y'){
-    var curD=Math.round((parseFloat(mc.discipline!==undefined?mc.discipline:2))*100)/100;
+    // Yellow: -0.5 discipline, default=2, min=0
+    if(!mc._discInit){mc.discipline=parseFloat(mc.discipline)||0;if(!mc.discipline&&mc.discipline!==0)mc.discipline=2;}
+    var curD=parseFloat(mc.discipline)||0;
     if(curD<=0){toast('🟡',stu.name+' — الانضباط وصل الصفر','wa',1500);return;}
-    mc.discipline=Math.max(0,Math.round((curD-0.25)*100)/100);
-    mc._discSet=true;
-    toast('🟡 انضباط',stu.name+' -0.25 ← '+mc.discipline+'/2','wa',1200);
+    mc.discipline=Math.max(0,curD-0.5);
+    toast('🟡 بطاقة صفراء',stu.name+' — انضباط: '+mc.discipline+'/2','wa',1500);
   }else if(color==='r'){
-    // Mark first available session as Absent
-    var sesIdx=-1;
-    for(var si=0;si<mc.ses.length;si++){if(mc.ses[si]!==0){sesIdx=si;break;}}
-    if(sesIdx>=0)mc.ses[sesIdx]=0;
-    toast('🔴 غياب',stu.name+' — تسجيل غائب في ح'+(sesIdx+1),'er',2000);
+    // Red: mark current active session as Absent (0), discipline -2
+    var sesArr=mc.ses;
+    // Find first non-absent session index (value != 0)
+    var sesIdx=sesArr.findIndex(function(v){return v!==0;});
+    if(sesIdx>=0)sesArr[sesIdx]=0; // mark as absent (A)
+    mc.discipline=Math.max(0,(parseFloat(mc.discipline)||2)-2);
+    toast('🔴 غياب + عقوبة',stu.name+' — تسجيل غائب + انضباط −2','er',2500);
   }
   snapshot('بطاقة سلوك');SD();
+  // Refresh MC screen if open
   if(S.sid===sid&&document.getElementById('mc-sub'))rMC();
 }
 
 // ─── Captaincy Role Allocator ──────────────────────────────
-function toggleCaptain(sid){}// deprecated
-
-function toggleEquipment(sid){
+function toggleCaptain(sid){
   var stu=GS(sid);if(!stu)return;
   initStu(stu);
   var tk=S.term||'t1';
   var mc=stu.terms[tk].mc;
-  var becoming=!stu.equipment;
+  var becoming=!stu.captain;
   if(becoming&&S.cid){
     D.students.filter(function(s){return s.classId===S.cid&&s.id!==sid;}).forEach(function(s){
-      if(s.equipment){s.equipment=false;initStu(s);s.terms[tk].mc.creativity=Math.max(0,(parseFloat(s.terms[tk].mc.creativity)||0)-1);}
+      if(s.captain){s.captain=false;initStu(s);s.terms[tk].mc.creativity=Math.max(0,(parseFloat(s.terms[tk].mc.creativity)||0)-1);}
     });
   }
-  stu.equipment=becoming;
+  stu.captain=becoming;
   if(becoming){
     mc.creativity=Math.min(2,(parseFloat(mc.creativity)||0)+1);
-    toast('🎒 مسؤول الوسائل',stu.name+' — إبداع +1','su',2000);
-    openCaptainSheet(sid,'equipment');
+    toast('👑 قائد الفوج',stu.name+' — إبداع +1','su',2000);
+    openCaptainSheet(sid);
   }else{
     mc.creativity=Math.max(0,(parseFloat(mc.creativity)||0)-1);
-    toast('○ إلغاء المهمة',stu.name,'wa',1500);
+    toast('○ إلغاء القيادة',stu.name,'wa',1500);
   }
-  snapshot('مسؤول وسائل');SD();rHome();
+  snapshot('قائد فوج');SD();rHome();
 }
 
 function closeCaptainSheet(){var o=document.getElementById('captain-sheet');if(o)o.remove();}
-function openCaptainSheet(sid,role){
+function openCaptainSheet(sid){
   var stu=GS(sid);var cls=GC(stu.classId);if(!stu||!cls)return;
   var old=document.getElementById('captain-sheet');if(old)old.remove();
   var ov=document.createElement('div');
   ov.id='captain-sheet';
   ov.style.cssText='position:fixed;inset:0;z-index:9500;background:rgba(0,0,0,.8);display:flex;justify-content:center;align-items:flex-end;backdrop-filter:blur(8px)';
   ov.onclick=function(e){if(e.target===ov)ov.remove();};
-
-  var isCaptain=(role==='captain');
-  var icon=isCaptain?'👑':'🎒';
-  var color=isCaptain?'var(--gold)':'#f39c12';
-  var bgColor=isCaptain?'rgba(218,165,32,.08)':'rgba(243,156,18,.08)';
-  var title=isCaptain?'بطاقة مهام القائد':'بطاقة مهام مسؤول الوسائل';
-
-  var tasks=isCaptain?[
-    {icon:'🏃',color:'var(--g)',title:'قيادة الإحماء',desc:'يقود '+stu.name+' الإحماء الديناميكي 7 دقائق قبل بداية الحصة ويوجّه الزملاء'},
-    {icon:'⏱️',color:'var(--blu)',title:'إدارة الوقت',desc:'مسؤول عن توقيت المحطات وإبلاغ الأستاذ عند انتهاء كل جولة'},
-    {icon:'📋',color:'var(--gold)',title:'تسجيل الأداء',desc:'يسجل نتائج زملائه في المحطات الفرعية ويقدم تقرير موجز للأستاذ'},
-    {icon:'🤝',color:'var(--pnk)',title:'الوساطة والنظام',desc:'يتدخل كوسيط أولي في النزاعات البسيطة قبل إحالة الأمر للأستاذ'}
-  ]:[
-    {icon:'⚽',color:'#f39c12',title:'إحضار الوسائل',desc:'يتسلم مفتاح المخزن ويُخرج الكرات والشواخص والحبال وجميع الوسائل قبل الحصة'},
-    {icon:'🧹',color:'var(--blu)',title:'إعادة الوسائل',desc:'يجمع ويرتب ويُعيد كل الوسائل إلى المخزن بعد الحصة ويتحقق من اكتمال العدة'},
-    {icon:'📦',color:'var(--g)',title:'جرد الوسائل',desc:'يُبلغ الأستاذ فوراً عن أي وسيلة تالفة أو مفقودة ويدوّن الملاحظات'},
-    {icon:'🔑',color:'var(--gold)',title:'حفظ مفتاح المخزن',desc:'مسؤول عن سلامة المفتاح طوال الحصة وتسليمه للأستاذ في نهايتها'}
-  ];
-
-  var tasksHTML=tasks.map(function(t){
-    return '<div style="background:var(--p2);border-radius:12px;padding:12px 14px;border-right:3px solid '+t.color+'">'+
-      '<div style="font-size:11px;font-weight:900;color:'+t.color+';margin-bottom:5px">'+t.icon+' '+t.title+'</div>'+
-      '<div style="font-size:12px;color:var(--tx2);line-height:1.6">'+t.desc+'</div></div>';
-  }).join('');
-
   ov.innerHTML=
-    '<div style="background:var(--p1);border-radius:20px 20px 0 0;width:100%;max-width:480px;max-height:75vh;display:flex;flex-direction:column;overflow:hidden">'+
-    '<div style="padding:14px 16px;border-bottom:1px solid var(--ln);display:flex;align-items:center;gap:10px;background:'+bgColor+'">'+
-    '<span style="font-size:26px">'+icon+'</span>'+
-    '<div style="flex:1"><div style="font-size:14px;font-weight:900;color:'+color+'">'+title+'</div>'+
+    '<div style="background:var(--p1);border-radius:20px 20px 0 0;width:100%;max-width:480px;max-height:70vh;display:flex;flex-direction:column;overflow:hidden">'+
+    '<div style="padding:14px 16px;border-bottom:1px solid var(--ln);display:flex;align-items:center;gap:10px;background:rgba(218,165,32,.08)">'+
+    '<span style="font-size:24px">👑</span>'+
+    '<div style="flex:1"><div style="font-size:14px;font-weight:900;color:var(--gold)">بطاقة مهام القائد</div>'+
     '<div style="font-size:11px;color:var(--tx3)">'+stu.name+' · '+cls.name+'</div></div>'+
     '<button onclick="closeCaptainSheet()" style="width:34px;height:34px;background:var(--rb);border:none;border-radius:9px;color:var(--red);font-size:16px;cursor:pointer;font-weight:900">✕</button>'+
     '</div>'+
-    '<div style="overflow-y:auto;flex:1;padding:14px;display:flex;flex-direction:column;gap:10px">'+
-    tasksHTML+
-    '<div style="background:'+bgColor+';border-radius:12px;padding:10px 14px;border:1px solid '+color.replace('var(--gold)','rgba(218,165,32,.3)').replace('rgba(218,165,32,.08)','rgba(243,156,18,.3)')+'">'+
-    '<div style="font-size:11px;font-weight:900;color:'+color+'">🏆 المكافأة التلقائية</div>'+
-    '<div style="font-size:12px;color:var(--tx2);margin-top:4px">تمت إضافة <strong>+1 نقطة إبداع</strong> في المراقبة المستمرة لهذا الفصل</div>'+
-    '</div></div></div>';
+    '<div style="overflow-y:auto;flex:1;padding:16px">'+
+    '<div style="display:flex;flex-direction:column;gap:10px">'+
+    '<div style="background:var(--p2);border-radius:12px;padding:12px 14px;border-right:3px solid var(--g)">'+
+      '<div style="font-size:11px;font-weight:900;color:var(--g);margin-bottom:6px">🏃 قيادة الإحماء</div>'+
+      '<div style="font-size:12px;color:var(--tx2)">يقود '+stu.name+' الإحماء الديناميكي 7 دقائق قبل الحصة</div></div>'+
+    '<div style="background:var(--p2);border-radius:12px;padding:12px 14px;border-right:3px solid var(--blu)">'+
+      '<div style="font-size:11px;font-weight:900;color:var(--blu);margin-bottom:6px">⏱️ إدارة الوقت</div>'+
+      '<div style="font-size:12px;color:var(--tx2)">مسؤول عن توقيت المحطات وإبلاغ الأستاذ</div></div>'+
+    '<div style="background:var(--p2);border-radius:12px;padding:12px 14px;border-right:3px solid var(--gold)">'+
+      '<div style="font-size:11px;font-weight:900;color:var(--gold);margin-bottom:6px">📋 تسجيل الأداء</div>'+
+      '<div style="font-size:12px;color:var(--tx2)">يسجل نتائج المحطات الفرعية ويبلغ الأستاذ</div></div>'+
+    '<div style="background:rgba(218,165,32,.08);border-radius:12px;padding:10px 14px;border:1px solid rgba(218,165,32,.2)">'+
+      '<div style="font-size:11px;font-weight:900;color:var(--gold)">🏆 المكافأة التلقائية</div>'+
+      '<div style="font-size:12px;color:var(--tx2);margin-top:4px">تمت إضافة <strong>+1 إبداع</strong> للمراقبة المستمرة</div>'+
+    '</div></div></div></div>';
   document.body.appendChild(ov);
 }
+
+// ── Volume Key Hardware Buttons ──────────────────────────────
+(function(){
+  var _lv={k:-1,t:0};
+  document.addEventListener('keydown',function(e){
+    if(!SW4.running)return;
+    var lane=-1;
+    if(e.code==='AudioVolumeUp'||e.key==='AudioVolumeUp')lane=0;
+    else if(e.code==='AudioVolumeDown'||e.key==='AudioVolumeDown')lane=1;
+    if(lane===-1)return;
+    e.preventDefault();e.stopPropagation();
+    var now=performance.now();
+    if(_lv.k===lane&&now-_lv.t<500)return;
+    _lv={k:lane,t:now};
+    sw4StopLane(lane);
+    toast('🔒','حارة '+(lane+1)+'  مفتاح الصوت','su',1200);
+  },{passive:false});
+})();
+
 
 function openExemptionList(){
   var sch=D.settings.school||'الثانوية';
@@ -3844,138 +3852,17 @@ function openExemptionList(){
   openGradeSheetPDF(html,'قائمة المعفيين — '+sch);
 }
 
-
-// ── Role Assignment Menu ────────────────────────────────────
-function openRoleMenu(sid,btn){
-  event.stopPropagation();
-  // Close existing menu
-  var ex=document.getElementById('role-menu-popup');
-  if(ex){ex.remove();if(ex.dataset.sid===sid)return;}
-  var stu=GS(sid);if(!stu)return;
-  // Create menu
-  var menu=document.createElement('div');
-  menu.id='role-menu-popup';
-  menu.className='role-menu';
-  menu.dataset.sid=sid;
-  // Position near button
-  var rect=btn.getBoundingClientRect();
-  var top=rect.bottom+6;
-  var left=Math.max(8,rect.left-80);
-  if(top+220>window.innerHeight)top=rect.top-230;
-  menu.style.cssText='position:fixed;top:'+top+'px;left:'+left+'px;z-index:10000;background:var(--p1);border:1px solid var(--ln);border-radius:14px;box-shadow:0 8px 30px rgba(0,0,0,.4);min-width:200px;overflow:hidden;animation:oI .15s ease';
-  var roles=[
-    {key:'none',   icon:'○',   label:'بدون دور',      sub:'إلغاء كل المهام',                color:'var(--tx3)'},
-    {key:'captain',icon:'👑',  label:'قائد الفوج',     sub:'إحماء · وقت · تسجيل +1إبداع',  color:'var(--gold)'},
-    {key:'equip',  icon:'🎒',  label:'مسؤول الوسائل',  sub:'إحضار · إعادة · جرد +1إبداع',  color:'#f39c12'}
-  ];
-  roles.forEach(function(r){
-    var item=document.createElement('div');
-    item.className='role-item';
-    var cur=(r.key==='captain'&&stu.captain)||(r.key==='equip'&&stu.equipment)||(r.key==='none'&&!stu.captain&&!stu.equipment);
-    item.style.background=cur?'rgba(0,217,126,.07)':'';
-    item.innerHTML='<span class="ri-icon" style="color:'+r.color+'">'+r.icon+(cur?' ✓':'')+'</span><div><div class="ri-label">'+r.label+'</div><div class="ri-sub">'+r.sub+'</div></div>';
-    item.onclick=function(){assignRole(sid,r.key);menu.remove();};
-    menu.appendChild(item);
-  });
-  document.body.appendChild(menu);
-  // Close on outside tap
-  setTimeout(function(){
-    var close=function(e){if(!menu.contains(e.target)){menu.remove();document.removeEventListener('touchstart',close);document.removeEventListener('mousedown',close);}};
-    document.addEventListener('touchstart',close,{once:false});
-    document.addEventListener('mousedown',close,{once:false});
-  },100);
-}
-
-function assignRole(sid,role){
-  var stu=GS(sid);if(!stu)return;
-  initStu(stu);
-  var tk=S.term||'t1';
-  var mc=stu.terms[tk].mc;
-  // Remove old role bonus from this student
-  if(stu.captain){mc.creativity=Math.max(0,(parseFloat(mc.creativity)||0)-1);}
-  if(stu.equipment){mc.creativity=Math.max(0,(parseFloat(mc.creativity)||0)-1);}
-  // Remove same role from other students in class
-  if(S.cid&&role!=='none'){
-    D.students.filter(function(s){return s.classId===S.cid&&s.id!==sid;}).forEach(function(s){
-      initStu(s);
-      if(role==='captain'&&s.captain){s.captain=false;s.terms[tk].mc.creativity=Math.max(0,(parseFloat(s.terms[tk].mc.creativity)||0)-1);}
-      if(role==='equip'&&s.equipment){s.equipment=false;s.terms[tk].mc.creativity=Math.max(0,(parseFloat(s.terms[tk].mc.creativity)||0)-1);}
-    });
-  }
-  stu.captain=false;stu.equipment=false;
-  if(role==='captain'){
-    stu.captain=true;
-    mc.creativity=Math.min(2,(parseFloat(mc.creativity)||0)+1);
-    toast('👑 قائد الفوج',stu.name+' — إبداع +1','su',2000);
-    openCaptainSheet(sid,'captain');
-  }else if(role==='equip'){
-    stu.equipment=true;
-    mc.creativity=Math.min(2,(parseFloat(mc.creativity)||0)+1);
-    toast('🎒 مسؤول الوسائل',stu.name+' — إبداع +1','su',2000);
-    openCaptainSheet(sid,'equip');
-  }else{
-    toast('○ بدون دور',stu.name,'wa',1200);
-  }
-  snapshot('تعيين دور');SD();rHome();
-}
-
-
-function onScSelCard(val,btn){
-  document.querySelectorAll('.sc-act-btn').forEach(function(b){b.classList.remove('on');});
-  if(btn)btn.classList.add('on');
-  // Mimic select change
-  var fakeEl={value:val};
-  onScSel.call({value:val},{target:{value:val}},val);
-}
-// Patch onScSel to accept direct value
-var _origOnScSel=onScSel;
-function onScSel(e,directVal){
-  var v=directVal||document.getElementById('sc-sel').value||
-    (e&&e.target?e.target.value:'');
-  if(!v){
-    document.getElementById('sc-ind').style.display='none';
-    document.getElementById('sc-col').style.display='none';
-    return;
-  }
-  // Show sections
-  document.getElementById('sc-ind').style.display=AF[v]?'block':'none';
-  document.getElementById('sc-col').style.display=AJ[v]?'block':'none';
-  if(AF[v])renderScInd(v);
-  if(AJ[v])renderScCol(v);
-}
-
 render('home');
 
 
 </script>
 <script>
-if('serviceWorker' in navigator && location.hostname !== 'www.claudeusercontent.com' && location.protocol === 'https:'){
+if('serviceWorker' in navigator){
   window.addEventListener('load',function(){
     navigator.serviceWorker.register('./sw.js').then(function(reg){
       console.log('✅ SW registered',reg.scope);
-      reg.addEventListener('updatefound',function(){
-        var nw=reg.installing;
-        nw.addEventListener('statechange',function(){
-          if(nw.state==='installed'&&navigator.serviceWorker.controller){
-            // Show update banner
-            var b=document.createElement('div');
-            b.id='update-banner';
-            b.style.cssText='position:fixed;bottom:72px;left:12px;right:12px;background:linear-gradient(135deg,#00875a,#00d97e);color:#fff;padding:14px 16px;border-radius:14px;font-weight:800;font-size:13px;z-index:99999;box-shadow:0 6px 24px rgba(0,0,0,.4);font-family:sans-serif;direction:rtl;display:flex;align-items:center;gap:10px';
-            b.innerHTML='<span style="font-size:22px">🔄</span><div style="flex:1"><div style="font-weight:900;font-size:13px">تحديث جديد متاح!</div><div style="font-size:10px;opacity:.85;margin-top:2px">جودة مشاركة الأدوار، بطاقات الأنشطة، تحسينات الكرونو</div></div><button onclick="window.location.reload()" style="background:rgba(255,255,255,.25);border:none;border-radius:8px;color:#fff;padding:8px 14px;font-weight:900;cursor:pointer;font-size:12px;white-space:nowrap">تطبيق</button>';
-            b.querySelector('button').onclick=function(){window.location.reload();};
-            document.body.appendChild(b);
-            setTimeout(function(){if(b.parentNode)b.parentNode.removeChild(b);},20000);
-          }
-        });
-      });
     }).catch(function(err){
       console.warn('SW failed:',err);
-    });
-    // Listen for update messages from SW
-    navigator.serviceWorker.addEventListener('message',function(e){
-      if(e.data&&e.data.type==='UPDATE_AVAILABLE'){
-        console.log('App version:',e.data.version);
-      }
     });
   });
 }
